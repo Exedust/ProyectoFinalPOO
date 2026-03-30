@@ -1,5 +1,5 @@
 package logico;
 
-public class Servicio {
+public abstract class Servicio {
 
 }

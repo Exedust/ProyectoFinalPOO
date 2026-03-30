@@ -1,5 +1,5 @@
 package logico;
 
-public class Pagos {
+public class Pago {
 
 }
