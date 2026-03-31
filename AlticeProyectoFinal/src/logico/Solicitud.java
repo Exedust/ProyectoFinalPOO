@@ -3,47 +3,47 @@ package logico;
 import java.time.LocalDate;
 
 public class Solicitud {
-	public Solicitud(String codigo, String codigoCliente, String tipo, String descripcion) {
+	public Solicitud(String codigo, String codigoCliente, TipoSolicitud tipo, String descripcion) {
 		super();
 		this.codigo = codigo;
 		this.codigoCliente = codigoCliente;
 		this.setTipo(tipo);
 		this.setDescripcion(descripcion);
-		estado = "PENDIENTE";
+		setEstado(EstadoSolicitud.PENDIENTE);
 		fechaRegistro = LocalDate.now();
 	}
 	private String codigo;
 	private String codigoCliente;
 	private String codigoEmpleado;
-	private String tipo;
-	private String estado;
+	private TipoSolicitud tipo;
+	private EstadoSolicitud estado;
 	private String descripcion;
 	private LocalDate fechaRegistro;
 	private LocalDate fechaAtencion;
 	
 	public void completar()
 	{
-		setEstado("COMPLETADA");
+		setEstado(EstadoSolicitud.COMPLETADA);
 		setFechaAtencion(LocalDate.now());
 	}
 	
 	public void asignarEmpleado(String id)
 	{
 		setCodigoEmpleado(id);
-		setEstado("EN PROCESO");
+		setEstado(EstadoSolicitud.EN_PROCESO);
 	}
 	
 	public boolean isResuelto()
 	{
-		return estado.equals("COMPLETADA");
+		return estado == EstadoSolicitud.COMPLETADA;
 	}
 	public boolean isCancelada()
 	{
-		return estado.equals("CANCELADA");
+		return estado == EstadoSolicitud.CANCELADA;
 	}
 	public void cancelar()
 	{
-		setEstado("CANCELADA");
+		setEstado(EstadoSolicitud.CANCELADA);
 	}
 	
 	public String getCodigo() {
@@ -64,12 +64,6 @@ public class Solicitud {
 	public void setCodigoEmpleado(String codigoEmpleado) {
 		this.codigoEmpleado = codigoEmpleado;
 	}
-	public String getEstado() {
-		return estado;
-	}
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
 	public LocalDate getFechaRegistro() {
 		return fechaRegistro;
 	}
@@ -83,19 +77,27 @@ public class Solicitud {
 		this.fechaAtencion = fechaAtencion;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
 	public String getDescripcion() {
 		return descripcion;
 	}
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public EstadoSolicitud getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoSolicitud estado) {
+		this.estado = estado;
+	}
+
+	public TipoSolicitud getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoSolicitud tipo) {
+		this.tipo = tipo;
 	}
 }

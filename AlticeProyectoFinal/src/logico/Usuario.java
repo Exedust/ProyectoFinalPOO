@@ -3,19 +3,19 @@ package logico;
 import java.time.LocalDate;
 
 public class Usuario {
-	public Usuario(String codigo, String user, String password, String rol) {
+	public Usuario(String codigo, String user, String password, Rol rol) {
 		super();
 		this.codigo = codigo;
 		this.user = user;
 		this.password = password;
-		this.rol = rol;
+		this.setRol(rol);
 		activo = true;
 		fechaRegistro = LocalDate.now();
 	}
 	private String codigo;
 	private String user;
 	private String password;
-	private String rol;
+	private Rol rol;
 	private LocalDate fechaRegistro;
 	private boolean activo;
 	
@@ -37,12 +37,6 @@ public class Usuario {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getRol() {
-		return rol;
-	}
-	public void setRol(String rol) {
-		this.rol = rol;
-	}
 	public LocalDate getFechaRegistro() {
 		return fechaRegistro;
 	}
@@ -54,5 +48,16 @@ public class Usuario {
 	}
 	public void setActivo(boolean activo) {
 		this.activo = activo;
+	}
+	public Rol getRol() {
+		return rol;
+	}
+	public void setRol(Rol rol) {
+		this.rol = rol;
+	}
+	
+	public void desactivar()
+	{
+		setActivo(false);
 	}
 }
