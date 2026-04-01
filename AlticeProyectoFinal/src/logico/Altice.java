@@ -4,15 +4,7 @@ import java.util.ArrayList;
 
 public class Altice {
 	
-	public Altice(ArrayList<Plan> misPlanes, ArrayList<Cliente> misClientes, ArrayList<Empleado> misEmpleados,
-		ArrayList<Contrato> misContratos, ArrayList<Pago> misPagos) {
-		super();
-		this.misPlanes = misPlanes;
-		this.misClientes = misClientes;
-		this.misEmpleados = misEmpleados;
-		this.misContratos = misContratos;
-		this.misPagos = misPagos;
-	}
+	private static Altice altice;
 	
 	private ArrayList<Plan> misPlanes;
 	private ArrayList<Cliente> misClientes;
@@ -20,6 +12,21 @@ public class Altice {
 	private ArrayList<Contrato> misContratos;
 	private ArrayList<Pago> misPagos;
 	
+	private Altice()
+	{
+		misPlanes = new ArrayList<>();
+		misClientes = new ArrayList<>();
+		misEmpleados = new ArrayList<>();
+		misContratos = new ArrayList<>();
+		misPagos = new ArrayList<>();
+	}
+	
+	public static Altice getInstance()
+	{
+		if(altice == null)
+			altice = new Altice();
+		return altice;
+	}
 	public ArrayList<Plan> getMisPlanes() {
 		return misPlanes;
 	}
