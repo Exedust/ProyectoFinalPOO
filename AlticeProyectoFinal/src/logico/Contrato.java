@@ -4,19 +4,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Contrato {
-	public Contrato(String codigo, Empleado empleado, Cliente cliente, ArrayList<Pago> pagos, Plan plan, float monto, 
-			LocalDate fechaFin, int diaCobro) {
+	public Contrato(String codigo, Empleado empleado, Cliente cliente, Plan plan) {
 		super();
 		this.codigo = codigo;
 		this.empleado = empleado;
 		this.cliente = cliente;
-		this.pagos = pagos;
+		pagos = new ArrayList<Pago>();
 		this.plan = plan;
-		this.monto = monto;
-		activo = true;
 		fechaInicio = LocalDate.now();
-		this.fechaFin = fechaFin;
-		this.diaCobro = diaCobro;
+		activo = true;
 	}
 
 	private String codigo;
@@ -24,35 +20,50 @@ public class Contrato {
 	private Cliente cliente;
 	private ArrayList<Pago> pagos;
 	private Plan plan;
-	private float monto;
-	private boolean activo;
 	private LocalDate fechaInicio;
-	private LocalDate fechaFin;
-	private int diaCobro;
+	private boolean activo;
 	
-	public int getMesesFacturados()
-	{
-		int meses = 0;
-		return meses;
-	}
-	
-	public float getDeuda()
-	{
-		float deuda = 0;
-		
-		return deuda;
-	}
-	
-	public int getDuracionMeses()
-	{
-		return 0;
-	}
-	
-	public boolean estaAlDia()
-	{
-		return false;
+	public int getMesesTranscurridos() {
+	    LocalDate hoy = LocalDate.now();
+	    int anios = hoy.getYear() - fechaInicio.getYear();
+	    int meses = hoy.getMonthValue() - fechaInicio.getMonthValue();
+	    return (anios * 12) + meses;
 	}
 
+	public float getMontoAcumulado() {
+	    return getMesesTranscurridos() * plan.getMonto();
+	}
+
+	public float getTotalPagado() {
+	    float total = 0;
+	    for (Pago p : pagos)
+	        total += p.getMonto();
+	    return total;
+	}
+
+	public float getDeuda() {
+	    return getMontoAcumulado() - getTotalPagado();
+	}
+
+	public int getMesesDeuda() {
+	    float precioMensual = plan.getMonto();
+	    if (precioMensual == 0) return 0;
+	    return (int) (getDeuda() / precioMensual);
+	}
+
+	public boolean estaAlDia() {
+	    return getDeuda() <= 0;
+	}
+
+	public void cancelar() {
+	    this.activo = false;
+	}
+	
+	public Pago registrarPago(String codigo, float monto) {
+	    Pago p = new Pago(codigo, cliente, monto);
+	    pagos.add(p);
+	    return p;
+	}
 	public String getCodigo() {
 		return codigo;
 	}
@@ -92,15 +103,6 @@ public class Contrato {
 	public void setPlan(Plan plan) {
 		this.plan = plan;
 	}
-
-	public float getMonto() {
-		return monto;
-	}
-
-	public void setMonto(float monto) {
-		this.monto = monto;
-	}
-
 	public boolean isActivo() {
 		return activo;
 	}
@@ -115,21 +117,5 @@ public class Contrato {
 
 	public void setFechaInicio(LocalDate fechaInicio) {
 		this.fechaInicio = fechaInicio;
-	}
-
-	public LocalDate getFechaFin() {
-		return fechaFin;
-	}
-
-	public void setFechaFin(LocalDate fechaFin) {
-		this.fechaFin = fechaFin;
-	}
-
-	public int getDiaCobro() {
-		return diaCobro;
-	}
-
-	public void setDiaCobro(int diaCobro) {
-		this.diaCobro = diaCobro;
 	}
 }

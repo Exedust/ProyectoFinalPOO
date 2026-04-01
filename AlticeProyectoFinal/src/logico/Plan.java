@@ -9,6 +9,9 @@ public class Plan {
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.servicios = new ArrayList<Servicio>();
+		precioInternet = 0;
+		precioMovil = 0;
+		precioCable = 0;
 	}
 	private String codigo;
 	private String nombre;
@@ -81,6 +84,11 @@ public class Plan {
 			
 			servicios.remove(s);
 		}
+	}
+	
+	public float getMonto()
+	{
+		return precioInternet + precioMovil + precioCable;
 	}
 
 	public String getCodigo() {
