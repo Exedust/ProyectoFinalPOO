@@ -25,7 +25,6 @@ public class Plan {
 	private boolean tieneMovil;
 	private int minutos;
 	private float gb;
-	private boolean roaming;
 	
 	private boolean tieneCable;
 	private boolean packBasico;
@@ -157,12 +156,6 @@ public class Plan {
 	}
 	public void setGb(float gb) {
 		this.gb = gb;
-	}
-	public boolean isRoaming() {
-		return roaming;
-	}
-	public void setRoaming(boolean roaming) {
-		this.roaming = roaming;
 	}
 	public boolean isTieneCable() {
 		return tieneCable;

@@ -2,13 +2,39 @@ package visual;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Image;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.Canvas;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
+import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.SystemColor;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JTabbedPane;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class PrincipalAdmin extends JFrame {
 
+	private Dimension dim;
+	
 	private JPanel contentPane;
 
 	/**
@@ -31,12 +57,237 @@ public class PrincipalAdmin extends JFrame {
 	 * Create the frame.
 	 */
 	public PrincipalAdmin() {
+		setBackground(new Color(0, 0, 51));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(PrincipalAdmin.class.getResource("/img/alticelogo.png")));
+		setTitle("Altice");
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 983, 671);
+		dim = getToolkit().getScreenSize();
+		setSize(dim.width, dim.height - 50);
+		setLocationRelativeTo(null);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setEnabled(false);
+		menuBar.setBorderPainted(false);
+		menuBar.setBackground(new Color(51, 51, 102));
+		setJMenuBar(menuBar);
+		
+		JMenu mnEmpleados = new JMenu("Empleados");
+		mnEmpleados.setForeground(Color.WHITE);
+		mnEmpleados.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuBar.add(mnEmpleados);
+		
+		JMenu mnClientes = new JMenu("Clientes");
+		mnClientes.setForeground(Color.WHITE);
+		mnClientes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuBar.add(mnClientes);
+		
+		JMenu mnContratos = new JMenu("Contratos");
+		mnContratos.setForeground(Color.WHITE);
+		mnContratos.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuBar.add(mnContratos);
+		
+		JMenu mnPagos = new JMenu("Pagos");
+		mnPagos.setForeground(Color.WHITE);
+		mnPagos.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuBar.add(mnPagos);
+		
+		JMenu mnPlanes = new JMenu("Planes");
+		mnPlanes.setForeground(Color.WHITE);
+		mnPlanes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuBar.add(mnPlanes);
+		
+		JMenu mnServicios = new JMenu("Servicios");
+		mnServicios.setForeground(Color.WHITE);
+		mnServicios.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuBar.add(mnServicios);
+		
+		JMenu mnNewMenu = new JMenu("Administracion");
+		mnNewMenu.setForeground(new Color(255, 255, 255));
+		mnNewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuBar.add(mnNewMenu);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(0, 0, 51));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
-	}
 
+		
+		setContentPane(contentPane);
+		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		JPanel topPanel = new JPanel();
+		topPanel.setBackground(new Color(0, 0, 51));
+		topPanel.setLayout(new BorderLayout());
+
+		JLabel lblBienvenido = new JLabel("Bienvenido, ____");
+		lblBienvenido.setForeground(Color.WHITE);
+		lblBienvenido.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+		lblBienvenido.setBorder(new EmptyBorder(5, 10, 5, 10));
+		topPanel.add(lblBienvenido, BorderLayout.WEST);
+
+		JButton btnCerrarSesion = new JButton("Cerrar sesión");
+		btnCerrarSesion.setForeground(Color.WHITE);
+		btnCerrarSesion.setBackground(new Color(102, 0, 0));
+		btnCerrarSesion.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		btnCerrarSesion.setFocusPainted(false);
+		topPanel.add(btnCerrarSesion, BorderLayout.EAST);
+
+		contentPane.add(topPanel, BorderLayout.NORTH);
+		
+		// Panel central (ya lo tienes creado)
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(0, 0, 51));
+		contentPane.add(panel, BorderLayout.CENTER);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		// Panel interno para el dashboard
+		JPanel dashboardPanel = new JPanel();
+		dashboardPanel.setBackground(new Color(0, 0, 51));
+		dashboardPanel.setLayout(new GridBagLayout());
+		panel.add(dashboardPanel, BorderLayout.NORTH);
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(20, 20, 20, 20);
+		gbc.fill = GridBagConstraints.BOTH;
+
+		// Tarjeta 1: Empleados
+		GridBagConstraints gbcEmpleados = new GridBagConstraints();
+		gbcEmpleados.ipadx = 20;
+		gbcEmpleados.gridx = 0;
+		gbcEmpleados.insets = new Insets(20, 20, 20, 20);
+		gbcEmpleados.fill = GridBagConstraints.BOTH;
+		gbcEmpleados.gridy = 0;
+
+		JPanel cardEmpleados = new JPanel(new BorderLayout());
+		cardEmpleados.setBackground(new Color(102, 102, 204));
+		cardEmpleados.setBorder(new TitledBorder(null, "Empleados", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+		cardEmpleados.setPreferredSize(new Dimension(220, 200));
+
+		JLabel iconEmpleados = new JLabel();
+		iconEmpleados.setHorizontalAlignment(SwingConstants.CENTER);
+		ImageIcon empleadosIcon = new ImageIcon(PrincipalAdmin.class.getResource("/img/empleado.png"));
+		Image empleadosImage = empleadosIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+		iconEmpleados.setIcon(new ImageIcon(empleadosImage));
+		cardEmpleados.add(iconEmpleados, BorderLayout.CENTER);
+
+		JButton btnGestionarEmpleados = new JButton("Gestionar");
+		btnGestionarEmpleados.setForeground(Color.WHITE);
+		btnGestionarEmpleados.setBackground(new Color(0, 0, 51));
+		btnGestionarEmpleados.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		cardEmpleados.add(btnGestionarEmpleados, BorderLayout.SOUTH);
+
+		dashboardPanel.add(cardEmpleados, gbcEmpleados);
+
+		GridBagConstraints gbcClientes = new GridBagConstraints();
+		gbcClientes.ipadx = 20;
+		gbcClientes.insets = new Insets(20, 20, 20, 20);
+		gbcClientes.fill = GridBagConstraints.BOTH;
+		gbcClientes.gridx = 1;
+		gbcClientes.gridy = 0;
+
+		JPanel cardClientes = new JPanel(new BorderLayout());
+		cardClientes.setBackground(new Color(102, 102, 204));
+		cardClientes.setBorder(new TitledBorder(null, "Clientes", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+		cardClientes.setPreferredSize(new Dimension(220, 200));
+
+		JLabel iconClientes = new JLabel();
+		iconClientes.setHorizontalAlignment(SwingConstants.CENTER);
+		ImageIcon clientesIcon = new ImageIcon(PrincipalAdmin.class.getResource("/img/cliente.png"));
+		Image clientesImage = clientesIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+		iconClientes.setIcon(new ImageIcon(clientesImage));
+		cardClientes.add(iconClientes, BorderLayout.CENTER);
+
+		JButton btnGestionarClientes = new JButton("Gestionar");
+		btnGestionarClientes.setForeground(Color.WHITE);
+		btnGestionarClientes.setBackground(new Color(0, 0, 51));
+		btnGestionarClientes.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		cardClientes.add(btnGestionarClientes, BorderLayout.SOUTH);
+
+		dashboardPanel.add(cardClientes, gbcClientes);
+
+		GridBagConstraints gbcContratos = new GridBagConstraints();
+		gbcContratos.ipadx = 20;
+		gbcContratos.insets = new Insets(20, 20, 20, 20);
+		gbcContratos.fill = GridBagConstraints.BOTH;
+		gbcContratos.gridx = 2;
+		gbcContratos.gridy = 0;
+
+		JPanel cardContratos = new JPanel(new BorderLayout());
+		cardContratos.setBackground(new Color(102, 102, 204));
+		cardContratos.setBorder(new TitledBorder(null, "Contratos", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+		cardContratos.setPreferredSize(new Dimension(220, 200));
+
+		JLabel iconContratos = new JLabel();
+		iconContratos.setHorizontalAlignment(SwingConstants.CENTER);
+		ImageIcon contratosIcon = new ImageIcon(PrincipalAdmin.class.getResource("/img/contrato.png"));
+		Image contratosImage = contratosIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+		iconContratos.setIcon(new ImageIcon(contratosImage));
+		cardContratos.add(iconContratos, BorderLayout.CENTER);
+
+		JButton btnGestionarContratos = new JButton("Gestionar");
+		btnGestionarContratos.setForeground(Color.WHITE);
+		btnGestionarContratos.setBackground(new Color(0, 0, 51));
+		btnGestionarContratos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		cardContratos.add(btnGestionarContratos, BorderLayout.SOUTH);
+
+		dashboardPanel.add(cardContratos, gbcContratos);
+		
+		GridBagConstraints gbcPlanes = new GridBagConstraints();
+		gbcPlanes.ipadx = 20;
+		gbcPlanes.insets = new Insets(20, 20, 20, 20);
+		gbcPlanes.fill = GridBagConstraints.BOTH;
+		gbcPlanes.gridx = 3;
+		gbcPlanes.gridy = 0;
+
+		JPanel cardPlanes = new JPanel(new BorderLayout());
+		cardPlanes.setBackground(new Color(102, 102, 204));
+		cardPlanes.setBorder(new TitledBorder(null, "Planes", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+		cardPlanes.setPreferredSize(new Dimension(220, 200));
+
+		JLabel iconPlanes = new JLabel();
+		iconPlanes.setHorizontalAlignment(SwingConstants.CENTER);
+		ImageIcon planesIcon = new ImageIcon(PrincipalAdmin.class.getResource("/img/plan.png"));
+		Image planesImage = planesIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+		iconPlanes.setIcon(new ImageIcon(planesImage));
+		cardPlanes.add(iconPlanes, BorderLayout.CENTER);
+
+		JButton btnGestionarPlanes = new JButton("Gestionar");
+		btnGestionarPlanes.setForeground(Color.WHITE);
+		btnGestionarPlanes.setBackground(new Color(0, 0, 51));
+		btnGestionarPlanes.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		cardPlanes.add(btnGestionarPlanes, BorderLayout.SOUTH);
+
+		dashboardPanel.add(cardPlanes, gbcPlanes);
+
+		GridBagConstraints gbcReportes = new GridBagConstraints();
+		gbcReportes.ipadx = 20;
+		gbcReportes.insets = new Insets(20, 20, 20, 20);
+		gbcReportes.fill = GridBagConstraints.BOTH;
+		gbcReportes.gridx = 4;
+		gbcReportes.gridy = 0;
+
+		JPanel cardReportes = new JPanel(new BorderLayout());
+		cardReportes.setBackground(new Color(102, 102, 204));
+		cardReportes.setBorder(new TitledBorder(null, "Reportes", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+		cardReportes.setPreferredSize(new Dimension(220, 200));
+
+		JLabel iconReportes = new JLabel();
+		iconReportes.setHorizontalAlignment(SwingConstants.CENTER);
+		ImageIcon reportesIcon = new ImageIcon(PrincipalAdmin.class.getResource("/img/reporte.png"));
+		Image reportesImage = reportesIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+		iconReportes.setIcon(new ImageIcon(reportesImage));
+		cardReportes.add(iconReportes, BorderLayout.CENTER);
+
+		JButton btnGestionarReportes = new JButton("Gestionar");
+		btnGestionarReportes.setForeground(Color.WHITE);
+		btnGestionarReportes.setBackground(new Color(0, 0, 51));
+		btnGestionarReportes.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		cardReportes.add(btnGestionarReportes, BorderLayout.SOUTH);
+
+		dashboardPanel.add(cardReportes, gbcReportes);
+
+		ImageIcon icon = new ImageIcon(PrincipalAdmin.class.getResource("/img/alticeblanco.png"));
+		Image image = icon.getImage();
+
+	}
 }

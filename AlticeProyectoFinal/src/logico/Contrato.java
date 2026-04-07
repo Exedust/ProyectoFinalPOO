@@ -17,7 +17,7 @@ public class Contrato {
 
 	private String codigo;
 	private Empleado empleado;
-	private Cliente cliente;
+	private Persona cliente;
 	private ArrayList<Pago> pagos;
 	private Plan plan;
 	private LocalDate fechaInicio;
@@ -80,11 +80,11 @@ public class Contrato {
 		this.empleado = empleado;
 	}
 
-	public Cliente getCliente() {
+	public Persona getCliente() {
 		return cliente;
 	}
 
-	public void setCliente(Cliente cliente) {
+	public void setCliente(Persona cliente) {
 		this.cliente = cliente;
 	}
 

@@ -3,7 +3,7 @@ package logico;
 import java.time.LocalDate;
 
 public class Pago {
-	public Pago(String codigo, Cliente cliente, float monto) {
+	public Pago(String codigo, Persona cliente, float monto) {
 		super();
 		this.codigo = codigo;
 		this.setCliente(cliente);
@@ -11,7 +11,7 @@ public class Pago {
 		fechaRegistro = LocalDate.now();
 	}
 	private String codigo;
-	private Cliente cliente;
+	private Persona cliente;
 	private float monto;
 	private LocalDate fechaRegistro;
 	
@@ -33,10 +33,10 @@ public class Pago {
 	public void setFechaRegistro(LocalDate fechaRegistro) {
 		this.fechaRegistro = fechaRegistro;
 	}
-	public Cliente getCliente() {
+	public Persona getCliente() {
 		return cliente;
 	}
-	public void setCliente(Cliente cliente) {
+	public void setCliente(Persona cliente) {
 		this.cliente = cliente;
 	}
 }
