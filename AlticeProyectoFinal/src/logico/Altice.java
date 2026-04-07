@@ -11,6 +11,7 @@ public class Altice {
 	private ArrayList<Empleado> misEmpleados;
 	private ArrayList<Contrato> misContratos;
 	private ArrayList<Pago> misPagos;
+	private ArrayList<Usuario> misUsuarios;
 	
 	private Altice()
 	{
@@ -19,6 +20,7 @@ public class Altice {
 		misEmpleados = new ArrayList<>();
 		misContratos = new ArrayList<>();
 		misPagos = new ArrayList<>();
+		misUsuarios = new ArrayList<>();
 	}
 	
 	public static Altice getInstance()
@@ -70,6 +72,14 @@ public class Altice {
 	
 	public void crearContrato(String idEmpleado, String idCliente) {
 		
+	}
+
+	public ArrayList<Usuario> getMisUsuarios() {
+		return misUsuarios;
+	}
+
+	public void setMisUsuarios(ArrayList<Usuario> misUsuarios) {
+		this.misUsuarios = misUsuarios;
 	}
 	
 	
