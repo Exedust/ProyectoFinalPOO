@@ -54,6 +54,9 @@ public class RegistrarContrato extends JDialog {
 	private JPasswordField passwordField;
 	private JPasswordField passwordField_1;
 	private JCheckBox chckbxNewCheckBox;
+	private JLabel lblPlan;
+	private JTextField textField_4;
+	private JLabel label_8;
 
 	public static void main(String[] args) {
 		try {
@@ -68,7 +71,7 @@ public class RegistrarContrato extends JDialog {
 	public RegistrarContrato() {
 		setResizable(false);
 		setTitle("Registrar Contrato");
-		setBounds(100, 100, 697, 668);
+		setBounds(100, 100, 697, 762);
 		getContentPane().setBackground(new Color(0, 0, 51));
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(0, 0, 51));
@@ -85,7 +88,7 @@ public class RegistrarContrato extends JDialog {
 			JLabel label = new JLabel("Cliente");
 			label.setForeground(Color.WHITE);
 			label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-			label.setBounds(12, 12, 53, 16);
+			label.setBounds(12, 86, 53, 16);
 			panel.add(label);
 			
 			rbNuevo = new JRadioButton("Nuevo");
@@ -98,7 +101,7 @@ public class RegistrarContrato extends JDialog {
 				}
 			});
 			rbNuevo.setSelected(true);
-			rbNuevo.setBounds(73, 9, 85, 25);
+			rbNuevo.setBounds(73, 83, 85, 25);
 			panel.add(rbNuevo);
 			
 			rbExistente = new JRadioButton("Existente");
@@ -110,14 +113,14 @@ public class RegistrarContrato extends JDialog {
 					mostrarPanel("existente");
 				}
 			});
-			rbExistente.setBounds(162, 9, 127, 25);
+			rbExistente.setBounds(162, 83, 127, 25);
 			panel.add(rbExistente);
 			
 			panelNuevo = new JPanel();
 			panelNuevo.setLayout(null);
 			panelNuevo.setBackground(new Color(102, 102, 204));
 			panelNuevo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-			panelNuevo.setBounds(12, 41, 640, 290);
+			panelNuevo.setBounds(12, 115, 640, 290);
 			panel.add(panelNuevo);
 			
 			JLabel label_1 = new JLabel("Nombre");
@@ -237,7 +240,7 @@ public class RegistrarContrato extends JDialog {
 		panelExistente.setLayout(null);
 		panelExistente.setBackground(new Color(102, 102, 204));
 		panelExistente.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-		panelExistente.setBounds(12, 43, 640, 290);
+		panelExistente.setBounds(12, 117, 640, 290);
 		panel.add(panelExistente);
 		
 		label_9 = new JLabel("Cedula");
@@ -332,8 +335,8 @@ public class RegistrarContrato extends JDialog {
 		
 		panel_1 = new JPanel();
 		panel_1.setBackground(new Color(102, 102, 204));
-		panel_1.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "Plan", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 13), Color.WHITE));
-		panel_1.setBounds(123, 360, 434, 143);
+		panel_1.setBorder(new LineBorder(new Color(255, 255, 255)));
+		panel_1.setBounds(12, 433, 640, 126);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -341,16 +344,38 @@ public class RegistrarContrato extends JDialog {
 		comboBox.setBackground(new Color(0, 0, 51));
 		comboBox.setForeground(Color.WHITE);
 		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		comboBox.setBounds(39, 55, 355, 33);
+		comboBox.setBounds(47, 49, 548, 33);
 		panel_1.add(comboBox);
+		
+		lblPlan = new JLabel("Plan");
+		lblPlan.setForeground(Color.WHITE);
+		lblPlan.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		lblPlan.setBounds(298, 13, 38, 16);
+		panel_1.add(lblPlan);
 		
 		chckbxNewCheckBox = new JCheckBox("Activo");
 		chckbxNewCheckBox.setBackground(new Color(102, 102, 204));
 		chckbxNewCheckBox.setForeground(new Color(255, 255, 255));
 		chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		chckbxNewCheckBox.setSelected(true);
-		chckbxNewCheckBox.setBounds(302, 526, 77, 25);
+		chckbxNewCheckBox.setBounds(302, 580, 77, 25);
 		panel.add(chckbxNewCheckBox);
+		
+		textField_4 = new JTextField();
+		textField_4.setForeground(Color.WHITE);
+		textField_4.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		textField_4.setColumns(10);
+		textField_4.setCaretColor(Color.WHITE);
+		textField_4.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+		textField_4.setBackground(new Color(0, 0, 51));
+		textField_4.setBounds(12, 42, 112, 24);
+		panel.add(textField_4);
+		
+		label_8 = new JLabel("C\u00F3digo");
+		label_8.setForeground(Color.WHITE);
+		label_8.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		label_8.setBounds(12, 13, 56, 16);
+		panel.add(label_8);
 		{
 			buttonPane = new JPanel();
 			buttonPane.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));

@@ -37,6 +37,7 @@ public class RegistrarCliente extends JDialog {
 	private JLabel lblCedula;
 	
 	private ButtonGroup groupTipoCliente;
+	private JTextField textField_5;
 
 	/**
 	 * Launch the application.
@@ -57,7 +58,7 @@ public class RegistrarCliente extends JDialog {
 	public RegistrarCliente() {
 		setTitle("Registrar Cliente");
 		setResizable(false);
-		setBounds(100, 100, 614, 501);
+		setBounds(100, 100, 614, 568);
 		getContentPane().setBackground(new Color(0, 0, 51));
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(0, 0, 51));
@@ -75,7 +76,7 @@ public class RegistrarCliente extends JDialog {
 				panel_1.setLayout(null);
 				panel_1.setBackground(new Color(102, 102, 204));
 				panel_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-				panel_1.setBounds(8, 43, 567, 297);
+				panel_1.setBounds(8, 112, 567, 297);
 				panel.add(panel_1);
 				{
 					JLabel label = new JLabel("Nombre");
@@ -206,7 +207,7 @@ public class RegistrarCliente extends JDialog {
 				rbPersona.setBackground(new Color(0, 0, 51));
 				rbPersona.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 				rbPersona.setSelected(true);
-				rbPersona.setBounds(8, 9, 82, 25);
+				rbPersona.setBounds(8, 78, 82, 25);
 				panel.add(rbPersona);
 				
 				rbPersona.addActionListener(new ActionListener() {
@@ -220,7 +221,7 @@ public class RegistrarCliente extends JDialog {
 				rbEmpresa.setForeground(Color.WHITE);
 				rbEmpresa.setBackground(new Color(0, 0, 51));
 				rbEmpresa.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-				rbEmpresa.setBounds(94, 9, 127, 25);
+				rbEmpresa.setBounds(94, 78, 127, 25);
 				panel.add(rbEmpresa);
 				{
 					JCheckBox checkBox = new JCheckBox("Activo");
@@ -228,8 +229,26 @@ public class RegistrarCliente extends JDialog {
 					checkBox.setForeground(Color.WHITE);
 					checkBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
 					checkBox.setBackground(new Color(102, 102, 204));
-					checkBox.setBounds(260, 358, 77, 25);
+					checkBox.setBounds(260, 427, 77, 25);
 					panel.add(checkBox);
+				}
+				{
+					JLabel lblCdigo = new JLabel("C\u00F3digo");
+					lblCdigo.setForeground(Color.WHITE);
+					lblCdigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					lblCdigo.setBounds(12, 16, 56, 16);
+					panel.add(lblCdigo);
+				}
+				{
+					textField_5 = new JTextField();
+					textField_5.setForeground(Color.WHITE);
+					textField_5.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					textField_5.setColumns(10);
+					textField_5.setCaretColor(Color.WHITE);
+					textField_5.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					textField_5.setBackground(new Color(0, 0, 51));
+					textField_5.setBounds(12, 45, 112, 24);
+					panel.add(textField_5);
 				}
 				
 				rbEmpresa.addActionListener(new ActionListener() {

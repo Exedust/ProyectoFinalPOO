@@ -81,6 +81,11 @@ public class Altice {
 	public void setMisUsuarios(ArrayList<Usuario> misUsuarios) {
 		this.misUsuarios = misUsuarios;
 	}
+
+	public Empleado buscarEmpleadobyId(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	

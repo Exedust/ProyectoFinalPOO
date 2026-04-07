@@ -46,6 +46,8 @@ public class RegistrarEmpleado extends JDialog {
 	private JLabel lblComision;
 	private JSpinner spinnerComision;
 	private JCheckBox checkBox;
+	private JTextField textField_5;
+	private JLabel label_1;
 
 	/**
 	 * Launch the application.
@@ -66,7 +68,7 @@ public class RegistrarEmpleado extends JDialog {
 	public RegistrarEmpleado() {
 		setTitle("Registrar Empleado");
 		setResizable(false);
-		setBounds(100, 100, 614, 629);
+		setBounds(100, 100, 614, 710);
 		getContentPane().setBackground(new Color(0, 0, 51));
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(0, 0, 51));
@@ -88,7 +90,7 @@ public class RegistrarEmpleado extends JDialog {
 				panelDatos.setLayout(null);
 				panelDatos.setBackground(new Color(102, 102, 204));
 				panelDatos.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-				panelDatos.setBounds(8, 13, 567, 297);
+				panelDatos.setBounds(12, 86, 567, 297);
 				panel.add(panelDatos);
 
 				{
@@ -221,7 +223,7 @@ public class RegistrarEmpleado extends JDialog {
 				panelTipo.setForeground(Color.WHITE);
 				panelTipo.setBackground(new Color(102, 102, 204));
 				panelTipo.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-				panelTipo.setBounds(137, 323, 324, 143);
+				panelTipo.setBounds(141, 396, 324, 143);
 				panel.add(panelTipo);
 				panelTipo.setLayout(null);
 
@@ -283,8 +285,26 @@ public class RegistrarEmpleado extends JDialog {
 					checkBox.setForeground(Color.WHITE);
 					checkBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
 					checkBox.setBackground(new Color(102, 102, 204));
-					checkBox.setBounds(260, 483, 77, 25);
+					checkBox.setBounds(264, 556, 77, 25);
 					panel.add(checkBox);
+				}
+				{
+					textField_5 = new JTextField();
+					textField_5.setForeground(Color.WHITE);
+					textField_5.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					textField_5.setColumns(10);
+					textField_5.setCaretColor(Color.WHITE);
+					textField_5.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					textField_5.setBackground(new Color(0, 0, 51));
+					textField_5.setBounds(12, 42, 112, 24);
+					panel.add(textField_5);
+				}
+				{
+					label_1 = new JLabel("C\u00F3digo");
+					label_1.setForeground(Color.WHITE);
+					label_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					label_1.setBounds(12, 13, 56, 16);
+					panel.add(label_1);
 				}
 
 				// ActionListeners para mostrar/ocultar comisión

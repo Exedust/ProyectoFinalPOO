@@ -3,18 +3,18 @@ package logico;
 import java.time.LocalDate;
 
 public class Solicitud {
-	public Solicitud(String codigo, String codigoCliente, TipoSolicitud tipo, String descripcion) {
+	public Solicitud(String codigo, Cliente cliente, TipoSolicitud tipo, String descripcion) {
 		super();
 		this.codigo = codigo;
-		this.codigoCliente = codigoCliente;
+		this.setCliente(cliente);
 		this.setTipo(tipo);
 		this.setDescripcion(descripcion);
 		setEstado(EstadoSolicitud.PENDIENTE);
 		fechaRegistro = LocalDate.now();
 	}
 	private String codigo;
-	private String codigoCliente;
-	private String codigoEmpleado;
+	private Cliente cliente;
+	private Empleado empleado;
 	private TipoSolicitud tipo;
 	private EstadoSolicitud estado;
 	private String descripcion;
@@ -29,7 +29,7 @@ public class Solicitud {
 	
 	public void asignarEmpleado(String id)
 	{
-		setCodigoEmpleado(id);
+		setEmpleado(Altice.getInstance().buscarEmpleadobyId(id));
 		setEstado(EstadoSolicitud.EN_PROCESO);
 	}
 	
@@ -51,18 +51,6 @@ public class Solicitud {
 	}
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
-	}
-	public String getCodigoCliente() {
-		return codigoCliente;
-	}
-	public void setCodigoCliente(String codigoCliente) {
-		this.codigoCliente = codigoCliente;
-	}
-	public String getCodigoEmpleado() {
-		return codigoEmpleado;
-	}
-	public void setCodigoEmpleado(String codigoEmpleado) {
-		this.codigoEmpleado = codigoEmpleado;
 	}
 	public LocalDate getFechaRegistro() {
 		return fechaRegistro;
@@ -99,5 +87,21 @@ public class Solicitud {
 
 	public void setTipo(TipoSolicitud tipo) {
 		this.tipo = tipo;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Empleado getEmpleado() {
+		return empleado;
+	}
+
+	public void setEmpleado(Empleado empleado) {
+		this.empleado = empleado;
 	}
 }

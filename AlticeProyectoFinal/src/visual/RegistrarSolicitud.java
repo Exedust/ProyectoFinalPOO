@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.border.LineBorder;
 
-public class RegistrarPago extends JDialog {
+public class RegistrarSolicitud extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JButton cancelButton;
@@ -36,7 +36,7 @@ public class RegistrarPago extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			RegistrarPago dialog = new RegistrarPago();
+			RegistrarSolicitud dialog = new RegistrarSolicitud();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -47,11 +47,11 @@ public class RegistrarPago extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public RegistrarPago() {
+	public RegistrarSolicitud() {
 		setBackground(new Color(0, 0, 51));
-		setTitle("Registrar Pago");
+		setTitle("Registrar Solicitud");
 		setResizable(false);
-		setBounds(100, 100, 629, 489);
+		setBounds(100, 100, 629, 597);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(0, 0, 51));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -174,20 +174,33 @@ public class RegistrarPago extends JDialog {
 				panel_1.setLayout(null);
 				panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 255)));
 				panel_1.setBackground(new Color(102, 102, 204));
-				panel_1.setBounds(12, 248, 574, 122);
+				panel_1.setBounds(12, 248, 574, 223);
 				panel.add(panel_1);
 				{
-					JLabel lblSeleccionar = new JLabel("Seleccionar");
-					lblSeleccionar.setForeground(Color.WHITE);
-					lblSeleccionar.setBounds(246, 13, 81, 16);
-					panel_1.add(lblSeleccionar);
+					JLabel label = new JLabel("Tipo");
+					label.setForeground(Color.WHITE);
+					label.setBounds(269, 13, 35, 16);
+					panel_1.add(label);
 				}
 				{
 					JComboBox comboBox = new JComboBox();
 					comboBox.setForeground(Color.WHITE);
 					comboBox.setBackground(new Color(0, 0, 51));
-					comboBox.setBounds(19, 44, 536, 33);
+					comboBox.setBounds(203, 44, 167, 22);
 					panel_1.add(comboBox);
+				}
+				{
+					JLabel label = new JLabel("Descripcion");
+					label.setForeground(Color.WHITE);
+					label.setBounds(248, 79, 77, 16);
+					panel_1.add(label);
+				}
+				{
+					JTextPane textPane = new JTextPane();
+					textPane.setForeground(Color.WHITE);
+					textPane.setBackground(new Color(0, 0, 51));
+					textPane.setBounds(82, 108, 410, 91);
+					panel_1.add(textPane);
 				}
 			}
 		}
