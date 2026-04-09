@@ -177,6 +177,32 @@ public class PrincipalAdmin extends JFrame {
 		mnServicios.setForeground(Color.WHITE);
 		mnServicios.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		menuBar.add(mnServicios);
+
+		JMenuItem mntmRegistrarServicio = new JMenuItem("Registrar");
+		mntmRegistrarServicio.setForeground(Color.WHITE);
+		mntmRegistrarServicio.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmRegistrarServicio.setBackground(new Color(0, 0, 102));
+		mntmRegistrarServicio.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        RegistrarServicio registrar = new RegistrarServicio(null, false);
+		        registrar.setModal(true);
+		        registrar.setVisible(true);
+		    }
+		});
+		mnServicios.add(mntmRegistrarServicio);
+
+		JMenuItem mntmListarServicio = new JMenuItem("Listar");
+		mntmListarServicio.setForeground(Color.WHITE);
+		mntmListarServicio.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmListarServicio.setBackground(new Color(0, 0, 102));
+		mntmListarServicio.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        GestionServicios gestionar = new GestionServicios();
+		        gestionar.setModal(true);
+		        gestionar.setVisible(true);
+		    }
+		});
+		mnServicios.add(mntmListarServicio);
 		
 		JMenu mnNewMenu = new JMenu("Administracion");
 		mnNewMenu.setForeground(new Color(255, 255, 255));
