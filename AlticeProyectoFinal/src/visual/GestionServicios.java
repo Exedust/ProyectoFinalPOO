@@ -28,17 +28,18 @@ import java.awt.Component;   // ← Importante para corregir el error
 
 public class GestionServicios extends JDialog {
 
-    private final JPanel contentPanel = new JPanel();
+    private final static JPanel contentPanel = new JPanel();
     
     private static JTable table;
     private static DefaultTableModel model;
     private static Object[] row;
     private Servicio selected = null;
 
-    private JButton btnAgregar;
+    private static JButton btnAgregar;
     private JButton btnModificar;
     private JButton btnDesactivar;
     private JButton btnSalir;
+    private static JComboBox<String> comboFiltrar;
 
     public static void main(String[] args) {
         try {
@@ -54,7 +55,7 @@ public class GestionServicios extends JDialog {
         setTitle("Gestionar Servicios");
         setResizable(false);
         setBounds(100, 100, 1280, 495);
-       
+        setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
        
@@ -78,8 +79,8 @@ public class GestionServicios extends JDialog {
             table = new JTable();
             table.setFillsViewportHeight(true);
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            table.setBackground(new Color(0, 0, 51));
-            table.setForeground(Color.WHITE);
+            table.setBackground(new Color(255, 255, 255));
+            table.setForeground(new Color(0, 0, 0));
             table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             
             model = new DefaultTableModel() {
@@ -104,7 +105,8 @@ public class GestionServicios extends JDialog {
                         selected = Altice.getInstance().buscarServicioByCodigo(codigo);
                         
                         btnModificar.setEnabled(true);
-                        btnDesactivar.setEnabled(true);
+                        if(selected.isActivo())
+                        	btnDesactivar.setEnabled(true);
                     }
                 }
             });
@@ -112,25 +114,29 @@ public class GestionServicios extends JDialog {
 
         // Filtro
         {
-            JComboBox<String> comboFiltro = new JComboBox<>();
-            comboFiltro.setBackground(new Color(0, 0, 51));
-            comboFiltro.setForeground(Color.WHITE);
-            comboFiltro.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboFiltro.setBounds(795, 23, 208, 24);
-            comboFiltro.addItem("Todos");
-            comboFiltro.addItem("Activos");
-            comboFiltro.addItem("Inactivos");
-            contentPanel.add(comboFiltro);
+            comboFiltrar = new JComboBox<>();
+            comboFiltrar.setBackground(new Color(0, 0, 51));
+            comboFiltrar.setForeground(Color.WHITE);
+            comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            comboFiltrar.setBounds(795, 23, 208, 24);
+            comboFiltrar.addItem("Todos");
+            comboFiltrar.addItem("Activos");
+            comboFiltrar.addItem("Inactivos");
+            contentPanel.add(comboFiltrar);
         }
         {
             JButton btnFiltrar = new JButton("Filtrar");
+            btnFiltrar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		loadServicios();
+            	}
+            });
             btnFiltrar.setForeground(Color.WHITE);
             btnFiltrar.setBackground(new Color(0, 0, 51));
             btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnFiltrar.setFocusPainted(false);
             btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             btnFiltrar.setBounds(1015, 23, 97, 25);
-            btnFiltrar.addActionListener(e -> loadServicios());
             contentPanel.add(btnFiltrar);
         }
 
@@ -182,6 +188,11 @@ public class GestionServicios extends JDialog {
         }
         {
             btnDesactivar = new JButton("Desactivar");
+            btnDesactivar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		desactivarServicio();
+            	}
+            });
             btnDesactivar.setForeground(Color.WHITE);
             btnDesactivar.setBackground(new Color(102, 0, 0));
             btnDesactivar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -189,7 +200,6 @@ public class GestionServicios extends JDialog {
             btnDesactivar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             btnDesactivar.setBounds(1150, 360, 97, 25);
             btnDesactivar.setEnabled(false);
-            btnDesactivar.addActionListener(e -> desactivarServicio());
             contentPanel.add(btnDesactivar);
         }
 
@@ -214,22 +224,39 @@ public class GestionServicios extends JDialog {
         loadServicios();
     }
 
-    private void loadServicios() {
+    public static void loadServicios() {
         model.setRowCount(0);
-        row = new Object[4];
+        row = new Object[table.getColumnCount()];
+
+        String filtro = comboFiltrar.getSelectedItem().toString();
         int count = 0;
 
         for (Servicio s : Altice.getInstance().getMisServicios()) {
-            row[0] = s.getCodigo();
-            row[1] = s.getTipo().name();
-            row[2] = s.getDescripcion();
-            row[3] = s.isActivo() ? "Activo" : "Inactivo";
-            
-            model.addRow(row);
-            count++;
+            boolean incluir = false;
+
+            switch (filtro) {
+                case "Todos":
+                    incluir = true;
+                    break;
+                case "Activos":
+                    incluir = s.isActivo();
+                    break;
+                case "Inactivos":
+                    incluir = !s.isActivo();
+                    break;
+            }
+
+            if (incluir) {
+                row[0] = s.getCodigo();
+                row[1] = s.getTipo().name();
+                row[2] = s.getDescripcion();
+                row[3] = s.isActivo() ? "Activo" : "Inactivo";
+
+                model.addRow(row);
+                count++;
+            }
         }
 
-        // Actualizar contador
         for (Component c : contentPanel.getComponents()) {
             if (c instanceof JLabel) {
                 JLabel label = (JLabel) c;
@@ -239,6 +266,9 @@ public class GestionServicios extends JDialog {
                 }
             }
         }
+        if(count == 3)
+        	btnAgregar.setEnabled(false);
+        	
     }
 
     private void desactivarServicio() {
