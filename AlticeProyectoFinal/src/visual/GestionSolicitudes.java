@@ -329,7 +329,7 @@ public class GestionSolicitudes extends JDialog {
             row[5] = s.getEstado().name();
             row[6] = s.getFechaRegistro() != null ? s.getFechaRegistro().toString() : "";
             row[7] = s.getFechaAtencion() != null ? s.getFechaAtencion().toString() : "";
-//
+
             model.addRow(row);
             total++;
         }

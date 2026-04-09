@@ -18,6 +18,7 @@ public class Altice {
 	private ArrayList<Servicio> misServicios;
 	private ArrayList<Solicitud> misSolicitudes;//
 	
+	
 	private static int genClienteid = 0;
 	private static int genEmpleadoid = 0;
 	private static int genContratoid = 0;

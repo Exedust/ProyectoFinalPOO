@@ -281,7 +281,7 @@ public class RegistrarSolicitud extends JDialog {
 
         Cliente cliente = (Cliente) persona;
 
-        // ASIGNACIÓN CORRECTA DE CAMPOS
+
         txtNombre.setText(cliente.getNombre());
         txtTelefono.setText(cliente.getTelefono());
         txtCorreo.setText(cliente.getEmail() != null ? cliente.getEmail() : "");
