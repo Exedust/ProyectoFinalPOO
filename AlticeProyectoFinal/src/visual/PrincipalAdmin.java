@@ -177,7 +177,7 @@ public class PrincipalAdmin extends JFrame {
 		mnServicios.setForeground(Color.WHITE);
 		mnServicios.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		menuBar.add(mnServicios);
-//
+
 		JMenuItem mntmRegistrarServicio = new JMenuItem("Registrar");
 		mntmRegistrarServicio.setForeground(Color.WHITE);
 		mntmRegistrarServicio.setFont(new Font("Segoe UI", Font.PLAIN, 18));
