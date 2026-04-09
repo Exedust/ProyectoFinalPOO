@@ -36,6 +36,8 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class PrincipalAdmin extends JFrame {
 
@@ -65,6 +67,12 @@ public class PrincipalAdmin extends JFrame {
 	 * Create the frame.
 	 */
 	public PrincipalAdmin() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				Altice.getInstance().guardarDatos();
+			}
+		});
 		setBackground(new Color(0, 0, 51));
 		setIconImage(Toolkit.getDefaultToolkit().getImage(PrincipalAdmin.class.getResource("/img/alticelogo.png")));
 		setTitle("Altice");

@@ -339,7 +339,7 @@ public boolean registrarSolicitud(Solicitud solicitud) {
     if (buscarSolicitudByCodigo(solicitud.getCodigo()) != null) 
         return false;
     
-    misSolicitudes.add(solicitud);
+    getMisSolicitudes().add(solicitud);
     genSolicitudid++;
     return true;
 }
@@ -351,7 +351,7 @@ public boolean modificarSolicitud(Solicitud solicitudActualizada) {
     if (indice == -1) 
         return false;
     
-    misSolicitudes.set(indice, solicitudActualizada);
+    getMisSolicitudes().set(indice, solicitudActualizada);
     return true;
 }
 //
@@ -361,7 +361,7 @@ public boolean cancelarSolicitud(String codigo) {
     int indice = buscarIndexSolicitudByCodigo(codigo);
     if (indice == -1) 
         return false;
-    Solicitud solicitud = misSolicitudes.get(indice);
+    Solicitud solicitud = getMisSolicitudes().get(indice);
     solicitud.cancelar();       
     return true;
 }
@@ -372,7 +372,7 @@ public boolean cancelarSolicitud(String codigo) {
 public Solicitud buscarSolicitudByCodigo(String codigo) {
     if (codigo == null) return null;
 
-    for (Solicitud s : misSolicitudes) {
+    for (Solicitud s : getMisSolicitudes()) {
         if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
             return s;
         }
@@ -383,8 +383,8 @@ public Solicitud buscarSolicitudByCodigo(String codigo) {
 private int buscarIndexSolicitudByCodigo(String codigo) {
     if (codigo == null) return -1;
 
-    for (int i = 0; i < misSolicitudes.size(); i++) {
-        Solicitud s = misSolicitudes.get(i);
+    for (int i = 0; i < getMisSolicitudes().size(); i++) {
+        Solicitud s = getMisSolicitudes().get(i);
         if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
             return i;
         }
@@ -702,4 +702,12 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
         }
         return null;
     }
+
+	public ArrayList<Solicitud> getMisSolicitudes() {
+		return misSolicitudes;
+	}
+
+	public void setMisSolicitudes(ArrayList<Solicitud> misSolicitudes) {
+		this.misSolicitudes = misSolicitudes;
+	}
 }
