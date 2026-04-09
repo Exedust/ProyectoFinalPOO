@@ -21,7 +21,7 @@ public class Solicitud {
     private String descripcion;
     private LocalDate fechaRegistro;
     private LocalDate fechaAtencion;
-
+//
 
     public void completar() {
         setEstado(EstadoSolicitud.COMPLETADA);

@@ -334,7 +334,7 @@ public boolean modificarSolicitud(Solicitud solicitudActualizada) {
     misSolicitudes.set(indice, solicitudActualizada);
     return true;
 }
-
+//
 public boolean cancelarSolicitud(String codigo) {
     if (codigo == null || codigo.trim().isEmpty()) 
         return false;

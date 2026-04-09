@@ -268,7 +268,7 @@ public class RegistrarSolicitud extends JDialog {
         }
 
         Persona persona = Altice.getInstance().buscarPersonaByCedula(cedula);
-
+//
         if (persona == null) {
             JOptionPane.showMessageDialog(this, "No se encontró ningún cliente con esa cédula.", "Error", JOptionPane.ERROR_MESSAGE);
             return;

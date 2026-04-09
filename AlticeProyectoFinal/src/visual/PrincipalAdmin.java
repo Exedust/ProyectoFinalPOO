@@ -282,7 +282,7 @@ public class PrincipalAdmin extends JFrame {
 		gbc.insets = new Insets(20, 20, 20, 20);
 		gbc.fill = GridBagConstraints.BOTH;
 
-		// Tarjeta 1: Empleados
+		//// Tarjeta 1: Empleados
 		GridBagConstraints gbcEmpleados = new GridBagConstraints();
 		gbcEmpleados.ipadx = 20;
 		gbcEmpleados.gridx = 0;
