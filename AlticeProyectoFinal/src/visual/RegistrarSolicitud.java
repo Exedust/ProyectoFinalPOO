@@ -88,7 +88,7 @@ public class RegistrarSolicitud extends JDialog {
                     JLabel lblCedula = new JLabel("Cédula / RNC");
                     lblCedula.setForeground(Color.WHITE);
                     lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblCedula.setBounds(12, 13, 90, 16);
+                    lblCedula.setBounds(10, 21, 90, 16);
                     panelCliente.add(lblCedula);
                 }
                 {
@@ -133,7 +133,7 @@ public class RegistrarSolicitud extends JDialog {
                     JLabel lblTelefono = new JLabel("Teléfono");
                     lblTelefono.setForeground(Color.WHITE);
                     lblTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblTelefono.setBounds(12, 143, 56, 16);
+                    lblTelefono.setBounds(287, 79, 56, 16);
                     panelCliente.add(lblTelefono);
                 }
                 {
@@ -150,7 +150,7 @@ public class RegistrarSolicitud extends JDialog {
                     JLabel lblCorreo = new JLabel("Correo");
                     lblCorreo.setForeground(Color.WHITE);
                     lblCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblCorreo.setBounds(287, 79, 56, 16);
+                    lblCorreo.setBounds(287, 143, 56, 16);
                     panelCliente.add(lblCorreo);
                 }
                 {
@@ -167,7 +167,7 @@ public class RegistrarSolicitud extends JDialog {
                     JLabel lblDireccion = new JLabel("Dirección");
                     lblDireccion.setForeground(Color.WHITE);
                     lblDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblDireccion.setBounds(287, 143, 56, 16);
+                    lblDireccion.setBounds(10, 143, 56, 16);
                     panelCliente.add(lblDireccion);
                 }
                 {
