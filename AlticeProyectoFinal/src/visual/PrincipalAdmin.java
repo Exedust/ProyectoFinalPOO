@@ -398,6 +398,13 @@ public class PrincipalAdmin extends JFrame {
 		cardPlanes.add(iconPlanes, BorderLayout.CENTER);
 
 		JButton btnGestionarPlanes = new JButton("Gestionar");
+		btnGestionarPlanes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GestionPlanes gestion = new GestionPlanes();
+				gestion.setModal(true);
+				gestion.setVisible(true);
+			}
+		});
 		btnGestionarPlanes.setForeground(Color.WHITE);
 		btnGestionarPlanes.setBackground(new Color(0, 0, 51));
 		btnGestionarPlanes.setFont(new Font("Segoe UI", Font.PLAIN, 14));
