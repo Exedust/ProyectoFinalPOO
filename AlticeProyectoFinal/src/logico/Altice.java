@@ -7,6 +7,8 @@ public class Altice {
 	
 	private static Altice altice;
 	
+	private static Usuario sesion;
+	
 	private ArrayList<Plan> misPlanes;
 	private ArrayList<Cliente> misClientes;
 	private ArrayList<Empleado> misEmpleados;
@@ -370,6 +372,14 @@ public class Altice {
 	public Object tieneDeuda(String codigo) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public static Usuario getUser() {
+		return sesion;
+	}
+
+	public static void setUser(Usuario user) {
+		Altice.sesion = user;
 	}
 
 	

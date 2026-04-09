@@ -1,5 +1,7 @@
 package logico;
 
+import java.util.ArrayList;
+
 public class Empleado extends Persona {
 	public Empleado(String nombre, String cedula, String email, String telefono, String direccion, Usuario usuario,
 			float comision, float salario) {

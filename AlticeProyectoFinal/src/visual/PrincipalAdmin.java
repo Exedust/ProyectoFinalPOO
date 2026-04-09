@@ -115,7 +115,7 @@ public class PrincipalAdmin extends JFrame {
 		JMenuItem menuItem = new JMenuItem("Registrar");
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RegistrarCliente registrar = new RegistrarCliente(null);
+				RegistrarCliente registrar = new RegistrarCliente(null,false);
 				registrar.setModal(true);
 				registrar.setVisible(true);
 			}
@@ -143,6 +143,25 @@ public class PrincipalAdmin extends JFrame {
 		mnContratos.setForeground(Color.WHITE);
 		mnContratos.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		menuBar.add(mnContratos);
+		
+		JMenuItem menuItem_2 = new JMenuItem("Registrar");
+		menuItem_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RegistrarContrato nuevo = new RegistrarContrato();
+				nuevo.setModal(true);
+				nuevo.setVisible(true);
+			}
+		});
+		menuItem_2.setForeground(Color.WHITE);
+		menuItem_2.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuItem_2.setBackground(new Color(0, 0, 102));
+		mnContratos.add(menuItem_2);
+		
+		JMenuItem menuItem_3 = new JMenuItem("Listar");
+		menuItem_3.setForeground(Color.WHITE);
+		menuItem_3.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuItem_3.setBackground(new Color(0, 0, 102));
+		mnContratos.add(menuItem_3);
 		
 		JMenu mnPagos = new JMenu("Pagos");
 		mnPagos.setForeground(Color.WHITE);

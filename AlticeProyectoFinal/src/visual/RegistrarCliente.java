@@ -35,6 +35,7 @@ public class RegistrarCliente extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private Cliente miCliente;
+	private boolean cerrar;
 	
 	private JTextField txtNombre;
 	private JTextField txtCedula;
@@ -59,7 +60,7 @@ public class RegistrarCliente extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			RegistrarCliente dialog = new RegistrarCliente(null);
+			RegistrarCliente dialog = new RegistrarCliente(null, false);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -70,8 +71,9 @@ public class RegistrarCliente extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public RegistrarCliente(Cliente client) {
+	public RegistrarCliente(Cliente client, boolean cerrarAlRegistrar) {
 		miCliente = client;
+		cerrar = cerrarAlRegistrar;
 		setTitle("Registrar Cliente");
 		
 		if(miCliente != null)
@@ -405,16 +407,17 @@ public class RegistrarCliente extends JDialog {
 		loadCliente();
 	}
 	private void registrarCliente() {
+	    
 	    if (miCliente != null) {
 	        if (registrar()) {
 	            JOptionPane.showMessageDialog(this, "Cliente modificado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                if(checkActivo.isSelected())
-                {
-                	miCliente.getUsuario().setFechaDesactivacion(null);
-                }
-                if(!checkActivo.isSelected())
-                	Altice.getInstance().desactivarCliente(miCliente.getCodigo());
-                dispose();
+	            
+	            if (checkActivo.isSelected()) {
+	                miCliente.getUsuario().setFechaDesactivacion(null);
+	            } else {
+	                Altice.getInstance().desactivarCliente(miCliente.getCodigo());
+	            }
+	            dispose();
 	        }
 	        return;
 	    }
@@ -425,15 +428,21 @@ public class RegistrarCliente extends JDialog {
 	            JOptionPane.YES_NO_OPTION,
 	            JOptionPane.QUESTION_MESSAGE);
 
-	    if (opcion != JOptionPane.YES_OPTION) return;
+	    if (opcion != JOptionPane.YES_OPTION) {
+	        return;
+	    }
 
 	    if (registrar()) {
 	        JOptionPane.showMessageDialog(this, "Cliente registrado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-	        clean();
-	        txtNombre.requestFocus();
+	        
+	        if (cerrar) {
+	            dispose();                    
+	        } else {
+	            clean();                      
+	            txtNombre.requestFocus();
+	        }
 	    }
 	}
-
 	private boolean registrar() {
 	    if (!validar()) {
 	        return false;

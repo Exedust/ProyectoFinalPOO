@@ -231,7 +231,7 @@ public class GestionClientes extends JDialog {
             btnAgregar = new JButton("Agregar");
             btnAgregar.addActionListener(new ActionListener() {
             	public void actionPerformed(ActionEvent e) {
-            		RegistrarCliente registrar = new RegistrarCliente(null);
+            		RegistrarCliente registrar = new RegistrarCliente(null,false);
             		registrar.setModal(true);
             		registrar.setVisible(true);
             		loadClientes();
@@ -249,7 +249,7 @@ public class GestionClientes extends JDialog {
             btnModificar = new JButton("Modificar");
             btnModificar.addActionListener(new ActionListener() {
             	public void actionPerformed(ActionEvent e) {
-            		RegistrarCliente modificar = new RegistrarCliente(selected);
+            		RegistrarCliente modificar = new RegistrarCliente(selected,true);
             		modificar.setModal(true);
             		modificar.setVisible(true);
             		loadClientes();

@@ -19,6 +19,9 @@ public class GestionContratos extends JDialog {
     private final JPanel contentPanel = new JPanel();
     private JTextField textField;
     private JTextField textField_1;
+    private JButton btnDetalles;
+    private JButton btnPagar;
+    private JButton btnAgregar;
 
     /**
      * Launch the application.
@@ -143,54 +146,44 @@ public class GestionContratos extends JDialog {
 
         // ====================== BOTONES LATERALES ======================
         {
-            JButton btnNewButton_2 = new JButton("Agregar");
-            btnNewButton_2.setForeground(Color.WHITE);
-            btnNewButton_2.setBackground(new Color(0, 0, 51));
-            btnNewButton_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_2.setFocusPainted(false);
-            btnNewButton_2.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_2.setBounds(1143, 145, 97, 25);
-            contentPanel.add(btnNewButton_2);
+            btnAgregar = new JButton("Agregar");
+            btnAgregar.setForeground(Color.WHITE);
+            btnAgregar.setBackground(new Color(0, 0, 51));
+            btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnAgregar.setFocusPainted(false);
+            btnAgregar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnAgregar.setBounds(1143, 145, 97, 25);
+            contentPanel.add(btnAgregar);
         }
         {
-            JButton btnModificar = new JButton("Modificar");
-            btnModificar.setForeground(Color.WHITE);
-            btnModificar.setBackground(new Color(0, 0, 51));
-            btnModificar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnModificar.setFocusPainted(false);
-            btnModificar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnModificar.setBounds(1143, 183, 97, 25);
-            contentPanel.add(btnModificar);
+            JButton Cerrar = new JButton("Desactivar");
+            Cerrar.setForeground(Color.WHITE);
+            Cerrar.setBackground(new Color(102, 0, 0));  // Rojo oscuro como en el ejemplo
+            Cerrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            Cerrar.setFocusPainted(false);
+            Cerrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            Cerrar.setBounds(1143, 183, 97, 25);
+            contentPanel.add(Cerrar);
         }
         {
-            JButton btnDesactivar = new JButton("Desactivar");
-            btnDesactivar.setForeground(Color.WHITE);
-            btnDesactivar.setBackground(new Color(102, 0, 0));  // Rojo oscuro como en el ejemplo
-            btnDesactivar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnDesactivar.setFocusPainted(false);
-            btnDesactivar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnDesactivar.setBounds(1143, 221, 97, 25);
-            contentPanel.add(btnDesactivar);
-        }
-        {
-            JButton btnNewButton_3 = new JButton("Realizar Pago");
-            btnNewButton_3.setForeground(Color.WHITE);
-            btnNewButton_3.setBackground(new Color(0, 0, 51));
-            btnNewButton_3.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_3.setFocusPainted(false);
-            btnNewButton_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_3.setBounds(1143, 302, 97, 25);
-            contentPanel.add(btnNewButton_3);
+            btnPagar = new JButton("Realizar Pago");
+            btnPagar.setForeground(Color.WHITE);
+            btnPagar.setBackground(new Color(0, 0, 51));
+            btnPagar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnPagar.setFocusPainted(false);
+            btnPagar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnPagar.setBounds(1143, 302, 97, 25);
+            contentPanel.add(btnPagar);
         }
         
-        JButton button = new JButton("Detalles");
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        button.setFocusPainted(false);
-        button.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-        button.setBackground(new Color(0, 0, 51));
-        button.setBounds(1143, 340, 97, 25);
-        contentPanel.add(button);
+        btnDetalles = new JButton("Detalles");
+        btnDetalles.setForeground(Color.WHITE);
+        btnDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btnDetalles.setFocusPainted(false);
+        btnDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        btnDetalles.setBackground(new Color(0, 0, 51));
+        btnDetalles.setBounds(1143, 264, 97, 25);
+        contentPanel.add(btnDetalles);
         
         JLabel lblContratosCerrados = new JLabel("Contratos cerrados: 00");
         lblContratosCerrados.setForeground(Color.WHITE);
@@ -206,15 +199,6 @@ public class GestionContratos extends JDialog {
                     TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
-
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            okButton.setActionCommand("OK");
-            buttonPane.add(okButton);
-            getRootPane().setDefaultButton(okButton);
 
             JButton cancelButton = new JButton("Cancel");
             cancelButton.setForeground(Color.WHITE);
