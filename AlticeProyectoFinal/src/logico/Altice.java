@@ -16,6 +16,7 @@ public class Altice {
 	private ArrayList<Pago> misPagos;
 	private ArrayList<Usuario> misUsuarios;
 	private ArrayList<Servicio> misServicios;
+	private ArrayList<Solicitud> misSolicitudes;
 	
 	private static int genClienteid = 0;
 	private static int genEmpleadoid = 0;
@@ -34,6 +35,7 @@ public class Altice {
 		misPagos = new ArrayList<>();
 		misUsuarios = new ArrayList<>();
 		misServicios = new ArrayList<>();
+		misSolicitudes = new ArrayList<>();
 	}
 	
 	public static Altice getInstance()
@@ -215,7 +217,6 @@ public class Altice {
 	}
 
 
-	// ====================== REGISTRAR PLAN ======================
 	public boolean registrarPlan(Plan plan) {
 	    if (plan == null || plan.getCodigo() == null) {
 	        return false;
@@ -309,9 +310,67 @@ public boolean desactivarServicio(String codigo) {
 }
 
 //
-//METODOS DE BUSQUEDA
+//SOLICITUDES
 //
 
+public boolean registrarSolicitud(Solicitud solicitud) {
+    if (solicitud == null || solicitud.getCodigo() == null) 
+        return false;
+    if (buscarSolicitudByCodigo(solicitud.getCodigo()) != null) 
+        return false;
+    
+    misSolicitudes.add(solicitud);
+    genSolicitudid++;
+    return true;
+}
+
+public boolean modificarSolicitud(Solicitud solicitudActualizada) {
+    if (solicitudActualizada == null || solicitudActualizada.getCodigo() == null) 
+        return false;
+    int indice = buscarIndexSolicitudByCodigo(solicitudActualizada.getCodigo());
+    if (indice == -1) 
+        return false;
+    
+    misSolicitudes.set(indice, solicitudActualizada);
+    return true;
+}
+
+public boolean cancelarSolicitud(String codigo) {
+    if (codigo == null || codigo.trim().isEmpty()) 
+        return false;
+    int indice = buscarIndexSolicitudByCodigo(codigo);
+    if (indice == -1) 
+        return false;
+    Solicitud solicitud = misSolicitudes.get(indice);
+    solicitud.cancelar();       
+    return true;
+}
+
+//
+//METODOS DE BUSQUEDA
+//
+public Solicitud buscarSolicitudByCodigo(String codigo) {
+    if (codigo == null) return null;
+
+    for (Solicitud s : misSolicitudes) {
+        if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
+            return s;
+        }
+    }
+    return null;
+}
+
+private int buscarIndexSolicitudByCodigo(String codigo) {
+    if (codigo == null) return -1;
+
+    for (int i = 0; i < misSolicitudes.size(); i++) {
+        Solicitud s = misSolicitudes.get(i);
+        if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
+            return i;
+        }
+    }
+    return -1;
+}
 	
 	public Empleado buscarEmpleadoById(String codigo) {
 	    if (codigo == null) return null;
@@ -548,6 +607,12 @@ public boolean desactivarServicio(String codigo) {
 		Altice.sesion = user;
 	}
 
-	
+	public ArrayList<Solicitud> getMisSolicitudes() {
+	    return misSolicitudes;
+	}
+
+	public void setMisSolicitudes(ArrayList<Solicitud> misSolicitudes) {
+	    this.misSolicitudes = misSolicitudes;
+	}
 	
 }

@@ -4,25 +4,44 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import logico.Altice;
+import logico.Solicitud;
+import logico.Cliente;
+import logico.Empleado;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class GestionSolicitudes extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private JTextField textField;
-    private JTextField textField_1;
+    
+    private static JTable table;
+    private static DefaultTableModel model;
+    private static Object[] row;
+    private Solicitud selected = null;
 
-    /**
-     * Launch the application.
-     */
+    private JButton btnAgregar;
+    private JButton btnModificar;
+    private JButton btnCancelar;
+    private JButton btnVerDetalles;
+    private JButton btnSalir;
+
     public static void main(String[] args) {
         try {
             GestionSolicitudes dialog = new GestionSolicitudes();
@@ -33,17 +52,15 @@ public class GestionSolicitudes extends JDialog {
         }
     }
 
-    /**
-     * Create the dialog.
-     */
     public GestionSolicitudes() {
         setTitle("Gestionar Solicitudes");
         setResizable(false);
         setBounds(100, 100, 1280, 770);
-        
+        setLocationRelativeTo(null);
+
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
-        
+
         contentPanel.setBackground(new Color(0, 0, 51));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -56,165 +73,225 @@ public class GestionSolicitudes extends JDialog {
             panel.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             panel.setBounds(12, 145, 1102, 496);
             contentPanel.add(panel);
-            // Aquí iría tu JTable más adelante
+            panel.setLayout(new BorderLayout(0, 0));
+
+            JScrollPane scrollPane = new JScrollPane();
+            panel.add(scrollPane, BorderLayout.CENTER);
+
+            table = new JTable();
+            table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            table.setRowHeight(25);
+
+            String[] headers = {
+                "Código", "Tipo", "Cliente", "Cédula", "Empleado Asignado", 
+                "Estado", "Fecha Emisión", "Fecha Atención"
+            };
+
+            model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            model.setColumnIdentifiers(headers);
+            table.setModel(model);
+            table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
+            scrollPane.setViewportView(table);
+
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int ind = table.getSelectedRow();
+                    if (ind != -1) {
+                        String codigo = table.getValueAt(ind, 0).toString();
+                        selected = Altice.getInstance().buscarSolicitudByCodigo(codigo);
+                        
+                        btnModificar.setEnabled(true);
+                        btnCancelar.setEnabled(true);
+                        btnVerDetalles.setEnabled(true);
+                    }
+                }
+            });
         }
 
         // ====================== CAMPOS DE BÚSQUEDA ======================
         {
-            textField = new JTextField();
-            textField.setBackground(new Color(0, 0, 51));
-            textField.setForeground(Color.WHITE);
-            textField.setCaretColor(Color.WHITE);
-            textField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            textField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            textField.setBounds(12, 110, 232, 24);
-            contentPanel.add(textField);
-            textField.setColumns(10);
+            JTextField txtCedula = new JTextField();
+            txtCedula.setBackground(new Color(0, 0, 51));
+            txtCedula.setForeground(Color.WHITE);
+            txtCedula.setCaretColor(Color.WHITE);
+            txtCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            txtCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            txtCedula.setBounds(12, 110, 232, 24);
+            contentPanel.add(txtCedula);
         }
         {
-            textField_1 = new JTextField();
-            textField_1.setBackground(new Color(0, 0, 51));
-            textField_1.setForeground(Color.WHITE);
-            textField_1.setCaretColor(Color.WHITE);
-            textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            textField_1.setBounds(256, 110, 232, 24);
-            contentPanel.add(textField_1);
-            textField_1.setColumns(10);
+            JTextField txtNombre = new JTextField();
+            txtNombre.setBackground(new Color(0, 0, 51));
+            txtNombre.setForeground(Color.WHITE);
+            txtNombre.setCaretColor(Color.WHITE);
+            txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            txtNombre.setBounds(256, 110, 232, 24);
+            contentPanel.add(txtNombre);
         }
         {
-            JButton btnNewButton = new JButton("Buscar");
-            btnNewButton.setForeground(Color.WHITE);
-            btnNewButton.setBackground(new Color(0, 0, 51));
-            btnNewButton.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton.setFocusPainted(false);
-            btnNewButton.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton.setBounds(500, 109, 97, 25);
-            contentPanel.add(btnNewButton);
+            JButton btnBuscar = new JButton("Buscar");
+            btnBuscar.setForeground(Color.WHITE);
+            btnBuscar.setBackground(new Color(0, 0, 51));
+            btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnBuscar.setFocusPainted(false);
+            btnBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnBuscar.setBounds(500, 109, 97, 25);
+            contentPanel.add(btnBuscar);
         }
         {
-            JComboBox comboBox = new JComboBox();
-            comboBox.setBackground(new Color(0, 0, 51));
-            comboBox.setForeground(Color.WHITE);
-            comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboBox.setBounds(797, 110, 208, 24);
-            contentPanel.add(comboBox);
+            JComboBox<String> comboFiltro = new JComboBox<>();
+            comboFiltro.setBackground(new Color(0, 0, 51));
+            comboFiltro.setForeground(Color.WHITE);
+            comboFiltro.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            comboFiltro.setBounds(797, 110, 208, 24);
+            comboFiltro.addItem("Todos");
+            comboFiltro.addItem("Pendientes");
+            comboFiltro.addItem("En Proceso");
+            comboFiltro.addItem("Completadas");
+            comboFiltro.addItem("Canceladas");
+            contentPanel.add(comboFiltro);
         }
         {
-            JButton btnNewButton_1 = new JButton("Filtrar");
-            btnNewButton_1.setForeground(Color.WHITE);
-            btnNewButton_1.setBackground(new Color(0, 0, 51));
-            btnNewButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_1.setFocusPainted(false);
-            btnNewButton_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_1.setBounds(1017, 110, 97, 25);
-            contentPanel.add(btnNewButton_1);
+            JButton btnFiltrar = new JButton("Filtrar");
+            btnFiltrar.setForeground(Color.WHITE);
+            btnFiltrar.setBackground(new Color(0, 0, 51));
+            btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnFiltrar.setFocusPainted(false);
+            btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnFiltrar.setBounds(1017, 110, 97, 25);
+            btnFiltrar.addActionListener(e -> loadSolicitudes());
+            contentPanel.add(btnFiltrar);
         }
 
-        // ====================== ETIQUETAS ======================
+        // Etiquetas
         {
-            JLabel lblNewLabel = new JLabel("Cedula");
-            lblNewLabel.setForeground(Color.WHITE);
-            lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNewLabel.setBounds(12, 88, 56, 16);
-            contentPanel.add(lblNewLabel);
+            JLabel lblCedula = new JLabel("Cédula");
+            lblCedula.setForeground(Color.WHITE);
+            lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblCedula.setBounds(12, 88, 56, 16);
+            contentPanel.add(lblCedula);
         }
         {
-            JLabel lblNewLabel_1 = new JLabel("Nombre");
-            lblNewLabel_1.setForeground(Color.WHITE);
-            lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNewLabel_1.setBounds(256, 88, 56, 16);
-            contentPanel.add(lblNewLabel_1);
+            JLabel lblNombre = new JLabel("Nombre");
+            lblNombre.setForeground(Color.WHITE);
+            lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblNombre.setBounds(256, 88, 56, 16);
+            contentPanel.add(lblNombre);
         }
         {
-            JLabel lblNewLabel_2 = new JLabel("Solicitudes Registradas: 00");
-            lblNewLabel_2.setForeground(Color.WHITE);
-            lblNewLabel_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNewLabel_2.setBounds(12, 23, 216, 16);
-            contentPanel.add(lblNewLabel_2);
+            JLabel lblSolicitudesRegistradas = new JLabel("Solicitudes Registradas: 00");
+            lblSolicitudesRegistradas.setForeground(Color.WHITE);
+            lblSolicitudesRegistradas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblSolicitudesRegistradas.setBounds(12, 23, 216, 16);
+            contentPanel.add(lblSolicitudesRegistradas);
         }
         {
-            JLabel lblComercialesRegistrados = new JLabel("Solicitudes Pendientes: 00");
-            lblComercialesRegistrados.setForeground(Color.WHITE);
-            lblComercialesRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblComercialesRegistrados.setBounds(12, 59, 216, 16);
-            contentPanel.add(lblComercialesRegistrados);
+            JLabel lblPendientes = new JLabel("Solicitudes Pendientes: 00");
+            lblPendientes.setForeground(Color.WHITE);
+            lblPendientes.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblPendientes.setBounds(12, 59, 216, 16);
+            contentPanel.add(lblPendientes);
         }
         {
-            JLabel lblClientesPendientes = new JLabel("Solicitudes En Proceso: 00");
-            lblClientesPendientes.setForeground(Color.WHITE);
-            lblClientesPendientes.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblClientesPendientes.setBounds(240, 59, 216, 16);
-            contentPanel.add(lblClientesPendientes);
+            JLabel lblEnProceso = new JLabel("Solicitudes En Proceso: 00");
+            lblEnProceso.setForeground(Color.WHITE);
+            lblEnProceso.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblEnProceso.setBounds(240, 59, 216, 16);
+            contentPanel.add(lblEnProceso);
+        }
+        {
+            JLabel lblCompletadas = new JLabel("Solicitudes Completadas: 00");
+            lblCompletadas.setForeground(Color.WHITE);
+            lblCompletadas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblCompletadas.setBounds(468, 59, 216, 16);
+            contentPanel.add(lblCompletadas);
+        }
+        {
+            JLabel lblCanceladas = new JLabel("Solicitudes Canceladas: 00");
+            lblCanceladas.setForeground(Color.WHITE);
+            lblCanceladas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblCanceladas.setBounds(696, 59, 216, 16);
+            contentPanel.add(lblCanceladas);
         }
 
         // ====================== BOTONES LATERALES ======================
         {
-            JButton btnNewButton_2 = new JButton("Agregar");
-            btnNewButton_2.setForeground(Color.WHITE);
-            btnNewButton_2.setBackground(new Color(0, 0, 51));
-            btnNewButton_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_2.setFocusPainted(false);
-            btnNewButton_2.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_2.setBounds(1143, 145, 97, 25);
-            contentPanel.add(btnNewButton_2);
+            btnAgregar = new JButton("Agregar");
+            btnAgregar.setForeground(Color.WHITE);
+            btnAgregar.setBackground(new Color(0, 0, 51));
+            btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnAgregar.setFocusPainted(false);
+            btnAgregar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnAgregar.setBounds(1143, 145, 97, 25);
+            btnAgregar.addActionListener(e -> {
+                RegistrarSolicitud reg = new RegistrarSolicitud(null, false);
+                reg.setModal(true);
+                reg.setVisible(true);
+                loadSolicitudes();
+            });
+            contentPanel.add(btnAgregar);
         }
         {
-            JButton btnModificar = new JButton("Modificar");
+            btnModificar = new JButton("Modificar");
             btnModificar.setForeground(Color.WHITE);
             btnModificar.setBackground(new Color(0, 0, 51));
             btnModificar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnModificar.setFocusPainted(false);
             btnModificar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             btnModificar.setBounds(1143, 183, 97, 25);
+            btnModificar.setEnabled(false);
+            btnModificar.addActionListener(e -> {
+                if (selected != null) {
+                    RegistrarSolicitud reg = new RegistrarSolicitud(selected, false);
+                    reg.setModal(true);
+                    reg.setVisible(true);
+                    loadSolicitudes();
+                    btnModificar.setEnabled(false);
+                    btnCancelar.setEnabled(false);
+                    btnVerDetalles.setEnabled(false);
+                }
+            });
             contentPanel.add(btnModificar);
         }
         {
-            JButton btnDesactivar = new JButton("Cancelar");
-            btnDesactivar.setForeground(Color.WHITE);
-            btnDesactivar.setBackground(new Color(102, 0, 0));  // Rojo oscuro como en el ejemplo
-            btnDesactivar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnDesactivar.setFocusPainted(false);
-            btnDesactivar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnDesactivar.setBounds(1143, 616, 97, 25);
-            contentPanel.add(btnDesactivar);
+            btnCancelar = new JButton("Cancelar");
+            btnCancelar.setForeground(Color.WHITE);
+            btnCancelar.setBackground(new Color(102, 0, 0));
+            btnCancelar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnCancelar.setFocusPainted(false);
+            btnCancelar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnCancelar.setBounds(1143, 221, 97, 25);
+            btnCancelar.setEnabled(false);
+            btnCancelar.addActionListener(e -> cancelarSolicitud());
+            contentPanel.add(btnCancelar);
         }
         {
-            JButton btnNewButton_3 = new JButton("Asignar");
-            btnNewButton_3.setForeground(Color.WHITE);
-            btnNewButton_3.setBackground(new Color(0, 0, 51));
-            btnNewButton_3.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_3.setFocusPainted(false);
-            btnNewButton_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_3.setBounds(1143, 578, 97, 25);
-            contentPanel.add(btnNewButton_3);
-        }
-        {
-        	JLabel lblSolicitudesCompletadas = new JLabel("Solicitudes Completadas: 00");
-        	lblSolicitudesCompletadas.setForeground(Color.WHITE);
-        	lblSolicitudesCompletadas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        	lblSolicitudesCompletadas.setBounds(468, 59, 216, 16);
-        	contentPanel.add(lblSolicitudesCompletadas);
-        }
-        {
-        	JLabel lblSolicitudesCanceladas = new JLabel("Solicitudes Canceladas: 00");
-        	lblSolicitudesCanceladas.setForeground(Color.WHITE);
-        	lblSolicitudesCanceladas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        	lblSolicitudesCanceladas.setBounds(696, 59, 216, 16);
-        	contentPanel.add(lblSolicitudesCanceladas);
-        }
-        {
-        	JButton btnVerDetalles = new JButton("Ver Detalles");
-        	btnVerDetalles.setForeground(Color.WHITE);
-        	btnVerDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        	btnVerDetalles.setFocusPainted(false);
-        	btnVerDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-        	btnVerDetalles.setBackground(new Color(0, 0, 51));
-        	btnVerDetalles.setBounds(1143, 221, 97, 25);
-        	contentPanel.add(btnVerDetalles);
+            btnVerDetalles = new JButton("Ver Detalles");
+            btnVerDetalles.setForeground(Color.WHITE);
+            btnVerDetalles.setBackground(new Color(0, 0, 51));
+            btnVerDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnVerDetalles.setFocusPainted(false);
+            btnVerDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnVerDetalles.setBounds(1143, 259, 97, 25);
+            btnVerDetalles.setEnabled(false);
+            btnVerDetalles.addActionListener(e -> {
+                if (selected != null) {
+                    // Aquí abrirías DetallesSolicitud cuando la tengas
+                    JOptionPane.showMessageDialog(this, "Detalles de solicitud (pendiente de implementar)", "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
+            contentPanel.add(btnVerDetalles);
         }
 
-        // ====================== BOTONES INFERIORES (OK / CANCEL) ======================
+        // Botón Salir
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -223,22 +300,63 @@ public class GestionSolicitudes extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            okButton.setActionCommand("OK");
-            buttonPane.add(okButton);
-            getRootPane().setDefaultButton(okButton);
+            btnSalir = new JButton("Salir");
+            btnSalir.setForeground(Color.WHITE);
+            btnSalir.setBackground(new Color(102, 0, 0));
+            btnSalir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btnSalir.setFocusPainted(false);
+            btnSalir.addActionListener(e -> dispose());
+            buttonPane.add(btnSalir);
+        }
 
-            JButton cancelButton = new JButton("Cancel");
-            cancelButton.setForeground(Color.WHITE);
-            cancelButton.setBackground(new Color(102, 0, 0));
-            cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            cancelButton.setFocusPainted(false);
-            cancelButton.setActionCommand("Cancel");
-            buttonPane.add(cancelButton);
+        loadSolicitudes();
+    }
+
+    private void loadSolicitudes() {
+        model.setRowCount(0);
+        row = new Object[8];
+
+        for (Solicitud s : Altice.getInstance().getMisSolicitudes()) {
+            Cliente cli = s.getCliente();
+            Empleado emp = s.getEmpleado();
+
+            row[0] = s.getCodigo();
+            row[1] = s.getTipo().name();
+            row[2] = (cli != null) ? cli.getNombre() : "N/A";
+            row[3] = (cli != null) ? cli.getCedula() : "N/A";
+            row[4] = (emp != null) ? emp.getNombre() : "No asignado";
+            row[5] = s.getEstado().name();
+            row[6] = s.getFechaRegistro() != null ? s.getFechaRegistro().toString() : "";
+            row[7] = s.getFechaAtencion() != null ? s.getFechaAtencion().toString() : "";
+
+            model.addRow(row);
+        }
+    }
+
+    private void cancelarSolicitud() {
+        if (selected == null) return;
+
+        if (selected.isResuelto() || selected.isCancelada()) {
+            JOptionPane.showMessageDialog(this, "No se puede cancelar una solicitud ya completada o cancelada.", 
+                    "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea cancelar esta solicitud?",
+                "Confirmar Cancelación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            if (Altice.getInstance().cancelarSolicitud(selected.getCodigo())) {
+                JOptionPane.showMessageDialog(this, "Solicitud cancelada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                loadSolicitudes();
+                btnModificar.setEnabled(false);
+                btnCancelar.setEnabled(false);
+                btnVerDetalles.setEnabled(false);
+                selected = null;
+            }
         }
     }
 }

@@ -203,7 +203,38 @@ public class PrincipalAdmin extends JFrame {
 		    }
 		});
 		mnServicios.add(mntmListarServicio);
-		
+        // ====================== SOLICITUDES ======================
+        JMenu mnSolicitudes = new JMenu("Solicitudes");
+        mnSolicitudes.setForeground(Color.WHITE);
+        mnSolicitudes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        menuBar.add(mnSolicitudes);
+
+        JMenuItem mntmRegistrarSolicitud = new JMenuItem("Registrar");
+        mntmRegistrarSolicitud.setForeground(Color.WHITE);
+        mntmRegistrarSolicitud.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        mntmRegistrarSolicitud.setBackground(new Color(0, 0, 102));
+        mntmRegistrarSolicitud.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                RegistrarSolicitud registrar = new RegistrarSolicitud(null, false);
+                registrar.setModal(true);
+                registrar.setVisible(true);
+            }
+        });
+        mnSolicitudes.add(mntmRegistrarSolicitud);
+
+        JMenuItem mntmListarSolicitud = new JMenuItem("Listar");
+        mntmListarSolicitud.setForeground(Color.WHITE);
+        mntmListarSolicitud.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        mntmListarSolicitud.setBackground(new Color(0, 0, 102));
+        mntmListarSolicitud.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                GestionSolicitudes gestionar = new GestionSolicitudes();
+                gestionar.setModal(true);
+                gestionar.setVisible(true);
+            }
+        });
+        mnSolicitudes.add(mntmListarSolicitud);
+        
 		JMenu mnNewMenu = new JMenu("Administracion");
 		mnNewMenu.setForeground(new Color(255, 255, 255));
 		mnNewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 18));
