@@ -472,7 +472,7 @@ public boolean desactivarServicio(String codigo) {
         }
 
         for (Servicio serv : misServicios) {
-            if (serv.getTipo() == tipo && serv.isActivo()) {  
+            if (serv.getTipo() == tipo) {  
                 return true;
             }
         }

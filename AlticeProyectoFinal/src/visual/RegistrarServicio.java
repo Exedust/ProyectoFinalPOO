@@ -20,6 +20,7 @@ import javax.swing.JCheckBox;
 import logico.Altice;
 import logico.Servicio;
 import logico.TipoServicio;
+import javax.swing.JTextField;
 
 public class RegistrarServicio extends JDialog {
 
@@ -32,6 +33,7 @@ public class RegistrarServicio extends JDialog {
     private JCheckBox checkActivo;
     private JButton okButton;
     private JButton cancelButton;
+    private JTextField txtTipo;
 
     public static void main(String[] args) {
         try {
@@ -72,7 +74,7 @@ public class RegistrarServicio extends JDialog {
                 JLabel lblTipo = new JLabel("Tipo de Servicio");
                 lblTipo.setForeground(Color.WHITE);
                 lblTipo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                lblTipo.setBounds(133, 20, 120, 16);
+                lblTipo.setBounds(182, 20, 100, 16);
                 panel.add(lblTipo);
             }
             {
@@ -80,14 +82,14 @@ public class RegistrarServicio extends JDialog {
                 comboTipo.setBackground(new Color(0, 0, 51));
                 comboTipo.setForeground(Color.WHITE);
                 comboTipo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                comboTipo.setBounds(133, 48, 200, 28);
+                comboTipo.setBounds(133, 49, 200, 28);
                 panel.add(comboTipo);
             }
             {
                 JLabel lblDescripcion = new JLabel("Descripción");
                 lblDescripcion.setForeground(Color.WHITE);
                 lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                lblDescripcion.setBounds(133, 90, 120, 16);
+                lblDescripcion.setBounds(172, 90, 120, 16);
                 panel.add(lblDescripcion);
             }
             {
@@ -107,6 +109,18 @@ public class RegistrarServicio extends JDialog {
                 checkActivo.setBounds(178, 215, 100, 25);
                 panel.add(checkActivo);
             }
+            {
+            	txtTipo = new JTextField();
+            	txtTipo.setForeground(Color.WHITE);
+            	txtTipo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            	txtTipo.setEditable(false);
+            	txtTipo.setColumns(10);
+            	txtTipo.setCaretColor(Color.WHITE);
+            	txtTipo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            	txtTipo.setBackground(new Color(0, 0, 51));
+            	txtTipo.setBounds(133, 49, 200, 26);
+            	panel.add(txtTipo);
+            }
         }
 
         {
@@ -117,7 +131,7 @@ public class RegistrarServicio extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            okButton = new JButton("OK");
+            okButton = new JButton("Aceptar");
             okButton.setForeground(Color.WHITE);
             okButton.setBackground(new Color(0, 0, 51));
             okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -133,11 +147,16 @@ public class RegistrarServicio extends JDialog {
             cancelButton.addActionListener(e -> dispose());
             buttonPane.add(cancelButton);
         }
-
+        checkActivo.setVisible(false);
+        txtTipo.setVisible(false);
+        
         cargarTiposDisponibles();
 
         if (miServicio != null) {
             loadServicio();
+            checkActivo.setVisible(true);
+            txtTipo.setVisible(true);
+            comboTipo.setVisible(false);
         }
     }
 
@@ -152,9 +171,10 @@ public class RegistrarServicio extends JDialog {
 
     private void loadServicio() {
         if (miServicio == null) return;
-
-        comboTipo.setSelectedItem(miServicio.getTipo());
-        comboTipo.setEnabled(false); // No permitir cambiar el tipo al modificar
+        comboTipo.removeAllItems();
+        comboTipo.addItem(miServicio.getTipo());
+        comboTipo.setEnabled(false); 
+        txtTipo.setText(miServicio.getTipo().name());
         txtDescripcion.setText(miServicio.getDescripcion());
         checkActivo.setSelected(miServicio.isActivo());
     }
