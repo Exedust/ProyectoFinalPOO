@@ -54,4 +54,22 @@ public abstract class Persona {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+	
+	public String getCodigo() {
+        if (usuario != null) {
+            return usuario.getCodigo();
+        }
+        return null;
+    }
+	public boolean isActivo() {
+        if (usuario != null) {
+            return usuario.isActivo();
+        }
+        return false;
+    }
+	
+	public Rol getRol()
+	{
+		return usuario.getRol();
+	}
 }

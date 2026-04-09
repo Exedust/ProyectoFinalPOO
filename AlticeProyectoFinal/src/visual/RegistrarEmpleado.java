@@ -14,47 +14,62 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+
+import logico.Altice;
+import logico.Empleado;
+import logico.Rol;
+import logico.Usuario;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.UIManager;
 import javax.swing.JCheckBox;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class RegistrarEmpleado extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JPasswordField passwordField;
-	private JPasswordField passwordField_1;
+	
+	private Empleado miEmpleado;
+	
+	private JTextField txtNombre;
+	private JTextField txtCedula;
+	private JTextField txtTelefono;
+	private JTextField txtDireccion;
+	private JTextField txtCorreo;
+	private JPasswordField txtContra;
+	private JPasswordField txtConfirmContra;
 	private JLabel lblCedula;
 
-	// Panel de tipo de empleado y campos variables
 	private JRadioButton rdbtnTecnico;
 	private JRadioButton rdbtnComercial;
 	private JRadioButton rdbtnAdministrador;
 	private ButtonGroup groupTipoEmpleado;
 
-	// Campos de salario y comisión
 	private JLabel lblSalario;
 	private JSpinner spinnerSalario;
 	private JLabel lblComision;
 	private JSpinner spinnerComision;
-	private JCheckBox checkBox;
-	private JTextField textField_5;
+	private JCheckBox checkActivo;
+	private JTextField txtCodigo;
 	private JLabel label_1;
+	private JButton btnCancelar;
+	private JLabel lblConfirmarContra;
+	private JButton btnMostrar;
+	private JTextField txtConfirmarVisible;
+	private JTextField txtContraVisible;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			RegistrarEmpleado dialog = new RegistrarEmpleado();
+			RegistrarEmpleado dialog = new RegistrarEmpleado(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -65,10 +80,18 @@ public class RegistrarEmpleado extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public RegistrarEmpleado() {
+	public RegistrarEmpleado(Empleado emp) {
+		miEmpleado = emp;
 		setTitle("Registrar Empleado");
+		
+		if(miEmpleado != null)
+		{
+			setTitle("Modificar Empleado");
+		}
+		
 		setResizable(false);
 		setBounds(100, 100, 614, 710);
+		setLocationRelativeTo(null);
 		getContentPane().setBackground(new Color(0, 0, 51));
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(0, 0, 51));
@@ -101,15 +124,15 @@ public class RegistrarEmpleado extends JDialog {
 					panelDatos.add(label);
 				}
 				{
-					textField = new JTextField();
-					textField.setBackground(new Color(0, 0, 51));
-					textField.setForeground(Color.WHITE);
-					textField.setCaretColor(Color.WHITE);
-					textField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField.setColumns(10);
-					textField.setBounds(12, 53, 263, 24);
-					panelDatos.add(textField);
+					txtNombre = new JTextField();
+					txtNombre.setBackground(new Color(0, 0, 51));
+					txtNombre.setForeground(Color.WHITE);
+					txtNombre.setCaretColor(Color.WHITE);
+					txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtNombre.setColumns(10);
+					txtNombre.setBounds(12, 53, 263, 24);
+					panelDatos.add(txtNombre);
 				}
 				{
 					lblCedula = new JLabel("Cedula");
@@ -119,15 +142,23 @@ public class RegistrarEmpleado extends JDialog {
 					panelDatos.add(lblCedula);
 				}
 				{
-					textField_1 = new JTextField();
-					textField_1.setBackground(new Color(0, 0, 51));
-					textField_1.setForeground(Color.WHITE);
-					textField_1.setCaretColor(Color.WHITE);
-					textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_1.setColumns(10);
-					textField_1.setBounds(12, 117, 263, 24);
-					panelDatos.add(textField_1);
+					txtCedula = new JTextField();
+					txtCedula.addKeyListener(new KeyAdapter() {
+
+						public void keyTyped(KeyEvent e) {
+							char tecla = e.getKeyChar();
+							if(!Character.isDigit(tecla))
+								e.consume();
+						}
+					});
+					txtCedula.setBackground(new Color(0, 0, 51));
+					txtCedula.setForeground(Color.WHITE);
+					txtCedula.setCaretColor(Color.WHITE);
+					txtCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					txtCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtCedula.setColumns(10);
+					txtCedula.setBounds(12, 117, 263, 24);
+					panelDatos.add(txtCedula);
 				}
 				{
 					JLabel label = new JLabel("Telefono");
@@ -137,15 +168,23 @@ public class RegistrarEmpleado extends JDialog {
 					panelDatos.add(label);
 				}
 				{
-					textField_2 = new JTextField();
-					textField_2.setBackground(new Color(0, 0, 51));
-					textField_2.setForeground(Color.WHITE);
-					textField_2.setCaretColor(Color.WHITE);
-					textField_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_2.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_2.setColumns(10);
-					textField_2.setBounds(12, 181, 263, 24);
-					panelDatos.add(textField_2);
+					txtTelefono = new JTextField();
+					txtTelefono.addKeyListener(new KeyAdapter() {
+
+						public void keyTyped(KeyEvent e) {
+							char tecla = e.getKeyChar();
+							if(!Character.isDigit(tecla))
+								e.consume();
+						}
+					});
+					txtTelefono.setBackground(new Color(0, 0, 51));
+					txtTelefono.setForeground(Color.WHITE);
+					txtTelefono.setCaretColor(Color.WHITE);
+					txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					txtTelefono.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtTelefono.setColumns(10);
+					txtTelefono.setBounds(12, 181, 263, 24);
+					panelDatos.add(txtTelefono);
 				}
 				{
 					JLabel label = new JLabel("Direccion");
@@ -155,15 +194,15 @@ public class RegistrarEmpleado extends JDialog {
 					panelDatos.add(label);
 				}
 				{
-					textField_3 = new JTextField();
-					textField_3.setBackground(new Color(0, 0, 51));
-					textField_3.setForeground(Color.WHITE);
-					textField_3.setCaretColor(Color.WHITE);
-					textField_3.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_3.setColumns(10);
-					textField_3.setBounds(12, 245, 263, 24);
-					panelDatos.add(textField_3);
+					txtDireccion = new JTextField();
+					txtDireccion.setBackground(new Color(0, 0, 51));
+					txtDireccion.setForeground(Color.WHITE);
+					txtDireccion.setCaretColor(Color.WHITE);
+					txtDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					txtDireccion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtDireccion.setColumns(10);
+					txtDireccion.setBounds(12, 245, 263, 24);
+					panelDatos.add(txtDireccion);
 				}
 				{
 					JLabel label = new JLabel("Correo electronico");
@@ -173,15 +212,15 @@ public class RegistrarEmpleado extends JDialog {
 					panelDatos.add(label);
 				}
 				{
-					textField_4 = new JTextField();
-					textField_4.setBackground(new Color(0, 0, 51));
-					textField_4.setForeground(Color.WHITE);
-					textField_4.setCaretColor(Color.WHITE);
-					textField_4.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_4.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_4.setColumns(10);
-					textField_4.setBounds(287, 53, 263, 24);
-					panelDatos.add(textField_4);
+					txtCorreo = new JTextField();
+					txtCorreo.setBackground(new Color(0, 0, 51));
+					txtCorreo.setForeground(Color.WHITE);
+					txtCorreo.setCaretColor(Color.WHITE);
+					txtCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					txtCorreo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtCorreo.setColumns(10);
+					txtCorreo.setBounds(287, 53, 263, 24);
+					panelDatos.add(txtCorreo);
 				}
 				{
 					JLabel label = new JLabel("Contraseña");
@@ -191,33 +230,89 @@ public class RegistrarEmpleado extends JDialog {
 					panelDatos.add(label);
 				}
 				{
-					passwordField = new JPasswordField();
-					passwordField.setBackground(new Color(0, 0, 51));
-					passwordField.setForeground(Color.WHITE);
-					passwordField.setCaretColor(Color.WHITE);
-					passwordField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					passwordField.setBounds(287, 117, 263, 24);
-					panelDatos.add(passwordField);
+					txtContra = new JPasswordField();
+					txtContra.setBackground(new Color(0, 0, 51));
+					txtContra.setForeground(Color.WHITE);
+					txtContra.setCaretColor(Color.WHITE);
+					txtContra.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtContra.setBounds(287, 117, 263, 24);
+					panelDatos.add(txtContra);
 				}
 				{
-					JLabel label = new JLabel("Confirmar Contraseña");
-					label.setForeground(Color.WHITE);
-					label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					label.setBounds(287, 152, 154, 16);
-					panelDatos.add(label);
+					lblConfirmarContra = new JLabel("Confirmar Contraseña");
+					lblConfirmarContra.setForeground(Color.WHITE);
+					lblConfirmarContra.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					lblConfirmarContra.setBounds(287, 152, 154, 16);
+					panelDatos.add(lblConfirmarContra);
 				}
 				{
-					passwordField_1 = new JPasswordField();
-					passwordField_1.setBackground(new Color(0, 0, 51));
-					passwordField_1.setForeground(Color.WHITE);
-					passwordField_1.setCaretColor(Color.WHITE);
-					passwordField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					passwordField_1.setBounds(287, 181, 263, 24);
-					panelDatos.add(passwordField_1);
+					txtConfirmContra = new JPasswordField();
+					txtConfirmContra.setBackground(new Color(0, 0, 51));
+					txtConfirmContra.setForeground(Color.WHITE);
+					txtConfirmContra.setCaretColor(Color.WHITE);
+					txtConfirmContra.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtConfirmContra.setBounds(287, 181, 263, 24);
+					panelDatos.add(txtConfirmContra);
+					
+					btnMostrar = new JButton("Mostrar Contrase\u00F1a");
+					btnMostrar.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(txtContra.isVisible())
+							{
+								txtContra.setVisible(false);
+								txtConfirmContra.setVisible(false);
+								txtContraVisible.setText(txtContra.getText());
+								txtContraVisible.setVisible(true);
+								txtConfirmarVisible.setText(txtConfirmContra.getText());
+								txtConfirmarVisible.setVisible(true);
+								
+								txtContraVisible.setEditable(false);
+								txtConfirmarVisible.setEditable(false);
+								btnMostrar.setText("Ocultar contraseña");
+							}
+							else
+							{
+								txtContra.setVisible(true);
+								txtConfirmContra.setVisible(true);
+								txtContraVisible.setVisible(false);
+								txtConfirmarVisible.setVisible(false);
+								btnMostrar.setText("Mostrar contraseña");
+							}
+						}
+					});
+					btnMostrar.setForeground(Color.WHITE);
+					btnMostrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					btnMostrar.setFocusPainted(false);
+					btnMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					btnMostrar.setBackground(new Color(0, 0, 51));
+					btnMostrar.setBounds(405, 245, 145, 25);
+					panelDatos.add(btnMostrar);
+					
+					txtConfirmarVisible = new JTextField();
+					txtConfirmarVisible.setForeground(Color.WHITE);
+					txtConfirmarVisible.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					txtConfirmarVisible.setColumns(10);
+					txtConfirmarVisible.setCaretColor(Color.WHITE);
+					txtConfirmarVisible.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtConfirmarVisible.setBackground(new Color(0, 0, 51));
+					txtConfirmarVisible.setBounds(287, 182, 263, 24);
+					panelDatos.add(txtConfirmarVisible);
+					txtConfirmarVisible.setVisible(false);
+					
+					txtContraVisible = new JTextField();
+					txtContraVisible.setForeground(Color.WHITE);
+					txtContraVisible.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					txtContraVisible.setColumns(10);
+					txtContraVisible.setCaretColor(Color.WHITE);
+					txtContraVisible.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtContraVisible.setBackground(new Color(0, 0, 51));
+					txtContraVisible.setBounds(287, 118, 263, 24);
+					panelDatos.add(txtContraVisible);
+					txtContraVisible.setVisible(false);
+					txtConfirmarVisible.setVisible(false);
 				}
 			}
 
-			// ====================== PANEL TIPO DE EMPLEADO ======================
 			{
 				JPanel panelTipo = new JPanel();
 				panelTipo.setForeground(Color.WHITE);
@@ -227,7 +322,6 @@ public class RegistrarEmpleado extends JDialog {
 				panel.add(panelTipo);
 				panelTipo.setLayout(null);
 
-				// Radio Buttons
 				rdbtnTecnico = new JRadioButton("Técnico");
 				rdbtnTecnico.setForeground(Color.WHITE);
 				rdbtnTecnico.setBackground(new Color(102, 102, 204));
@@ -250,7 +344,6 @@ public class RegistrarEmpleado extends JDialog {
 				rdbtnAdministrador.setBounds(19, 101, 131, 25);
 				panelTipo.add(rdbtnAdministrador);
 
-				// Salario (visible para todos)
 				lblSalario = new JLabel("Salario");
 				lblSalario.setForeground(Color.WHITE);
 				lblSalario.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -263,7 +356,6 @@ public class RegistrarEmpleado extends JDialog {
 				spinnerSalario.setBounds(185, 38, 82, 22);
 				panelTipo.add(spinnerSalario);
 
-				// Comisión (solo para Comercial y Administrador)
 				lblComision = new JLabel("Comisión");
 				lblComision.setForeground(Color.WHITE);
 				lblComision.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -274,30 +366,34 @@ public class RegistrarEmpleado extends JDialog {
 				spinnerComision.setBounds(185, 102, 82, 22);
 				panelTipo.add(spinnerComision);
 
-				// ButtonGroup
 				groupTipoEmpleado = new ButtonGroup();
 				groupTipoEmpleado.add(rdbtnTecnico);
 				groupTipoEmpleado.add(rdbtnComercial);
 				groupTipoEmpleado.add(rdbtnAdministrador);
 				{
-					checkBox = new JCheckBox("Activo");
-					checkBox.setSelected(true);
-					checkBox.setForeground(Color.WHITE);
-					checkBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
-					checkBox.setBackground(new Color(102, 102, 204));
-					checkBox.setBounds(264, 556, 77, 25);
-					panel.add(checkBox);
+					checkActivo = new JCheckBox("Activo");
+					checkActivo.setSelected(true);
+					checkActivo.setForeground(Color.WHITE);
+					checkActivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+					checkActivo.setBackground(new Color(102, 102, 204));
+					checkActivo.setBounds(264, 556, 77, 25);
+					panel.add(checkActivo);
+					
+					if(miEmpleado == null)
+						checkActivo.setEnabled(false);
 				}
 				{
-					textField_5 = new JTextField();
-					textField_5.setForeground(Color.WHITE);
-					textField_5.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_5.setColumns(10);
-					textField_5.setCaretColor(Color.WHITE);
-					textField_5.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_5.setBackground(new Color(0, 0, 51));
-					textField_5.setBounds(12, 42, 112, 24);
-					panel.add(textField_5);
+					txtCodigo = new JTextField();
+					txtCodigo.setEditable(false);
+					txtCodigo.setForeground(Color.WHITE);
+					txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+					txtCodigo.setColumns(10);
+					txtCodigo.setCaretColor(Color.WHITE);
+					txtCodigo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+					txtCodigo.setBackground(new Color(0, 0, 51));
+					txtCodigo.setBounds(12, 42, 112, 24);
+					txtCodigo.setText(String.format("E-%05d", Altice.getGenEmpleadoid()));
+					panel.add(txtCodigo);
 				}
 				{
 					label_1 = new JLabel("C\u00F3digo");
@@ -307,7 +403,6 @@ public class RegistrarEmpleado extends JDialog {
 					panel.add(label_1);
 				}
 
-				// ActionListeners para mostrar/ocultar comisión
 				ActionListener tipoListener = new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if (rdbtnTecnico.isSelected()) {
@@ -324,13 +419,11 @@ public class RegistrarEmpleado extends JDialog {
 				rdbtnComercial.addActionListener(tipoListener);
 				rdbtnAdministrador.addActionListener(tipoListener);
 
-				// Estado inicial (Técnico seleccionado)
 				lblComision.setVisible(false);
 				spinnerComision.setVisible(false);
 			}
 		}
 
-		// ====================== BOTONES OK / CANCEL ======================
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setBackground(new Color(0, 0, 51));
@@ -339,22 +432,206 @@ public class RegistrarEmpleado extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-			JButton okButton = new JButton("OK");
-			okButton.setForeground(Color.WHITE);
-			okButton.setBackground(new Color(0, 0, 51));
-			okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-			okButton.setFocusPainted(false);
-			okButton.setActionCommand("OK");
-			buttonPane.add(okButton);
-			getRootPane().setDefaultButton(okButton);
+			JButton btnAceptar = new JButton("Aceptar");
+			btnAceptar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					registrarEmpleado();
+					
+				}
+			});
+			btnAceptar.setForeground(Color.WHITE);
+			btnAceptar.setBackground(new Color(0, 0, 51));
+			btnAceptar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+			btnAceptar.setFocusPainted(false);
+			btnAceptar.setActionCommand("OK");
+			buttonPane.add(btnAceptar);
+			getRootPane().setDefaultButton(btnAceptar);
 
-			JButton cancelButton = new JButton("Cancel");
-			cancelButton.setForeground(Color.WHITE);
-			cancelButton.setBackground(new Color(102, 0, 0));
-			cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-			cancelButton.setFocusPainted(false);
-			cancelButton.setActionCommand("Cancel");
-			buttonPane.add(cancelButton);
+			btnCancelar = new JButton("Cancelar");
+			btnCancelar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+				}
+			});
+			btnCancelar.setForeground(Color.WHITE);
+			btnCancelar.setBackground(new Color(102, 0, 0));
+			btnCancelar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+			btnCancelar.setFocusPainted(false);
+			btnCancelar.setActionCommand("Cancel");
+			buttonPane.add(btnCancelar);
 		}
+		
+		if (miEmpleado != null) {
+            loadEmpleado();
+        } else {
+            clean();
+        }
+		
 	}
+	
+	private void registrarEmpleado() {
+        if (miEmpleado != null) {
+            if (registrar()) {
+                JOptionPane.showMessageDialog(this, "Empleado modificado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                if(checkActivo.isSelected())
+                {
+                	miEmpleado.getUsuario().setFechaDesactivacion(null);
+                }
+                if(!checkActivo.isSelected())
+                	Altice.getInstance().desactivarEmpleado(miEmpleado.getCodigo());
+                dispose();
+            }
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea registrar este empleado?",
+                "Confirmar Registro",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) return;
+
+        if (registrar()) {
+            JOptionPane.showMessageDialog(this, "Empleado registrado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            clean();
+            txtNombre.requestFocus();
+        }
+    }
+
+	private boolean registrar() {
+        if (!validar()) {
+            return false;
+        }
+
+        String codigo = txtCodigo.getText();
+        String nombre = txtNombre.getText().trim();
+        String cedula = txtCedula.getText().trim();
+        String telefono = txtTelefono.getText().trim();
+        String direccion = txtDireccion.getText().trim();
+        String correo = txtCorreo.getText().trim();
+        String contra = new String(txtContra.getPassword());
+
+        float salario = ((Number) spinnerSalario.getValue()).floatValue();
+        float comision = ((Number) spinnerComision.getValue()).floatValue();
+
+        Rol tipo = Rol.TECNICO;
+        if (rdbtnComercial.isSelected()) tipo = Rol.COMERCIAL;
+        if (rdbtnAdministrador.isSelected()) tipo = Rol.ADMINISTRADOR;
+
+        Usuario user = new Usuario(codigo, correo, contra, tipo);
+        user.setActivo(checkActivo.isSelected());
+
+        Empleado nuevo = new Empleado(nombre, cedula, correo, telefono, direccion, user, comision, salario);
+        
+        if(miEmpleado == null)
+        	return Altice.getInstance().registrarEmpleado(nuevo);
+        
+        return Altice.getInstance().modificarEmpleado(nuevo);
+    }
+
+    private void clean() {
+        txtNombre.setText("");
+        txtCedula.setText("");
+        txtTelefono.setText("");
+        txtDireccion.setText("");
+        txtCorreo.setText("");
+        txtContra.setText("");
+        txtConfirmContra.setText("");
+        spinnerSalario.setValue(0);
+        spinnerComision.setValue(0);
+        checkActivo.setSelected(true);
+        rdbtnTecnico.setSelected(true);
+
+        txtCodigo.setText(String.format("E-%05d", Altice.getGenEmpleadoid()));
+
+        lblComision.setVisible(false);
+        spinnerComision.setVisible(false);
+    }
+    
+    private boolean validar() {
+        if (txtNombre.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+            txtNombre.requestFocus();
+            return false;
+        }
+        if (txtCedula.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+            txtCedula.requestFocus();
+            return false;
+        }
+        if (txtTelefono.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+            txtTelefono.requestFocus();
+            return false;
+        }
+        if (txtDireccion.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+            txtDireccion.requestFocus();
+            return false;
+        }
+        if (txtCorreo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+            txtCorreo.requestFocus();
+            return false;
+        }
+        if (txtContra.getPassword().length == 0) {
+            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+            txtContra.requestFocus();
+            return false;
+        }
+        if (!txtContra.getText().equals(txtConfirmContra.getText())) {
+            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden", "Error", JOptionPane.ERROR_MESSAGE);
+            txtConfirmContra.requestFocus();
+            return false;
+        }
+        if (((Number) spinnerSalario.getValue()).floatValue() <= 0) {
+            JOptionPane.showMessageDialog(this, "El salario debe ser mayor a 0", "Error", JOptionPane.ERROR_MESSAGE);
+            spinnerSalario.requestFocus();
+            return false;
+        }
+
+        if (miEmpleado == null) {
+            if (Altice.getInstance().buscarEmpleadoByCedula(txtCedula.getText().trim()) != null) {
+                JOptionPane.showMessageDialog(this, "Ya existe un empleado con esta cédula", "Error", JOptionPane.ERROR_MESSAGE);
+                txtCedula.requestFocus();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void loadEmpleado() {
+        if (miEmpleado == null) return;
+
+        txtCodigo.setText(miEmpleado.getCodigo());
+        txtNombre.setText(miEmpleado.getNombre());
+        txtCedula.setText(miEmpleado.getCedula());
+        txtTelefono.setText(miEmpleado.getTelefono());
+        txtDireccion.setText(miEmpleado.getDireccion());
+        txtCorreo.setText(miEmpleado.getEmail());
+
+        txtContra.setText(miEmpleado.getUsuario().getPassword());
+        txtConfirmContra.setText(miEmpleado.getUsuario().getPassword());
+
+        spinnerSalario.setValue(miEmpleado.getSalario());
+        if(miEmpleado.getComision() == null)
+        	spinnerComision.setValue(0);
+        else
+        	spinnerComision.setValue(miEmpleado.getComision());
+
+        checkActivo.setSelected(miEmpleado.getUsuario() != null && miEmpleado.getUsuario().isActivo());
+
+        Rol rolEmpleado = miEmpleado.getRol();
+        if(rolEmpleado==Rol.TECNICO)
+        	rdbtnTecnico.setSelected(true);
+        else if(rolEmpleado == Rol.COMERCIAL)
+        	rdbtnComercial.setSelected(true);
+        else if(rolEmpleado == Rol.ADMINISTRADOR)
+        	rdbtnAdministrador.setSelected(true);
+
+        lblComision.setVisible(!rdbtnTecnico.isSelected());
+        spinnerComision.setVisible(!rdbtnTecnico.isSelected());
+    }
 }

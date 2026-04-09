@@ -12,6 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+
+import logico.Empleado;
+import logico.Rol;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
@@ -21,23 +25,31 @@ import javax.swing.JComboBox;
 public class DetallesComercial extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private JTextField textField;          // Nombre
-    private JTextField textField_1;        // Cedula
-    private JTextField textField_2;        // Telefono
-    private JTextField textField_3;        // Direccion
-    private JTextField textField_4;        // Correo
-    private JPasswordField passwordField;  // Contraseña oculta
-    private JTextField textField_5;        // Código
+    private Empleado miEmpleado;
+    
+    private JTextField txtNombre;          // Nombre
+    private JTextField txtCedula;        // Cedula
+    private JTextField txtTelefono;        // Telefono
+    private JTextField txtDireccion;        // Direccion
+    private JTextField txtCorreo;        // Correo
+    private JPasswordField txtContra;  // Contraseña oculta
+    private JTextField txtCodigo;        // Código
     private JTextField passwordMostrar;    // Contraseña visible
-    private JTextField textField_6;
-    private JTextField textField_7;
+    private JTextField txtSalario;
+    private JTextField txtComision;
+    private JButton btnMostrar;
+    private JButton btnCancelar;
+    private JTextField txtRol;
+    private JTextField txtDesactivado;
+    private JTextField txtRegistro;
+    private JLabel lblFechaDesactivacion;
 
     /**
      * Launch the application.
      */
     public static void main(String[] args) {
         try {
-            DetallesComercial dialog = new DetallesComercial();
+            DetallesComercial dialog = new DetallesComercial(null);
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {
@@ -48,11 +60,12 @@ public class DetallesComercial extends JDialog {
     /**
      * Create the dialog.
      */
-    public DetallesComercial() {
+    public DetallesComercial(Empleado emp) {
         setResizable(false);
+        miEmpleado = emp;
         setTitle("Detalles del Empleado");
         setBounds(100, 100, 625, 929);
-        
+        setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
         
@@ -69,7 +82,6 @@ public class DetallesComercial extends JDialog {
             contentPanel.add(panel, BorderLayout.CENTER);
             panel.setLayout(null);
 
-            // ====================== PANEL DATOS DEL CLIENTE ======================
             {
                 JPanel panel_1 = new JPanel();
                 panel_1.setLayout(null);
@@ -78,7 +90,6 @@ public class DetallesComercial extends JDialog {
                 panel_1.setBounds(12, 13, 567, 336);
                 panel.add(panel_1);
 
-                // Código
                 {
                     JLabel lblCódigo = new JLabel("Código");
                     lblCódigo.setForeground(Color.WHITE);
@@ -87,15 +98,15 @@ public class DetallesComercial extends JDialog {
                     panel_1.add(lblCódigo);
                 }
                 {
-                    textField_5 = new JTextField();
-                    textField_5.setEditable(false);
-                    textField_5.setBackground(new Color(0, 0, 51));
-                    textField_5.setForeground(Color.WHITE);
-                    textField_5.setCaretColor(Color.WHITE);
-                    textField_5.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_5.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_5.setBounds(12, 42, 113, 24);
-                    panel_1.add(textField_5);
+                    txtCodigo = new JTextField();
+                    txtCodigo.setEditable(false);
+                    txtCodigo.setBackground(new Color(0, 0, 51));
+                    txtCodigo.setForeground(Color.WHITE);
+                    txtCodigo.setCaretColor(Color.WHITE);
+                    txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtCodigo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtCodigo.setBounds(12, 42, 113, 24);
+                    panel_1.add(txtCodigo);
                 }
 
                 // Nombre
@@ -107,15 +118,15 @@ public class DetallesComercial extends JDialog {
                     panel_1.add(label);
                 }
                 {
-                    textField = new JTextField();
-                    textField.setEditable(false);
-                    textField.setBackground(new Color(0, 0, 51));
-                    textField.setForeground(Color.WHITE);
-                    textField.setCaretColor(Color.WHITE);
-                    textField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField.setBounds(12, 108, 263, 24);
-                    panel_1.add(textField);
+                    txtNombre = new JTextField();
+                    txtNombre.setEditable(false);
+                    txtNombre.setBackground(new Color(0, 0, 51));
+                    txtNombre.setForeground(Color.WHITE);
+                    txtNombre.setCaretColor(Color.WHITE);
+                    txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtNombre.setBounds(12, 108, 263, 24);
+                    panel_1.add(txtNombre);
                 }
 
                 // Cédula
@@ -127,15 +138,15 @@ public class DetallesComercial extends JDialog {
                     panel_1.add(label_1);
                 }
                 {
-                    textField_1 = new JTextField();
-                    textField_1.setEditable(false);
-                    textField_1.setBackground(new Color(0, 0, 51));
-                    textField_1.setForeground(Color.WHITE);
-                    textField_1.setCaretColor(Color.WHITE);
-                    textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_1.setBounds(12, 172, 263, 24);
-                    panel_1.add(textField_1);
+                    txtCedula = new JTextField();
+                    txtCedula.setEditable(false);
+                    txtCedula.setBackground(new Color(0, 0, 51));
+                    txtCedula.setForeground(Color.WHITE);
+                    txtCedula.setCaretColor(Color.WHITE);
+                    txtCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtCedula.setBounds(12, 172, 263, 24);
+                    panel_1.add(txtCedula);
                 }
 
                 // Teléfono
@@ -147,15 +158,15 @@ public class DetallesComercial extends JDialog {
                     panel_1.add(label_2);
                 }
                 {
-                    textField_2 = new JTextField();
-                    textField_2.setEditable(false);
-                    textField_2.setBackground(new Color(0, 0, 51));
-                    textField_2.setForeground(Color.WHITE);
-                    textField_2.setCaretColor(Color.WHITE);
-                    textField_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_2.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_2.setBounds(12, 236, 263, 24);
-                    panel_1.add(textField_2);
+                    txtTelefono = new JTextField();
+                    txtTelefono.setEditable(false);
+                    txtTelefono.setBackground(new Color(0, 0, 51));
+                    txtTelefono.setForeground(Color.WHITE);
+                    txtTelefono.setCaretColor(Color.WHITE);
+                    txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtTelefono.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtTelefono.setBounds(12, 236, 263, 24);
+                    panel_1.add(txtTelefono);
                 }
 
                 // Dirección
@@ -167,15 +178,15 @@ public class DetallesComercial extends JDialog {
                     panel_1.add(label_3);
                 }
                 {
-                    textField_3 = new JTextField();
-                    textField_3.setEditable(false);
-                    textField_3.setBackground(new Color(0, 0, 51));
-                    textField_3.setForeground(Color.WHITE);
-                    textField_3.setCaretColor(Color.WHITE);
-                    textField_3.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_3.setBounds(287, 172, 263, 24);
-                    panel_1.add(textField_3);
+                    txtDireccion = new JTextField();
+                    txtDireccion.setEditable(false);
+                    txtDireccion.setBackground(new Color(0, 0, 51));
+                    txtDireccion.setForeground(Color.WHITE);
+                    txtDireccion.setCaretColor(Color.WHITE);
+                    txtDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtDireccion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtDireccion.setBounds(287, 172, 263, 24);
+                    panel_1.add(txtDireccion);
                 }
 
                 // Correo electrónico
@@ -187,15 +198,15 @@ public class DetallesComercial extends JDialog {
                     panel_1.add(label_4);
                 }
                 {
-                    textField_4 = new JTextField();
-                    textField_4.setEditable(false);
-                    textField_4.setBackground(new Color(0, 0, 51));
-                    textField_4.setForeground(Color.WHITE);
-                    textField_4.setCaretColor(Color.WHITE);
-                    textField_4.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_4.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_4.setBounds(287, 108, 263, 24);
-                    panel_1.add(textField_4);
+                    txtCorreo = new JTextField();
+                    txtCorreo.setEditable(false);
+                    txtCorreo.setBackground(new Color(0, 0, 51));
+                    txtCorreo.setForeground(Color.WHITE);
+                    txtCorreo.setCaretColor(Color.WHITE);
+                    txtCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtCorreo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtCorreo.setBounds(287, 108, 263, 24);
+                    panel_1.add(txtCorreo);
                 }
 
                 // Contraseña (campo oculto)
@@ -207,14 +218,14 @@ public class DetallesComercial extends JDialog {
                     panel_1.add(label_5);
                 }
                 {
-                    passwordField = new JPasswordField();
-                    passwordField.setEditable(false);
-                    passwordField.setBackground(new Color(0, 0, 51));
-                    passwordField.setForeground(Color.WHITE);
-                    passwordField.setCaretColor(Color.WHITE);
-                    passwordField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    passwordField.setBounds(287, 236, 263, 24);
-                    panel_1.add(passwordField);
+                    txtContra = new JPasswordField();
+                    txtContra.setEditable(false);
+                    txtContra.setBackground(new Color(0, 0, 51));
+                    txtContra.setForeground(Color.WHITE);
+                    txtContra.setCaretColor(Color.WHITE);
+                    txtContra.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtContra.setBounds(287, 236, 263, 24);
+                    panel_1.add(txtContra);
                 }
 
                 // Campo para mostrar contraseña
@@ -231,20 +242,9 @@ public class DetallesComercial extends JDialog {
                     passwordMostrar.setVisible(false); // Oculto por defecto
                 }
 
-                // Checkbox Activo
-                {
-                    JCheckBox chckbxNewCheckBox = new JCheckBox("Activo");
-                    chckbxNewCheckBox.setSelected(true);
-                    chckbxNewCheckBox.setForeground(Color.WHITE);
-                    chckbxNewCheckBox.setBackground(new Color(102, 102, 204));
-                    chckbxNewCheckBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    chckbxNewCheckBox.setBounds(12, 273, 113, 25);
-                    panel_1.add(chckbxNewCheckBox);
-                }
-
                 // Botón Mostrar Contraseña
                 {
-                    JButton btnMostrar = new JButton("Mostrar Contraseña");
+                    btnMostrar = new JButton("Mostrar Contraseña");
                     btnMostrar.setForeground(Color.WHITE);
                     btnMostrar.setBackground(new Color(0, 0, 51));
                     btnMostrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -252,18 +252,72 @@ public class DetallesComercial extends JDialog {
                     btnMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
                     btnMostrar.setBounds(405, 273, 145, 25);
                     panel_1.add(btnMostrar);
+                    
+                    JLabel Rol = new JLabel("Rol");
+                    Rol.setForeground(Color.WHITE);
+                    Rol.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    Rol.setBounds(137, 13, 56, 16);
+                    panel_1.add(Rol);
+                    
+                    txtRol = new JTextField();
+                    txtRol.setForeground(Color.WHITE);
+                    txtRol.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtRol.setEditable(false);
+                    txtRol.setCaretColor(Color.WHITE);
+                    txtRol.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtRol.setBackground(new Color(0, 0, 51));
+                    txtRol.setBounds(137, 42, 138, 24);
+                    panel_1.add(txtRol);
+                    {
+                    	JLabel lblFechaRegistro = new JLabel("Fecha Registro");
+                    	lblFechaRegistro.setForeground(Color.WHITE);
+                    	lblFechaRegistro.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    	lblFechaRegistro.setBounds(12, 270, 91, 16);
+                    	panel_1.add(lblFechaRegistro);
+                    }
+                    {
+                    	lblFechaDesactivacion = new JLabel("Fecha Desactivacion");
+                    	lblFechaDesactivacion.setForeground(Color.WHITE);
+                    	lblFechaDesactivacion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    	lblFechaDesactivacion.setBounds(153, 271, 122, 16);
+                    	panel_1.add(lblFechaDesactivacion);
+                    }
+                    {
+                    	txtDesactivado = new JTextField();
+                    	txtDesactivado.setText((String) null);
+                    	txtDesactivado.setForeground(Color.WHITE);
+                    	txtDesactivado.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    	txtDesactivado.setEditable(false);
+                    	txtDesactivado.setCaretColor(Color.WHITE);
+                    	txtDesactivado.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    	txtDesactivado.setBackground(new Color(0, 0, 51));
+                    	txtDesactivado.setBounds(153, 300, 122, 24);
+                    	panel_1.add(txtDesactivado);
 
-                    // Funcionalidad básica del botón (mostrar/ocultar contraseña)
+                    }
+                    {
+                    	txtRegistro = new JTextField();
+                    	txtRegistro.setText((String) null);
+                    	txtRegistro.setForeground(Color.WHITE);
+                    	txtRegistro.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    	txtRegistro.setEditable(false);
+                    	txtRegistro.setCaretColor(Color.WHITE);
+                    	txtRegistro.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    	txtRegistro.setBackground(new Color(0, 0, 51));
+                    	txtRegistro.setBounds(12, 300, 122, 24);
+                    	panel_1.add(txtRegistro);
+                    }
+
                     btnMostrar.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             if (passwordMostrar.isVisible()) {
                                 passwordMostrar.setVisible(false);
-                                passwordField.setVisible(true);
+                                txtContra.setVisible(true);
                                 btnMostrar.setText("Mostrar Contraseña");
                             } else {
-                                passwordMostrar.setText(new String(passwordField.getPassword()));
+                                passwordMostrar.setText(new String(txtContra.getPassword()));
                                 passwordMostrar.setVisible(true);
-                                passwordField.setVisible(false);
+                                txtContra.setVisible(false);
                                 btnMostrar.setText("Ocultar Contraseña");
                             }
                         }
@@ -284,7 +338,7 @@ public class DetallesComercial extends JDialog {
                     JPanel panel_3 = new JPanel();
                     panel_3.setBackground(new Color(0, 0, 51));
                     panel_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    panel_3.setBounds(12, 77, 543, 190);
+                    panel_3.setBounds(12, 66, 543, 201);
                     panel_2.add(panel_3);
                     // Aquí irá tu JTable o lista de contratos más adelante
                 }
@@ -305,7 +359,7 @@ public class DetallesComercial extends JDialog {
                             comboBox.setForeground(Color.WHITE);
                             comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
                             comboBox.setBackground(new Color(0, 0, 51));
-                            comboBox.setBounds(238, 39, 208, 24);
+                            comboBox.setBounds(238, 27, 208, 24);
                             panel_2.add(comboBox);
                             
                             JButton button = new JButton("Filtrar");
@@ -314,7 +368,7 @@ public class DetallesComercial extends JDialog {
                             button.setFocusPainted(false);
                             button.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
                             button.setBackground(new Color(0, 0, 51));
-                            button.setBounds(458, 39, 97, 25);
+                            button.setBounds(458, 27, 97, 25);
                             panel_2.add(button);
             }
             {
@@ -332,26 +386,26 @@ public class DetallesComercial extends JDialog {
             		panel_1.add(lblSalario);
             	}
             	{
-            		textField_6 = new JTextField();
-            		textField_6.setForeground(Color.WHITE);
-            		textField_6.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            		textField_6.setEditable(false);
-            		textField_6.setCaretColor(Color.WHITE);
-            		textField_6.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            		textField_6.setBackground(new Color(0, 0, 51));
-            		textField_6.setBounds(12, 53, 135, 24);
-            		panel_1.add(textField_6);
+            		txtSalario = new JTextField();
+            		txtSalario.setForeground(Color.WHITE);
+            		txtSalario.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            		txtSalario.setEditable(false);
+            		txtSalario.setCaretColor(Color.WHITE);
+            		txtSalario.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            		txtSalario.setBackground(new Color(0, 0, 51));
+            		txtSalario.setBounds(12, 53, 135, 24);
+            		panel_1.add(txtSalario);
             	}
             	{
-            		textField_7 = new JTextField();
-            		textField_7.setForeground(Color.WHITE);
-            		textField_7.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            		textField_7.setEditable(false);
-            		textField_7.setCaretColor(Color.WHITE);
-            		textField_7.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            		textField_7.setBackground(new Color(0, 0, 51));
-            		textField_7.setBounds(159, 53, 135, 24);
-            		panel_1.add(textField_7);
+            		txtComision = new JTextField();
+            		txtComision.setForeground(Color.WHITE);
+            		txtComision.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            		txtComision.setEditable(false);
+            		txtComision.setCaretColor(Color.WHITE);
+            		txtComision.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            		txtComision.setBackground(new Color(0, 0, 51));
+            		txtComision.setBounds(159, 53, 135, 24);
+            		panel_1.add(txtComision);
             	}
             	{
             		JLabel lblComision = new JLabel("Comision");
@@ -392,7 +446,6 @@ public class DetallesComercial extends JDialog {
             }
         }
 
-        // ====================== BOTONES INFERIORES OK / CANCEL ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -401,22 +454,49 @@ public class DetallesComercial extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            okButton.setActionCommand("OK");
-            buttonPane.add(okButton);
-            getRootPane().setDefaultButton(okButton);
-
-            JButton cancelButton = new JButton("Cancel");
-            cancelButton.setForeground(Color.WHITE);
-            cancelButton.setBackground(new Color(102, 0, 0));
-            cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            cancelButton.setFocusPainted(false);
-            cancelButton.setActionCommand("Cancel");
-            buttonPane.add(cancelButton);
+            btnCancelar = new JButton("Salir");
+            btnCancelar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		dispose();
+            	}
+            });
+            btnCancelar.setForeground(Color.WHITE);
+            btnCancelar.setBackground(new Color(102, 0, 0));
+            btnCancelar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btnCancelar.setFocusPainted(false);
+            btnCancelar.setActionCommand("Cancel");
+            buttonPane.add(btnCancelar);
         }
+    	if(miEmpleado.isActivo())
+    	{
+    		lblFechaDesactivacion.setVisible(false);
+    		txtDesactivado.setVisible(false);
+    	}
+        loadEmpleado();
+    }
+    private void loadEmpleado() {
+        if (miEmpleado == null) return;
+
+        txtCodigo.setText(miEmpleado.getCodigo());
+        txtNombre.setText(miEmpleado.getNombre());
+        txtCedula.setText(miEmpleado.getCedula());
+        txtTelefono.setText(miEmpleado.getTelefono());
+        txtDireccion.setText(miEmpleado.getDireccion());
+        txtCorreo.setText(miEmpleado.getEmail());
+
+        txtContra.setText(miEmpleado.getUsuario().getPassword());
+        passwordMostrar.setText(miEmpleado.getUsuario().getPassword());
+
+        txtSalario.setText(("RD$")+miEmpleado.getSalario().toString());
+        if(miEmpleado.getComision() == null)
+        	txtComision.setText(("RD$")+miEmpleado.getComision().toString());
+        else
+        	txtComision.setText(("RD$")+miEmpleado.getComision().toString());
+
+        txtRol.setText(miEmpleado.getRol().name());
+        txtRegistro.setText(miEmpleado.getUsuario().getFechaRegistro().toString());
+        if(!miEmpleado.isActivo())
+        	txtDesactivado.setText(miEmpleado.getUsuario().getFechaDesactivacion().toString());
+        
     }
 }

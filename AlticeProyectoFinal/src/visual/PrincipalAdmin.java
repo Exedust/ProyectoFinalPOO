@@ -30,6 +30,9 @@ import javax.swing.JTabbedPane;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JMenuItem;
 
 public class PrincipalAdmin extends JFrame {
 
@@ -77,6 +80,32 @@ public class PrincipalAdmin extends JFrame {
 		mnEmpleados.setForeground(Color.WHITE);
 		mnEmpleados.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		menuBar.add(mnEmpleados);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Registrar");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RegistrarEmpleado registrar = new RegistrarEmpleado(null);
+				registrar.setModal(true);
+				registrar.setVisible(true);
+			}
+		});
+		mntmNewMenuItem.setBackground(new Color(0, 0, 102));
+		mntmNewMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmNewMenuItem.setForeground(Color.WHITE);
+		mnEmpleados.add(mntmNewMenuItem);
+		
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Listar");
+		mntmNewMenuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GestionEmpleados listar = new GestionEmpleados();
+				listar.setModal(true);
+				listar.setVisible(true);
+			}
+		});
+		mntmNewMenuItem_1.setBackground(new Color(0, 0, 102));
+		mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmNewMenuItem_1.setForeground(Color.WHITE);
+		mnEmpleados.add(mntmNewMenuItem_1);
 		
 		JMenu mnClientes = new JMenu("Clientes");
 		mnClientes.setForeground(Color.WHITE);
@@ -171,6 +200,13 @@ public class PrincipalAdmin extends JFrame {
 		cardEmpleados.add(iconEmpleados, BorderLayout.CENTER);
 
 		JButton btnGestionarEmpleados = new JButton("Gestionar");
+		btnGestionarEmpleados.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GestionEmpleados gestionar = new GestionEmpleados();
+				gestionar.setModal(true);
+				gestionar.setVisible(true);
+			}
+		});
 		btnGestionarEmpleados.setForeground(Color.WHITE);
 		btnGestionarEmpleados.setBackground(new Color(0, 0, 51));
 		btnGestionarEmpleados.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -236,7 +272,7 @@ public class PrincipalAdmin extends JFrame {
 		gbcPlanes.ipadx = 20;
 		gbcPlanes.insets = new Insets(20, 20, 20, 20);
 		gbcPlanes.fill = GridBagConstraints.BOTH;
-		gbcPlanes.gridx = 3;
+		gbcPlanes.gridx = 4;
 		gbcPlanes.gridy = 0;
 
 		JPanel cardPlanes = new JPanel(new BorderLayout());
@@ -259,32 +295,52 @@ public class PrincipalAdmin extends JFrame {
 
 		dashboardPanel.add(cardPlanes, gbcPlanes);
 
-		GridBagConstraints gbcReportes = new GridBagConstraints();
-		gbcReportes.ipadx = 20;
-		gbcReportes.insets = new Insets(20, 20, 20, 20);
-		gbcReportes.fill = GridBagConstraints.BOTH;
-		gbcReportes.gridx = 4;
-		gbcReportes.gridy = 0;
+		GridBagConstraints gbcPagos = new GridBagConstraints();
+		gbcPagos.ipadx = 20;
+        gbcPagos.gridx = 3;
+        gbcPagos.gridy = 0;
+        gbcPagos.insets = new Insets(20, 20, 20, 20);
+        gbcPagos.fill = GridBagConstraints.BOTH;
+        JPanel cardPagos = new JPanel(new BorderLayout());
+        cardPagos.setBackground(new Color(102, 102, 204));
+        cardPagos.setBorder(new TitledBorder(null, "Pagos", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+        cardPagos.setPreferredSize(new Dimension(220, 200));
+        JLabel iconPagos = new JLabel();
+        iconPagos.setHorizontalAlignment(SwingConstants.CENTER);
+        ImageIcon pagosIcon = new ImageIcon(PrincipalAdmin.class.getResource("/img/pago.png"));
+        Image pagosImage = pagosIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        iconPagos.setIcon(new ImageIcon(pagosImage));
+        cardPagos.add(iconPagos, BorderLayout.CENTER);
+        JButton btnGestionarPagos = new JButton("Gestionar");
+        btnGestionarPagos.setForeground(Color.WHITE);
+        btnGestionarPagos.setBackground(new Color(0, 0, 51));
+        btnGestionarPagos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        cardPagos.add(btnGestionarPagos, BorderLayout.SOUTH);
+        dashboardPanel.add(cardPagos, gbcPagos);
 
-		JPanel cardReportes = new JPanel(new BorderLayout());
-		cardReportes.setBackground(new Color(102, 102, 204));
-		cardReportes.setBorder(new TitledBorder(null, "Reportes", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
-		cardReportes.setPreferredSize(new Dimension(220, 200));
-
-		JLabel iconReportes = new JLabel();
-		iconReportes.setHorizontalAlignment(SwingConstants.CENTER);
-		ImageIcon reportesIcon = new ImageIcon(PrincipalAdmin.class.getResource("/img/reporte.png"));
-		Image reportesImage = reportesIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-		iconReportes.setIcon(new ImageIcon(reportesImage));
-		cardReportes.add(iconReportes, BorderLayout.CENTER);
-
-		JButton btnGestionarReportes = new JButton("Gestionar");
-		btnGestionarReportes.setForeground(Color.WHITE);
-		btnGestionarReportes.setBackground(new Color(0, 0, 51));
-		btnGestionarReportes.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		cardReportes.add(btnGestionarReportes, BorderLayout.SOUTH);
-
-		dashboardPanel.add(cardReportes, gbcReportes);
+        // Tarjeta Reportes
+        GridBagConstraints gbcReportes = new GridBagConstraints();
+        gbcReportes.ipadx = 20;
+        gbcReportes.gridx = 5;
+        gbcReportes.gridy = 0;
+        gbcReportes.insets = new Insets(20, 20, 20, 20);
+        gbcReportes.fill = GridBagConstraints.BOTH;
+        JPanel cardReportes = new JPanel(new BorderLayout());
+        cardReportes.setBackground(new Color(102, 102, 204));
+        cardReportes.setBorder(new TitledBorder(null, "Reportes", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+        cardReportes.setPreferredSize(new Dimension(220, 200));
+        JLabel iconReportes = new JLabel();
+        iconReportes.setHorizontalAlignment(SwingConstants.CENTER);
+        ImageIcon reportesIcon = new ImageIcon(PrincipalAdmin.class.getResource("/img/reporte.png"));
+        Image reportesImage = reportesIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        iconReportes.setIcon(new ImageIcon(reportesImage));
+        cardReportes.add(iconReportes, BorderLayout.CENTER);
+        JButton btnGestionarReportes = new JButton("Gestionar");
+        btnGestionarReportes.setForeground(Color.WHITE);
+        btnGestionarReportes.setBackground(new Color(0, 0, 51));
+        btnGestionarReportes.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        cardReportes.add(btnGestionarReportes, BorderLayout.SOUTH);
+        dashboardPanel.add(cardReportes, gbcReportes);
 
 		ImageIcon icon = new ImageIcon(PrincipalAdmin.class.getResource("/img/alticeblanco.png"));
 		Image image = icon.getImage();

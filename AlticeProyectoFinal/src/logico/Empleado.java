@@ -7,16 +7,16 @@ public class Empleado extends Persona {
 		this.comision = comision;
 		this.salario = salario;
 	}
-	private float comision;
-	private float salario;
+	private Float comision;
+	private Float salario;
 	
-	public float getComision() {
+	public Float getComision() {
 		return comision;
 	}
 	public void setComision(float comision) {
 		this.comision = comision;
 	}
-	public float getSalario() {
+	public Float getSalario() {
 		return salario;
 	}
 	public void setSalario(float salario) {

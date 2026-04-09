@@ -21,18 +21,6 @@ public class Solicitud {
 	private LocalDate fechaRegistro;
 	private LocalDate fechaAtencion;
 	
-	public void completar()
-	{
-		setEstado(EstadoSolicitud.COMPLETADA);
-		setFechaAtencion(LocalDate.now());
-	}
-	
-	public void asignarEmpleado(String id)
-	{
-		setEmpleado(Altice.getInstance().buscarEmpleadobyId(id));
-		setEstado(EstadoSolicitud.EN_PROCESO);
-	}
-	
 	public boolean isResuelto()
 	{
 		return estado == EstadoSolicitud.COMPLETADA;
@@ -41,11 +29,6 @@ public class Solicitud {
 	{
 		return estado == EstadoSolicitud.CANCELADA;
 	}
-	public void cancelar()
-	{
-		setEstado(EstadoSolicitud.CANCELADA);
-	}
-	
 	public String getCodigo() {
 		return codigo;
 	}

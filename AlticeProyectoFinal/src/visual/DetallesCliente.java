@@ -20,14 +20,14 @@ import javax.swing.JCheckBox;
 public class DetallesCliente extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private JTextField textField;          // Nombre
-    private JTextField textField_1;        // Cedula
-    private JTextField textField_2;        // Telefono
-    private JTextField textField_3;        // Direccion
-    private JTextField textField_4;        // Correo
-    private JPasswordField passwordField;  // Contraseña oculta
-    private JTextField textField_5;        // Código
-    private JTextField passwordMostrar;    // Contraseña visible
+    private JTextField textField;          
+    private JTextField textField_1;        
+    private JTextField textField_2;        
+    private JTextField textField_3;        
+    private JTextField textField_4;        
+    private JPasswordField passwordField;  
+    private JTextField textField_5;        
+    private JTextField passwordMostrar;    
 
     /**
      * Launch the application.
@@ -239,7 +239,6 @@ public class DetallesCliente extends JDialog {
                     panel_1.add(chckbxNewCheckBox);
                 }
 
-                // Botón Mostrar Contraseña
                 {
                     JButton btnMostrar = new JButton("Mostrar Contraseña");
                     btnMostrar.setForeground(Color.WHITE);
@@ -250,7 +249,7 @@ public class DetallesCliente extends JDialog {
                     btnMostrar.setBounds(405, 273, 145, 25);
                     panel_1.add(btnMostrar);
 
-                    // Funcionalidad básica del botón (mostrar/ocultar contraseña)
+                 
                     btnMostrar.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             if (passwordMostrar.isVisible()) {

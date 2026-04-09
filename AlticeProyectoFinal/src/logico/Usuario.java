@@ -17,6 +17,7 @@ public class Usuario {
 	private String password;
 	private Rol rol;
 	private LocalDate fechaRegistro;
+	private LocalDate fechaDesactivacion;
 	private boolean activo;
 	
 	public String getCodigo() {
@@ -55,9 +56,10 @@ public class Usuario {
 	public void setRol(Rol rol) {
 		this.rol = rol;
 	}
-	
-	public void desactivar()
-	{
-		setActivo(false);
+	public LocalDate getFechaDesactivacion() {
+		return fechaDesactivacion;
+	}
+	public void setFechaDesactivacion(LocalDate fechaDesactivacion) {
+		this.fechaDesactivacion = fechaDesactivacion;
 	}
 }
