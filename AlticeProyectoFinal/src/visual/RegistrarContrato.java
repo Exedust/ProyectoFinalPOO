@@ -22,6 +22,7 @@ import java.awt.Color;
 import javax.swing.border.TitledBorder;
 
 import logico.Altice;
+import logico.Cliente;
 import logico.Contrato;
 import logico.Empleado;
 import logico.Persona;
@@ -40,7 +41,7 @@ public class RegistrarContrato extends JDialog {
 	private Persona selected;
 	
 	private JPanel buttonPane;
-	private JButton okButton;
+	private JButton btnAceptar;
 	private JButton cancelButton;
 	private JPanel panel;
 	private JPanel panelExistente;
@@ -52,7 +53,6 @@ public class RegistrarContrato extends JDialog {
 	private JTextField txtCorreo;
 	private JTextField txtDireccion;
 	private JPanel panel_1;
-	private JCheckBox checkActivo;
 	private JLabel lblPlan;
 	private JTextField txtCodigo;
 	private JLabel label_8;
@@ -73,7 +73,7 @@ public class RegistrarContrato extends JDialog {
 		setResizable(false);
 		setTitle("Registrar Contrato");
 		
-		setBounds(100, 100, 697, 709);
+		setBounds(100, 100, 697, 644);
 		setLocationRelativeTo(null);
 		getContentPane().setBackground(new Color(0, 0, 51));
 		getContentPane().setLayout(new BorderLayout());
@@ -215,14 +215,6 @@ public class RegistrarContrato extends JDialog {
 		lblPlan.setBounds(298, 13, 38, 16);
 		panel_1.add(lblPlan);
 		
-		checkActivo = new JCheckBox("Activo");
-		checkActivo.setBackground(new Color(102, 102, 204));
-		checkActivo.setForeground(new Color(255, 255, 255));
-		checkActivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		checkActivo.setSelected(true);
-		checkActivo.setBounds(292, 539, 77, 25);
-		panel.add(checkActivo);
-		
 		txtCodigo = new JTextField();
 		txtCodigo.setEditable(false);
 		txtCodigo.setForeground(Color.WHITE);
@@ -277,14 +269,19 @@ public class RegistrarContrato extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				okButton = new JButton("OK");
-				okButton.setForeground(Color.WHITE);
-				okButton.setBackground(new Color(0, 0, 51));
-				okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-				okButton.setFocusPainted(false);
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+				btnAceptar = new JButton("Aceptar");
+				btnAceptar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						registrarContrato();
+					}
+				});
+				btnAceptar.setForeground(Color.WHITE);
+				btnAceptar.setBackground(new Color(0, 0, 51));
+				btnAceptar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+				btnAceptar.setFocusPainted(false);
+				btnAceptar.setActionCommand("OK");
+				buttonPane.add(btnAceptar);
+				getRootPane().setDefaultButton(btnAceptar);
 			}
 			{
 				cancelButton = new JButton("Cancel");
@@ -329,16 +326,37 @@ public class RegistrarContrato extends JDialog {
 	    }
 	}
 
+	private void clean() {
+	    txtCedula.setText("");
+	    txtNombre.setText("");
+	    txtTelefono.setText("");
+	    txtDireccion.setText("");
+	    txtCorreo.setText("");
+	    
+	    comboPlan.removeAllItems();
+	    comboPlan.addItem("Seleccione un plan...");
+	    
+	    txtCodigo.setText(String.format("CO-%05d", Altice.getGenContratoid()));
+	    
+	    selected = null;
+	    
+	    btnNuevo.setEnabled(true);
+	    btnBuscar.setVisible(true);
+	    txtCedula.setEditable(true);
+	    
+	    txtCedula.requestFocus();
+	}
+	
 	private void registrarContrato() {
 	    if (selected == null) {
-	        JOptionPane.showMessageDialog(this, "Debe buscar y seleccionar una persona primero.", 
+	        JOptionPane.showMessageDialog(this, "Debe buscar y seleccionar una persona primero.",
 	            "Error", JOptionPane.ERROR_MESSAGE);
 	        return;
 	    }
 
 	    if (comboPlan.getSelectedItem() == null || 
 	        comboPlan.getSelectedItem().toString().contains("No hay planes")) {
-	        JOptionPane.showMessageDialog(this, "Debe seleccionar un plan válido.", 
+	        JOptionPane.showMessageDialog(this, "Debe seleccionar un plan válido.",
 	            "Error", JOptionPane.ERROR_MESSAGE);
 	        return;
 	    }
@@ -352,14 +370,16 @@ public class RegistrarContrato extends JDialog {
 	    if (opcion != JOptionPane.YES_OPTION) {
 	        return;
 	    }
-/*
+
 	    if (registrar()) {
-	        JOptionPane.showMessageDialog(this, "Contrato registrado correctamente", 
+	        JOptionPane.showMessageDialog(this, "Contrato registrado correctamente",
 	            "Éxito", JOptionPane.INFORMATION_MESSAGE);
-	        }
- */        
+	        
+	        clean();                    
+	        txtCedula.requestFocus();   
+	    }
 	}
-    /*
+
 	private boolean registrar() {
 	    if (!validar()) {
 	        return false;
@@ -373,14 +393,13 @@ public class RegistrarContrato extends JDialog {
 	            "Error", JOptionPane.ERROR_MESSAGE);
 	        return false;
 	    }
-
-	    Contrato nuevoContrato = new Contrato(codigo, selected, planSeleccionado);
-	    nuevoContrato.setActivo(checkActivo.isSelected());
-
+	    Empleado emp = Altice.getInstance().buscarEmpleadoById(Altice.getSesion().getCodigo());
+	    
+	    Contrato nuevoContrato = new Contrato(codigo, emp, selected, planSeleccionado);
 
 	    return Altice.getInstance().registrarContrato(nuevoContrato);
 	}
-	*/
+
 	private boolean validar() {
 	    if (selected == null) {
 	        JOptionPane.showMessageDialog(this, "Debe seleccionar una persona (cliente o empleado).", 
@@ -441,5 +460,6 @@ public class RegistrarContrato extends JDialog {
 	        }
 	    }
 	}
+	
     
 }

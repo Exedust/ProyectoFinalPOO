@@ -36,6 +36,8 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -285,6 +287,11 @@ public class PrincipalAdmin extends JFrame {
 			lblBienvenido.setText("Bienvenido, "+Altice.getInstance().buscarEmpleadoById((Altice.getSesion().getCodigo())).getNombre());
 		
 		JButton btnCerrarSesion = new JButton("Cerrar sesión");
+		btnCerrarSesion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cerrarSesion();
+			}
+		});
 		btnCerrarSesion.setForeground(Color.WHITE);
 		btnCerrarSesion.setBackground(new Color(102, 0, 0));
 		btnCerrarSesion.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -397,6 +404,13 @@ public class PrincipalAdmin extends JFrame {
 		cardContratos.add(iconContratos, BorderLayout.CENTER);
 
 		JButton btnGestionarContratos = new JButton("Gestionar");
+		btnGestionarContratos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GestionContratos gestion = new GestionContratos();
+				gestion.setModal(true);
+				gestion.setVisible(true);
+			}
+		});
 		btnGestionarContratos.setForeground(Color.WHITE);
 		btnGestionarContratos.setBackground(new Color(0, 0, 51));
 		btnGestionarContratos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -488,5 +502,22 @@ public class PrincipalAdmin extends JFrame {
 		ImageIcon icon = new ImageIcon(PrincipalAdmin.class.getResource("/img/alticeblanco.png"));
 		Image image = icon.getImage();
 
+	}
+	
+	private void cerrarSesion()
+	{
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Seguro que desea cerrar sesión?",
+                "Cerrar Sesión",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) return;
+        
+        Altice.getInstance().cerrarSesion();
+        Login log = new Login();
+        dispose();
+        log.setVisible(true);
+        Altice.getInstance().guardarDatos();
 	}
 }

@@ -86,7 +86,7 @@ public class Login extends JFrame {
         panel.add(panelLogin);
         panelLogin.setLayout(null);
 
-        JLabel lblUsuario = new JLabel("Usuario");
+        JLabel lblUsuario = new JLabel("Correo");
         lblUsuario.setForeground(Color.WHITE);
         lblUsuario.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         lblUsuario.setBounds(191, 39, 58, 14);
@@ -110,7 +110,7 @@ public class Login extends JFrame {
         JButton btnIniciar = new JButton("Iniciar Sesión");
         btnIniciar.setForeground(Color.WHITE);
         btnIniciar.setBackground(new Color(0, 0, 51));
-        btnIniciar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnIniciar.setFont(new Font("Segoe UI", Font.BOLD, 16));
         btnIniciar.setBounds(151, 224, 139, 40);
         panelLogin.add(btnIniciar);
 

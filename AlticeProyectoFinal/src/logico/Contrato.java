@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Contrato implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public Contrato(String codigo, Empleado empleado, Cliente cliente, Plan plan) {
+	public Contrato(String codigo, Empleado empleado, Persona cliente, Plan plan) {
 		super();
 		this.codigo = codigo;
 		this.empleado = empleado;
