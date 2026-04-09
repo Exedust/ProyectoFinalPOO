@@ -10,17 +10,22 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+
+import logico.Plan;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JCheckBox;
 import javax.swing.UIManager;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class DetallesPlan extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
+    private Plan miPlan;
     
-    // Campos de información (solo lectura)
     private JTextField txtNombre;
     private JTextPane txtDescripcion;
     private JTextField txtBajada;
@@ -37,10 +42,15 @@ public class DetallesPlan extends JDialog {
     private JCheckBox chckbxMovil;
     private JCheckBox chckbxPackBasico;
     private JCheckBox chckbxPackPremium;
+    private JTextField txtCodigo;
+    private JPanel panelInternet;
+    private JPanel panelCable;
+    private JPanel panelMovil;
+    private JButton cancelButton;
 
     public static void main(String[] args) {
         try {
-            DetallesPlan dialog = new DetallesPlan();
+            DetallesPlan dialog = new DetallesPlan(null);
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {
@@ -48,11 +58,12 @@ public class DetallesPlan extends JDialog {
         }
     }
 
-    public DetallesPlan() {
+    public DetallesPlan(Plan plan) {
         setTitle("Detalles del Plan");
+        miPlan = plan;
         setResizable(false);
-        setBounds(100, 100, 595, 783);
-        
+        setBounds(100, 100, 595, 814);
+        setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
         
@@ -75,7 +86,7 @@ public class DetallesPlan extends JDialog {
                 panelGeneral.setLayout(null);
                 panelGeneral.setBackground(new Color(102, 102, 204));
                 panelGeneral.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                panelGeneral.setBounds(23, 13, 510, 207);
+                panelGeneral.setBounds(25, 46, 510, 207);
                 panel.add(panelGeneral);
 
                 {
@@ -124,7 +135,7 @@ public class DetallesPlan extends JDialog {
                 panelServicios.setBackground(new Color(102, 102, 204));
                 panelServicios.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Servicios Incluidos", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelServicios.setBounds(23, 245, 510, 71);
+                panelServicios.setBounds(25, 278, 510, 71);
                 panel.add(panelServicios);
 
                 {
@@ -158,12 +169,12 @@ public class DetallesPlan extends JDialog {
 
             // ====================== PANEL INTERNET ======================
             {
-                JPanel panelInternet = new JPanel();
+                panelInternet = new JPanel();
                 panelInternet.setLayout(null);
                 panelInternet.setBackground(new Color(102, 102, 204));
                 panelInternet.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Internet", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelInternet.setBounds(23, 339, 137, 232);
+                panelInternet.setBounds(25, 372, 137, 232);
                 panel.add(panelInternet);
 
                 {
@@ -224,12 +235,12 @@ public class DetallesPlan extends JDialog {
 
             // ====================== PANEL CABLE ======================
             {
-                JPanel panelCable = new JPanel();
+                panelCable = new JPanel();
                 panelCable.setLayout(null);
                 panelCable.setBackground(new Color(102, 102, 204));
                 panelCable.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Cable", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelCable.setBounds(215, 339, 137, 232);
+                panelCable.setBounds(217, 372, 137, 232);
                 panel.add(panelCable);
 
                 {
@@ -272,12 +283,12 @@ public class DetallesPlan extends JDialog {
 
             // ====================== PANEL MOVIL ======================
             {
-                JPanel panelMovil = new JPanel();
+                panelMovil = new JPanel();
                 panelMovil.setLayout(null);
                 panelMovil.setBackground(new Color(102, 102, 204));
                 panelMovil.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Movil", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelMovil.setBounds(396, 339, 137, 232);
+                panelMovil.setBounds(398, 372, 137, 232);
                 panel.add(panelMovil);
 
                 {
@@ -342,7 +353,7 @@ public class DetallesPlan extends JDialog {
                 panelCosto.setLayout(null);
                 panelCosto.setBackground(new Color(102, 102, 204));
                 panelCosto.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Costo Total", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelCosto.setBounds(23, 608, 510, 61);
+                panelCosto.setBounds(25, 641, 510, 61);
                 panel.add(panelCosto);
 
                 {
@@ -357,6 +368,26 @@ public class DetallesPlan extends JDialog {
                     panelCosto.add(txtCostoTotal);
                 }
             }
+            {
+            	JLabel label = new JLabel("C\u00F3digo");
+            	label.setForeground(Color.WHITE);
+            	label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            	label.setBounds(25, 17, 56, 16);
+            	panel.add(label);
+            }
+            {
+            	txtCodigo = new JTextField();
+            	txtCodigo.setText("PL-00000");
+            	txtCodigo.setForeground(Color.WHITE);
+            	txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            	txtCodigo.setEditable(false);
+            	txtCodigo.setColumns(10);
+            	txtCodigo.setCaretColor(Color.WHITE);
+            	txtCodigo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            	txtCodigo.setBackground(new Color(0, 0, 51));
+            	txtCodigo.setBounds(80, 13, 112, 24);
+            	panel.add(txtCodigo);
+            }
         }
 
         // ====================== BOTONES OK / CANCEL ======================
@@ -368,16 +399,12 @@ public class DetallesPlan extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            okButton.setActionCommand("OK");
-            buttonPane.add(okButton);
-            getRootPane().setDefaultButton(okButton);
-
-            JButton cancelButton = new JButton("Cancel");
+            cancelButton = new JButton("Salir");
+            cancelButton.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		dispose();
+            	}
+            });
             cancelButton.setForeground(Color.WHITE);
             cancelButton.setBackground(new Color(102, 0, 0));
             cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -385,5 +412,49 @@ public class DetallesPlan extends JDialog {
             cancelButton.setActionCommand("Cancel");
             buttonPane.add(cancelButton);
         }
+        loadPlan(miPlan);
+    }
+    private void loadPlan(Plan plan) {
+        if (plan == null) return;
+
+        txtNombre.setText(plan.getNombre());
+        txtDescripcion.setText(plan.getDescripcion());
+        txtCodigo.setText(plan.getCodigo());
+
+        chkbxInternet.setSelected(plan.isTieneInternet());
+        chckbxCable.setSelected(plan.isTieneCable());
+        chckbxMovil.setSelected(plan.isTieneMovil());
+
+        panelInternet.setVisible(chkbxInternet.isSelected());
+        panelCable.setVisible(chckbxCable.isSelected());
+        panelMovil.setVisible(chckbxMovil.isSelected());
+
+        if (plan.isTieneInternet()) {
+            txtBajada.setText(String.valueOf(plan.getBajadamegas()));
+            txtSubida.setText(String.valueOf(plan.getSubidamegas()));
+            txtPrecioInternet.setText(String.format("RD$%.2f", plan.getPrecioInternet()));
+        }
+
+        if (plan.isTieneCable()) {
+            chckbxPackBasico.setSelected(plan.isPackBasico());
+            chckbxPackPremium.setSelected(plan.isPackHD());  
+            txtPrecioCable.setText(String.format("RD$%.2f", plan.getPrecioCable()));
+        }
+
+        if (plan.isTieneMovil()) {
+            txtMinutos.setText(String.valueOf(plan.getMinutos()));
+            txtGigas.setText(String.valueOf(plan.getGb()));
+            txtPrecioMovil.setText(String.format("RD$%.2f", plan.getPrecioMovil()));
+        }
+
+        if (txtCostoTotal != null) {
+            txtCostoTotal.setText(String.format("RD$ %.2f", plan.getMonto()));
+        }
+        chkbxInternet.setEnabled(false);
+        chckbxCable.setEnabled(false);
+        chckbxMovil.setEnabled(false);
+        chckbxPackBasico.setEnabled(false);
+        chckbxPackPremium.setEnabled(false);
+
     }
 }

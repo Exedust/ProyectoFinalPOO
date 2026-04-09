@@ -466,10 +466,11 @@ public class RegistrarPlan extends JDialog {
         panelCable.setVisible(false);
         panelMovil.setVisible(false);
 
-        chkbxInternet.setEnabled(true);  
-        chckbxCable.setEnabled(true);
-        chckbxTelefonia.setEnabled(true);
+        chkbxInternet.setEnabled(false);  
+        chckbxCable.setEnabled(false);
+        chckbxTelefonia.setEnabled(false);
 
+        comprobarServicios();
         actualizarCostoTotal();
 
         if (miPlan != null) {

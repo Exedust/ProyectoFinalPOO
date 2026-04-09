@@ -4,24 +4,45 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import logico.Altice;
+import logico.Plan;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Component;
 
 public class GestionPlanes extends JDialog {
 
-    private final JPanel contentPanel = new JPanel();
-    private JTextField textField_1;
+    private final static JPanel contentPanel = new JPanel();
+   
+    private static JTable table;
+    private static DefaultTableModel model;
+    private static Object[] row;
+    private Plan selected = null;
 
-    /**
-     * Launch the application.
-     */
+    private JButton btnAgregar;
+    private JButton btnModificar;
+    private JButton btnDesactivar;
+    private JButton btnDetalles;
+    private JButton btnSalir;
+
+    private static JComboBox<String> comboFiltrar;
+
     public static void main(String[] args) {
         try {
             GestionPlanes dialog = new GestionPlanes();
@@ -32,17 +53,15 @@ public class GestionPlanes extends JDialog {
         }
     }
 
-    /**
-     * Create the dialog.
-     */
     public GestionPlanes() {
         setTitle("Gestionar Planes");
         setResizable(false);
-        setBounds(100, 100, 1280, 770);
-        
+        setBounds(100, 100, 1280, 670);
+        setLocationRelativeTo(null);
+
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
-        
+
         contentPanel.setBackground(new Color(0, 0, 51));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -53,107 +72,190 @@ public class GestionPlanes extends JDialog {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
             panel.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            panel.setBounds(12, 145, 1102, 496);
+            panel.setBounds(12, 94, 1102, 449);
             contentPanel.add(panel);
-            // Aquí iría tu JTable más adelante
+            panel.setLayout(new BorderLayout(0, 0));
+
+            JScrollPane scrollPane = new JScrollPane();
+            panel.add(scrollPane, BorderLayout.CENTER);
+
+            table = new JTable();
+            table.setFillsViewportHeight(true);
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+
+            model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+
+            String[] headers = {"Código", "Nombre", "Descripción", "Estado"};
+            model.setColumnIdentifiers(headers);
+            table.setModel(model);
+            table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
+            scrollPane.setViewportView(table);
+
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int ind = table.getSelectedRow();
+                    if (ind != -1) {
+                        String codigo = table.getValueAt(ind, 0).toString();
+                        selected = Altice.getInstance().buscarPlanByCodigo(codigo);
+
+                        btnModificar.setEnabled(true);
+                        btnDesactivar.setEnabled(selected.isActivo());
+                        btnDetalles.setEnabled(true);
+                    }
+                }
+            });
+        }
+
+        // ====================== CAMPO DE BÚSQUEDA ======================
+        {
+            JTextField txtBuscar = new JTextField();
+            txtBuscar.setBackground(new Color(0, 0, 51));
+            txtBuscar.setForeground(Color.WHITE);
+            txtBuscar.setCaretColor(Color.WHITE);
+            txtBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            txtBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            txtBuscar.setBounds(12, 57, 232, 24);
+            contentPanel.add(txtBuscar);
         }
         {
-            textField_1 = new JTextField();
-            textField_1.setBackground(new Color(0, 0, 51));
-            textField_1.setForeground(Color.WHITE);
-            textField_1.setCaretColor(Color.WHITE);
-            textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            textField_1.setBounds(12, 108, 232, 24);
-            contentPanel.add(textField_1);
-            textField_1.setColumns(10);
+            JButton btnBuscar = new JButton("Buscar");
+            btnBuscar.setForeground(Color.WHITE);
+            btnBuscar.setBackground(new Color(0, 0, 51));
+            btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnBuscar.setFocusPainted(false);
+            btnBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnBuscar.setBounds(256, 57, 97, 25);
+            contentPanel.add(btnBuscar);
+        }
+
+        // ====================== FILTRO ======================
+        {
+            comboFiltrar = new JComboBox<>();
+            comboFiltrar.setBackground(new Color(0, 0, 51));
+            comboFiltrar.setForeground(Color.WHITE);
+            comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            comboFiltrar.setBounds(797, 57, 208, 24);
+            comboFiltrar.addItem("Todos");
+            comboFiltrar.addItem("Activos");
+            comboFiltrar.addItem("Inactivos");
+            contentPanel.add(comboFiltrar);
         }
         {
-            JButton btnNewButton = new JButton("Buscar");
-            btnNewButton.setForeground(Color.WHITE);
-            btnNewButton.setBackground(new Color(0, 0, 51));
-            btnNewButton.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton.setFocusPainted(false);
-            btnNewButton.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton.setBounds(256, 107, 97, 25);
-            contentPanel.add(btnNewButton);
+            JButton btnFiltrar = new JButton("Filtrar");
+            btnFiltrar.addActionListener(e -> loadPlanes());
+            btnFiltrar.setForeground(Color.WHITE);
+            btnFiltrar.setBackground(new Color(0, 0, 51));
+            btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnFiltrar.setFocusPainted(false);
+            btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnFiltrar.setBounds(1017, 57, 97, 25);
+            contentPanel.add(btnFiltrar);
         }
+
+        // ====================== CONTADOR ======================
         {
-            JComboBox comboBox = new JComboBox();
-            comboBox.setBackground(new Color(0, 0, 51));
-            comboBox.setForeground(Color.WHITE);
-            comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboBox.setBounds(797, 110, 208, 24);
-            contentPanel.add(comboBox);
-        }
-        {
-            JButton btnNewButton_1 = new JButton("Filtrar");
-            btnNewButton_1.setForeground(Color.WHITE);
-            btnNewButton_1.setBackground(new Color(0, 0, 51));
-            btnNewButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_1.setFocusPainted(false);
-            btnNewButton_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_1.setBounds(1017, 110, 97, 25);
-            contentPanel.add(btnNewButton_1);
-        }
-        {
-            JLabel lblNewLabel_1 = new JLabel("Nombre");
-            lblNewLabel_1.setForeground(Color.WHITE);
-            lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNewLabel_1.setBounds(12, 86, 56, 16);
-            contentPanel.add(lblNewLabel_1);
-        }
-        {
-            JLabel lblContratosRegistrados = new JLabel("Planes registrados: 00");
-            lblContratosRegistrados.setForeground(Color.WHITE);
-            lblContratosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblContratosRegistrados.setBounds(12, 43, 216, 16);
-            contentPanel.add(lblContratosRegistrados);
+            JLabel lblPlanesRegistrados = new JLabel("Planes registrados: 00");
+            lblPlanesRegistrados.setForeground(Color.WHITE);
+            lblPlanesRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblPlanesRegistrados.setBounds(12, 32, 216, 16);
+            contentPanel.add(lblPlanesRegistrados);
         }
 
         // ====================== BOTONES LATERALES ======================
         {
-            JButton btnNewButton_2 = new JButton("Agregar");
-            btnNewButton_2.setForeground(Color.WHITE);
-            btnNewButton_2.setBackground(new Color(0, 0, 51));
-            btnNewButton_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_2.setFocusPainted(false);
-            btnNewButton_2.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_2.setBounds(1143, 145, 97, 25);
-            contentPanel.add(btnNewButton_2);
+            btnAgregar = new JButton("Agregar");
+            btnAgregar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+                    RegistrarPlan reg = new RegistrarPlan(null);
+                    reg.setModal(true);
+                    reg.setVisible(true);
+                    loadPlanes();
+            	}
+            });
+            btnAgregar.setForeground(Color.WHITE);
+            btnAgregar.setBackground(new Color(0, 0, 51));
+            btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnAgregar.setFocusPainted(false);
+            btnAgregar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnAgregar.setBounds(1143, 94, 97, 25);
+            contentPanel.add(btnAgregar);
         }
         {
-            JButton btnModificar = new JButton("Modificar");
+            btnModificar = new JButton("Modificar");
+            btnModificar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+                    if (selected != null) {
+                        RegistrarPlan reg = new RegistrarPlan(selected);
+                        reg.setModal(true);
+                        reg.setVisible(true);
+                        loadPlanes();
+                        btnModificar.setEnabled(false);
+                        btnDesactivar.setEnabled(false);
+                        btnDetalles.setEnabled(false);
+                    }
+            	}
+            });
             btnModificar.setForeground(Color.WHITE);
             btnModificar.setBackground(new Color(0, 0, 51));
             btnModificar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnModificar.setFocusPainted(false);
             btnModificar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnModificar.setBounds(1143, 183, 97, 25);
+            btnModificar.setBounds(1143, 132, 97, 25);
+            btnModificar.setEnabled(false);
             contentPanel.add(btnModificar);
         }
         {
-            JButton btnDesactivar = new JButton("Desactivar");
+            btnDesactivar = new JButton("Desactivar");
+            btnDesactivar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+                    if (selected != null) {
+                    	desactivarPlan();
+                        loadPlanes();
+                    }
+            	}
+            });
             btnDesactivar.setForeground(Color.WHITE);
-            btnDesactivar.setBackground(new Color(102, 0, 0));  // Rojo oscuro como en el ejemplo
+            btnDesactivar.setBackground(new Color(102, 0, 0));
             btnDesactivar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnDesactivar.setFocusPainted(false);
             btnDesactivar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnDesactivar.setBounds(1143, 221, 97, 25);
+            btnDesactivar.setBounds(1143, 170, 97, 25);
+            btnDesactivar.setEnabled(false);
             contentPanel.add(btnDesactivar);
         }
         {
-            JButton btnNewButton_3 = new JButton("Detalles");
-            btnNewButton_3.setForeground(Color.WHITE);
-            btnNewButton_3.setBackground(new Color(0, 0, 51));
-            btnNewButton_3.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_3.setFocusPainted(false);
-            btnNewButton_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_3.setBounds(1143, 302, 97, 25);
-            contentPanel.add(btnNewButton_3);
+            btnDetalles = new JButton("Detalles");
+            btnDetalles.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		if(selected != null)
+            		{
+            			DetallesPlan nuevo = new DetallesPlan(selected);
+            			nuevo.setModal(true);
+            			nuevo.setVisible(true);
+                        btnModificar.setEnabled(false);
+                        btnDesactivar.setEnabled(false);
+                        btnDetalles.setEnabled(false);
+            		}
+            	}
+            });
+            btnDetalles.setForeground(Color.WHITE);
+            btnDetalles.setBackground(new Color(0, 0, 51));
+            btnDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnDetalles.setFocusPainted(false);
+            btnDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnDetalles.setBounds(1143, 251, 97, 25);
+            btnDetalles.setEnabled(false);
+            contentPanel.add(btnDetalles);
         }
 
-        // ====================== BOTONES INFERIORES (OK / CANCEL) ======================
+        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -162,22 +264,90 @@ public class GestionPlanes extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            okButton.setActionCommand("OK");
-            buttonPane.add(okButton);
-            getRootPane().setDefaultButton(okButton);
+            btnSalir = new JButton("Salir");
+            btnSalir.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		dispose();
+            	}
+            });
+            btnSalir.setForeground(Color.WHITE);
+            btnSalir.setBackground(new Color(102, 0, 0));
+            btnSalir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btnSalir.setFocusPainted(false);
+            buttonPane.add(btnSalir);
+        }
 
-            JButton cancelButton = new JButton("Cancel");
-            cancelButton.setForeground(Color.WHITE);
-            cancelButton.setBackground(new Color(102, 0, 0));
-            cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            cancelButton.setFocusPainted(false);
-            cancelButton.setActionCommand("Cancel");
-            buttonPane.add(cancelButton);
+        loadPlanes();
+    }
+
+    public static void loadPlanes() {
+        if (model == null) return;
+
+        model.setRowCount(0);
+        
+        row = new Object[table.getColumnCount()];
+
+        String filtro = comboFiltrar.getSelectedItem().toString();
+        int count = 0;
+
+        for (Plan p : Altice.getInstance().getMisPlanes()) {
+            boolean incluir = false;
+
+            switch (filtro) {
+                case "Todos":
+                    incluir = true;
+                    break;
+                case "Activos":
+                    incluir = p.isActivo();
+                    break;
+                case "Inactivos":
+                    incluir = !p.isActivo();
+                    break;
+            }
+
+            if (incluir) {
+                row[0] = p.getCodigo();
+                row[1] = p.getNombre();
+                row[2] = p.getDescripcion() != null ? p.getDescripcion() : "";
+                row[3] = p.isActivo() ? "Activo" : "Inactivo";
+
+                model.addRow(row);
+                count++;
+            }
+        }
+
+        // Actualizar contador
+        for (Component c : contentPanel.getComponents()) {
+            if (c instanceof JLabel) {
+                JLabel label = (JLabel) c;
+                if (label.getText().startsWith("Planes registrados")) {
+                    label.setText("Planes registrados: " + String.format("%02d", count));
+                    break;
+                }
+            }
+        }
+    }
+
+    private void desactivarPlan() {
+        if (selected == null) return;
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea desactivar este plan?",
+                "Confirmar Desactivación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) return;
+
+        if (Altice.getInstance().desactivarPlan(selected.getCodigo())) {
+            JOptionPane.showMessageDialog(this, "Plan desactivado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            loadPlanes();
+            btnModificar.setEnabled(false);
+            btnDesactivar.setEnabled(false);
+            btnDetalles.setEnabled(false);
+            selected = null;
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo desactivar el plan", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
