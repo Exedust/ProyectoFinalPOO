@@ -16,7 +16,7 @@ public class Altice {
 	private ArrayList<Pago> misPagos;
 	private ArrayList<Usuario> misUsuarios;
 	private ArrayList<Servicio> misServicios;
-	private ArrayList<Solicitud> misSolicitudes;
+	private ArrayList<Solicitud> misSolicitudes;//
 	
 	private static int genClienteid = 0;
 	private static int genEmpleadoid = 0;

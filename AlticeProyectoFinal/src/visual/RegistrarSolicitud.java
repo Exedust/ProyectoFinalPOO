@@ -268,7 +268,7 @@ public class RegistrarSolicitud extends JDialog {
         }
 
         Persona persona = Altice.getInstance().buscarPersonaByCedula(cedula);
-//
+
         if (persona == null) {
             JOptionPane.showMessageDialog(this, "No se encontró ningún cliente con esa cédula.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -281,7 +281,7 @@ public class RegistrarSolicitud extends JDialog {
 
         Cliente cliente = (Cliente) persona;
 
-        // ASIGNACIÓN CORRECTA
+        // ASIGNACIÓN CORRECTA DE CAMPOS
         txtNombre.setText(cliente.getNombre());
         txtTelefono.setText(cliente.getTelefono());
         txtCorreo.setText(cliente.getEmail() != null ? cliente.getEmail() : "");
@@ -303,21 +303,41 @@ public class RegistrarSolicitud extends JDialog {
             return;
         }
 
-        // Aquí va la lógica real de registro (por ahora mostramos mensaje)
-        JOptionPane.showMessageDialog(this, "Solicitud registrada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        // Obtener cliente
+        Cliente cliente = (Cliente) Altice.getInstance().buscarPersonaByCedula(txtCedula.getText().trim());
+        if (cliente == null) {
+            JOptionPane.showMessageDialog(this, "Cliente no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        if (cerrarAlRegistrar) {
-            dispose();
+        TipoSolicitud tipo = (TipoSolicitud) comboTipo.getSelectedItem();
+        String descripcion = txtDescripcion.getText().trim();
+
+        // Generar código automático
+        String codigo = "SOL-" + String.format("%04d", Altice.getInstance().getGenSolicitudid() + 1);
+
+        // Crear la solicitud
+        Solicitud nuevaSolicitud = new Solicitud(codigo, cliente, tipo, descripcion);
+
+        // Registrar en Altice
+        if (Altice.getInstance().registrarSolicitud(nuevaSolicitud)) {
+            JOptionPane.showMessageDialog(this, "Solicitud registrada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            
+            if (cerrarAlRegistrar) {
+                dispose();
+            } else {
+                // Limpiar para registrar otra
+                txtCedula.setText("");
+                txtNombre.setText("");
+                txtTelefono.setText("");
+                txtCorreo.setText("");
+                txtDireccion.setText("");
+                txtDescripcion.setText("");
+                comboTipo.setSelectedIndex(0);
+                txtCedula.requestFocus();
+            }
         } else {
-            // Limpiar para nuevo registro
-            txtCedula.setText("");
-            txtNombre.setText("");
-            txtTelefono.setText("");
-            txtCorreo.setText("");
-            txtDireccion.setText("");
-            txtDescripcion.setText("");
-            comboTipo.setSelectedIndex(0);
-            txtCedula.requestFocus();
+            JOptionPane.showMessageDialog(this, "Error al registrar la solicitud", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
