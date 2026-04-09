@@ -15,6 +15,7 @@ public class Altice {
 	private ArrayList<Contrato> misContratos;
 	private ArrayList<Pago> misPagos;
 	private ArrayList<Usuario> misUsuarios;
+	private ArrayList<Servicio> misServicios;
 	
 	private static int genClienteid = 0;
 	private static int genEmpleadoid = 0;
@@ -313,6 +314,21 @@ public class Altice {
         return null;
     }
 
+    
+//VALIDACIONES
+///       
+
+    public boolean existeServicio(TipoServicio tipo)
+    {
+    	for(Servicio serv: misServicios)
+    	{
+    		if(serv.getTipo() == tipo)
+    			return true;
+    	}
+    	
+    	return false;
+    }
+    
 	public static int getGenClienteid() {
 		return genClienteid;
 	}

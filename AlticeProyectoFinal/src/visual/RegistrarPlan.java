@@ -21,9 +21,9 @@ import javax.swing.JSpinner;
 public class RegistrarPlan extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private JTextField textField;           // Nombre
-    private JTextPane textPane;             // Descripción
-    private JTextField textField_1;         // Costo Total
+    private JTextField txtNombre;           // Nombre
+    private JTextPane txtDescripcion;             // Descripción
+    private JTextField txtCostoTotal;         // Costo Total
 
     private JCheckBox chkbxInternet;
     private JCheckBox chckbxCable;
@@ -32,6 +32,15 @@ public class RegistrarPlan extends JDialog {
     private JPanel panelInternet;
     private JPanel panelCable;
     private JPanel panelMovil;
+    private JSpinner spnBajada;
+    private JSpinner spnSubida;
+    private JSpinner spnPrecioInternet;
+    private JCheckBox checkPackBasico;
+    private JCheckBox checkPackPremium;
+    private JSpinner spnPrecioCable;
+    private JSpinner spnMinutos;
+    private JButton btnCancelar;
+    private JButton btnAceptar;
 
     public static void main(String[] args) {
         try {
@@ -81,14 +90,14 @@ public class RegistrarPlan extends JDialog {
                     panelGeneral.add(lblNombre);
                 }
                 {
-                    textField = new JTextField();
-                    textField.setBackground(new Color(0, 0, 51));
-                    textField.setForeground(Color.WHITE);
-                    textField.setCaretColor(Color.WHITE);
-                    textField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField.setBounds(81, 42, 347, 24);
-                    panelGeneral.add(textField);
+                    txtNombre = new JTextField();
+                    txtNombre.setBackground(new Color(0, 0, 51));
+                    txtNombre.setForeground(Color.WHITE);
+                    txtNombre.setCaretColor(Color.WHITE);
+                    txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtNombre.setBounds(81, 42, 347, 24);
+                    panelGeneral.add(txtNombre);
                 }
 
                 {
@@ -99,14 +108,14 @@ public class RegistrarPlan extends JDialog {
                     panelGeneral.add(lblDescripcion);
                 }
                 {
-                    textPane = new JTextPane();
-                    textPane.setBackground(new Color(0, 0, 51));
-                    textPane.setForeground(Color.WHITE);
-                    textPane.setCaretColor(Color.WHITE);
-                    textPane.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textPane.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textPane.setBounds(72, 118, 365, 64);
-                    panelGeneral.add(textPane);
+                    txtDescripcion = new JTextPane();
+                    txtDescripcion.setBackground(new Color(0, 0, 51));
+                    txtDescripcion.setForeground(Color.WHITE);
+                    txtDescripcion.setCaretColor(Color.WHITE);
+                    txtDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtDescripcion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtDescripcion.setBounds(72, 118, 365, 64);
+                    panelGeneral.add(txtDescripcion);
                 }
             }
 
@@ -164,11 +173,11 @@ public class RegistrarPlan extends JDialog {
                     panelInternet.add(lblBajada);
                 }
                 {
-                    JSpinner spinner = new JSpinner();
-                    spinner.setForeground(Color.WHITE);
-                    spinner.setBackground(new Color(51, 51, 102));
-                    spinner.setBounds(23, 59, 91, 22);
-                    panelInternet.add(spinner);
+                    spnBajada = new JSpinner();
+                    spnBajada.setForeground(Color.WHITE);
+                    spnBajada.setBackground(new Color(51, 51, 102));
+                    spnBajada.setBounds(23, 59, 91, 22);
+                    panelInternet.add(spnBajada);
                 }
                 {
                     JLabel lblSubida = new JLabel("Subida (Mbps)");
@@ -178,11 +187,11 @@ public class RegistrarPlan extends JDialog {
                     panelInternet.add(lblSubida);
                 }
                 {
-                    JSpinner spinner = new JSpinner();
-                    spinner.setForeground(Color.WHITE);
-                    spinner.setBackground(new Color(51, 51, 102));
-                    spinner.setBounds(23, 123, 91, 22);
-                    panelInternet.add(spinner);
+                    spnSubida = new JSpinner();
+                    spnSubida.setForeground(Color.WHITE);
+                    spnSubida.setBackground(new Color(51, 51, 102));
+                    spnSubida.setBounds(23, 123, 91, 22);
+                    panelInternet.add(spnSubida);
                 }
                 {
                     JLabel lblPrecio = new JLabel("Precio");
@@ -192,11 +201,11 @@ public class RegistrarPlan extends JDialog {
                     panelInternet.add(lblPrecio);
                 }
                 {
-                    JSpinner spinner = new JSpinner();
-                    spinner.setForeground(Color.WHITE);
-                    spinner.setBackground(new Color(51, 51, 102));
-                    spinner.setBounds(23, 186, 91, 22);
-                    panelInternet.add(spinner);
+                    spnPrecioInternet = new JSpinner();
+                    spnPrecioInternet.setForeground(Color.WHITE);
+                    spnPrecioInternet.setBackground(new Color(51, 51, 102));
+                    spnPrecioInternet.setBounds(23, 186, 91, 22);
+                    panelInternet.add(spnPrecioInternet);
                 }
             }
 
@@ -218,27 +227,27 @@ public class RegistrarPlan extends JDialog {
                     panelCable.add(lblPrecio);
                 }
                 {
-                    JSpinner spinner = new JSpinner();
-                    spinner.setForeground(Color.WHITE);
-                    spinner.setBackground(new Color(51, 51, 102));
-                    spinner.setBounds(23, 186, 91, 22);
-                    panelCable.add(spinner);
+                    spnPrecioCable = new JSpinner();
+                    spnPrecioCable.setForeground(Color.WHITE);
+                    spnPrecioCable.setBackground(new Color(51, 51, 102));
+                    spnPrecioCable.setBounds(23, 186, 91, 22);
+                    panelCable.add(spnPrecioCable);
                 }
                 {
-                    JCheckBox chckbxNewCheckBox = new JCheckBox("Pack básico");
-                    chckbxNewCheckBox.setForeground(Color.WHITE);
-                    chckbxNewCheckBox.setBackground(new Color(102, 102, 204));
-                    chckbxNewCheckBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    chckbxNewCheckBox.setBounds(16, 45, 105, 25);
-                    panelCable.add(chckbxNewCheckBox);
+                    checkPackBasico = new JCheckBox("Pack básico");
+                    checkPackBasico.setForeground(Color.WHITE);
+                    checkPackBasico.setBackground(new Color(102, 102, 204));
+                    checkPackBasico.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    checkPackBasico.setBounds(16, 45, 105, 25);
+                    panelCable.add(checkPackBasico);
                 }
                 {
-                    JCheckBox chckbxPackPremium = new JCheckBox("Pack Premium");
-                    chckbxPackPremium.setForeground(Color.WHITE);
-                    chckbxPackPremium.setBackground(new Color(102, 102, 204));
-                    chckbxPackPremium.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    chckbxPackPremium.setBounds(12, 110, 113, 25);
-                    panelCable.add(chckbxPackPremium);
+                    checkPackPremium = new JCheckBox("Pack Premium");
+                    checkPackPremium.setForeground(Color.WHITE);
+                    checkPackPremium.setBackground(new Color(102, 102, 204));
+                    checkPackPremium.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    checkPackPremium.setBounds(12, 110, 113, 25);
+                    panelCable.add(checkPackPremium);
                 }
             }
 
@@ -260,11 +269,11 @@ public class RegistrarPlan extends JDialog {
                     panelMovil.add(lblMinutos);
                 }
                 {
-                    JSpinner spinner = new JSpinner();
-                    spinner.setForeground(Color.WHITE);
-                    spinner.setBackground(new Color(51, 51, 102));
-                    spinner.setBounds(23, 59, 91, 22);
-                    panelMovil.add(spinner);
+                    spnMinutos = new JSpinner();
+                    spnMinutos.setForeground(Color.WHITE);
+                    spnMinutos.setBackground(new Color(51, 51, 102));
+                    spnMinutos.setBounds(23, 59, 91, 22);
+                    panelMovil.add(spnMinutos);
                 }
                 {
                     JLabel lblGigas = new JLabel("Gigas");
@@ -274,11 +283,11 @@ public class RegistrarPlan extends JDialog {
                     panelMovil.add(lblGigas);
                 }
                 {
-                    JSpinner spinner = new JSpinner();
-                    spinner.setForeground(Color.WHITE);
-                    spinner.setBackground(new Color(51, 51, 102));
-                    spinner.setBounds(23, 123, 91, 22);
-                    panelMovil.add(spinner);
+                    JSpinner spnGigas = new JSpinner();
+                    spnGigas.setForeground(Color.WHITE);
+                    spnGigas.setBackground(new Color(51, 51, 102));
+                    spnGigas.setBounds(23, 123, 91, 22);
+                    panelMovil.add(spnGigas);
                 }
                 {
                     JLabel lblPrecio = new JLabel("Precio");
@@ -288,11 +297,11 @@ public class RegistrarPlan extends JDialog {
                     panelMovil.add(lblPrecio);
                 }
                 {
-                    JSpinner spinner = new JSpinner();
-                    spinner.setForeground(Color.WHITE);
-                    spinner.setBackground(new Color(51, 51, 102));
-                    spinner.setBounds(23, 186, 91, 22);
-                    panelMovil.add(spinner);
+                    JSpinner spnPrecioMovil = new JSpinner();
+                    spnPrecioMovil.setForeground(Color.WHITE);
+                    spnPrecioMovil.setBackground(new Color(51, 51, 102));
+                    spnPrecioMovil.setBounds(23, 186, 91, 22);
+                    panelMovil.add(spnPrecioMovil);
                 }
             }
 
@@ -307,20 +316,19 @@ public class RegistrarPlan extends JDialog {
                 panel.add(panelCosto);
 
                 {
-                    textField_1 = new JTextField();
-                    textField_1.setEditable(false);
-                    textField_1.setBackground(new Color(0, 0, 51));
-                    textField_1.setForeground(Color.WHITE);
-                    textField_1.setCaretColor(Color.WHITE);
-                    textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_1.setBounds(197, 24, 116, 24);
-                    panelCosto.add(textField_1);
+                    txtCostoTotal = new JTextField();
+                    txtCostoTotal.setEditable(false);
+                    txtCostoTotal.setBackground(new Color(0, 0, 51));
+                    txtCostoTotal.setForeground(Color.WHITE);
+                    txtCostoTotal.setCaretColor(Color.WHITE);
+                    txtCostoTotal.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtCostoTotal.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtCostoTotal.setBounds(197, 24, 116, 24);
+                    panelCosto.add(txtCostoTotal);
                 }
             }
         }
 
-        // ====================== BOTONES OK / CANCEL ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -329,25 +337,27 @@ public class RegistrarPlan extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            okButton.setActionCommand("OK");
-            buttonPane.add(okButton);
-            getRootPane().setDefaultButton(okButton);
+            btnAceptar = new JButton("Aceptar");
+            btnAceptar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            	}
+            });
+            btnAceptar.setForeground(Color.WHITE);
+            btnAceptar.setBackground(new Color(0, 0, 51));
+            btnAceptar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btnAceptar.setFocusPainted(false);
+            btnAceptar.setActionCommand("OK");
+            buttonPane.add(btnAceptar);
+            getRootPane().setDefaultButton(btnAceptar);
 
-            JButton cancelButton = new JButton("Cancel");
-            cancelButton.setForeground(Color.WHITE);
-            cancelButton.setBackground(new Color(102, 0, 0));
-            cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            cancelButton.setFocusPainted(false);
-            cancelButton.setActionCommand("Cancel");
-            buttonPane.add(cancelButton);
+            btnCancelar = new JButton("Cancelar");
+            btnCancelar.setForeground(Color.WHITE);
+            btnCancelar.setBackground(new Color(102, 0, 0));
+            btnCancelar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btnCancelar.setFocusPainted(false);
+            btnCancelar.setActionCommand("Cancel");
+            buttonPane.add(btnCancelar);
         }
-
-        // ====================== FUNCIONALIDAD CHECKBOX ======================
         ActionListener servicioListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panelInternet.setVisible(chkbxInternet.isSelected());
@@ -360,7 +370,6 @@ public class RegistrarPlan extends JDialog {
         chckbxCable.addActionListener(servicioListener);
         chckbxTelefonia.addActionListener(servicioListener);
 
-        // Estado inicial: todos los paneles ocultos
         panelInternet.setVisible(false);
         panelCable.setVisible(false);
         panelMovil.setVisible(false);
