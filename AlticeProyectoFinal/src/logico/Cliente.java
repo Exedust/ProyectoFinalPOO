@@ -4,12 +4,11 @@ import java.util.ArrayList;
 
 public class Cliente extends Persona {
 	
-	public Cliente(String nombre, String cedula, String email, String telefono, String direccion, Usuario usuario,
-			ArrayList<Contrato> contratos, ArrayList<Pago> pagos, float deuda) {
+	public Cliente(String nombre, String cedula, String email, String telefono, String direccion, Usuario usuario) {
 		super(nombre, cedula, email, telefono, direccion, usuario);
-		this.contratos = contratos;
-		this.pagos = pagos;
-		this.deuda = deuda;
+		contratos = new ArrayList<Contrato>();
+		pagos = new ArrayList<Pago>();
+		deuda = 0;
 	}
 
 	private ArrayList<Contrato> contratos;

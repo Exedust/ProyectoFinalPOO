@@ -12,29 +12,36 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import logico.Cliente;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
-import javax.swing.JCheckBox;
 
 public class DetallesCliente extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private JTextField textField;          
-    private JTextField textField_1;        
-    private JTextField textField_2;        
-    private JTextField textField_3;        
-    private JTextField textField_4;        
-    private JPasswordField passwordField;  
-    private JTextField textField_5;        
-    private JTextField passwordMostrar;    
+    private Cliente miCliente;
 
-    /**
-     * Launch the application.
-     */
+    private JTextField txtCodigo;
+    private JTextField txtNombre;
+    private JTextField txtCedula;
+    private JTextField txtTelefono;
+    private JTextField txtDireccion;
+    private JTextField txtCorreo;
+    private JPasswordField txtContra;
+    private JTextField txtContraVisible;
+    private JLabel lblCedula;
+    private JButton btnMostrar;
+    private JButton btnRealizarPago;
+    private JButton btnCerrarContrato;
+    private JTextField txtFechaRegistro;
+    private JTextField txtFechaDesactivacion;
+    private JLabel lblFechaDesactivacion;
+    private JButton cancelButton;
+
     public static void main(String[] args) {
         try {
-            DetallesCliente dialog = new DetallesCliente();
+            DetallesCliente dialog = new DetallesCliente(null);
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {
@@ -42,17 +49,17 @@ public class DetallesCliente extends JDialog {
         }
     }
 
-    /**
-     * Create the dialog.
-     */
-    public DetallesCliente() {
+    public DetallesCliente(Cliente cliente) {
+        miCliente = cliente;
+
         setResizable(false);
         setTitle("Detalles del Cliente");
         setBounds(100, 100, 625, 761);
-        
+        setLocationRelativeTo(null);
+
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
-        
+
         contentPanel.setBackground(new Color(0, 0, 51));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -84,15 +91,15 @@ public class DetallesCliente extends JDialog {
                     panel_1.add(lblCódigo);
                 }
                 {
-                    textField_5 = new JTextField();
-                    textField_5.setEditable(false);
-                    textField_5.setBackground(new Color(0, 0, 51));
-                    textField_5.setForeground(Color.WHITE);
-                    textField_5.setCaretColor(Color.WHITE);
-                    textField_5.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_5.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_5.setBounds(12, 42, 113, 24);
-                    panel_1.add(textField_5);
+                    txtCodigo = new JTextField();
+                    txtCodigo.setEditable(false);
+                    txtCodigo.setBackground(new Color(0, 0, 51));
+                    txtCodigo.setForeground(Color.WHITE);
+                    txtCodigo.setCaretColor(Color.WHITE);
+                    txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtCodigo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtCodigo.setBounds(12, 42, 113, 24);
+                    panel_1.add(txtCodigo);
                 }
 
                 // Nombre
@@ -104,35 +111,35 @@ public class DetallesCliente extends JDialog {
                     panel_1.add(label);
                 }
                 {
-                    textField = new JTextField();
-                    textField.setEditable(false);
-                    textField.setBackground(new Color(0, 0, 51));
-                    textField.setForeground(Color.WHITE);
-                    textField.setCaretColor(Color.WHITE);
-                    textField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField.setBounds(12, 108, 263, 24);
-                    panel_1.add(textField);
+                    txtNombre = new JTextField();
+                    txtNombre.setEditable(false);
+                    txtNombre.setBackground(new Color(0, 0, 51));
+                    txtNombre.setForeground(Color.WHITE);
+                    txtNombre.setCaretColor(Color.WHITE);
+                    txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtNombre.setBounds(12, 108, 263, 24);
+                    panel_1.add(txtNombre);
                 }
 
-                // Cédula
+                // Cédula / RNC
                 {
-                    JLabel label_1 = new JLabel("Cedula");
-                    label_1.setForeground(Color.WHITE);
-                    label_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    label_1.setBounds(12, 143, 56, 16);
-                    panel_1.add(label_1);
+                    lblCedula = new JLabel("Cedula");
+                    lblCedula.setForeground(Color.WHITE);
+                    lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    lblCedula.setBounds(12, 143, 56, 16);
+                    panel_1.add(lblCedula);
                 }
                 {
-                    textField_1 = new JTextField();
-                    textField_1.setEditable(false);
-                    textField_1.setBackground(new Color(0, 0, 51));
-                    textField_1.setForeground(Color.WHITE);
-                    textField_1.setCaretColor(Color.WHITE);
-                    textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_1.setBounds(12, 172, 263, 24);
-                    panel_1.add(textField_1);
+                    txtCedula = new JTextField();
+                    txtCedula.setEditable(false);
+                    txtCedula.setBackground(new Color(0, 0, 51));
+                    txtCedula.setForeground(Color.WHITE);
+                    txtCedula.setCaretColor(Color.WHITE);
+                    txtCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtCedula.setBounds(12, 172, 263, 24);
+                    panel_1.add(txtCedula);
                 }
 
                 // Teléfono
@@ -144,15 +151,15 @@ public class DetallesCliente extends JDialog {
                     panel_1.add(label_2);
                 }
                 {
-                    textField_2 = new JTextField();
-                    textField_2.setEditable(false);
-                    textField_2.setBackground(new Color(0, 0, 51));
-                    textField_2.setForeground(Color.WHITE);
-                    textField_2.setCaretColor(Color.WHITE);
-                    textField_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_2.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_2.setBounds(12, 236, 263, 24);
-                    panel_1.add(textField_2);
+                    txtTelefono = new JTextField();
+                    txtTelefono.setEditable(false);
+                    txtTelefono.setBackground(new Color(0, 0, 51));
+                    txtTelefono.setForeground(Color.WHITE);
+                    txtTelefono.setCaretColor(Color.WHITE);
+                    txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtTelefono.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtTelefono.setBounds(12, 236, 263, 24);
+                    panel_1.add(txtTelefono);
                 }
 
                 // Dirección
@@ -164,18 +171,18 @@ public class DetallesCliente extends JDialog {
                     panel_1.add(label_3);
                 }
                 {
-                    textField_3 = new JTextField();
-                    textField_3.setEditable(false);
-                    textField_3.setBackground(new Color(0, 0, 51));
-                    textField_3.setForeground(Color.WHITE);
-                    textField_3.setCaretColor(Color.WHITE);
-                    textField_3.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_3.setBounds(287, 172, 263, 24);
-                    panel_1.add(textField_3);
+                    txtDireccion = new JTextField();
+                    txtDireccion.setEditable(false);
+                    txtDireccion.setBackground(new Color(0, 0, 51));
+                    txtDireccion.setForeground(Color.WHITE);
+                    txtDireccion.setCaretColor(Color.WHITE);
+                    txtDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtDireccion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtDireccion.setBounds(287, 172, 263, 24);
+                    panel_1.add(txtDireccion);
                 }
 
-                // Correo electrónico
+                // Correo
                 {
                     JLabel label_4 = new JLabel("Correo electronico");
                     label_4.setForeground(Color.WHITE);
@@ -184,18 +191,18 @@ public class DetallesCliente extends JDialog {
                     panel_1.add(label_4);
                 }
                 {
-                    textField_4 = new JTextField();
-                    textField_4.setEditable(false);
-                    textField_4.setBackground(new Color(0, 0, 51));
-                    textField_4.setForeground(Color.WHITE);
-                    textField_4.setCaretColor(Color.WHITE);
-                    textField_4.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    textField_4.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    textField_4.setBounds(287, 108, 263, 24);
-                    panel_1.add(textField_4);
+                    txtCorreo = new JTextField();
+                    txtCorreo.setEditable(false);
+                    txtCorreo.setBackground(new Color(0, 0, 51));
+                    txtCorreo.setForeground(Color.WHITE);
+                    txtCorreo.setCaretColor(Color.WHITE);
+                    txtCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtCorreo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtCorreo.setBounds(287, 108, 263, 24);
+                    panel_1.add(txtCorreo);
                 }
 
-                // Contraseña (campo oculto)
+                // Contraseña
                 {
                     JLabel label_5 = new JLabel("Contraseña");
                     label_5.setForeground(Color.WHITE);
@@ -204,43 +211,33 @@ public class DetallesCliente extends JDialog {
                     panel_1.add(label_5);
                 }
                 {
-                    passwordField = new JPasswordField();
-                    passwordField.setEditable(false);
-                    passwordField.setBackground(new Color(0, 0, 51));
-                    passwordField.setForeground(Color.WHITE);
-                    passwordField.setCaretColor(Color.WHITE);
-                    passwordField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    passwordField.setBounds(287, 236, 263, 24);
-                    panel_1.add(passwordField);
+                    txtContra = new JPasswordField();
+                    txtContra.setEditable(false);
+                    txtContra.setBackground(new Color(0, 0, 51));
+                    txtContra.setForeground(Color.WHITE);
+                    txtContra.setCaretColor(Color.WHITE);
+                    txtContra.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtContra.setBounds(287, 236, 263, 24);
+                    panel_1.add(txtContra);
                 }
 
-                // Campo para mostrar contraseña
+                // Contraseña visible
                 {
-                    passwordMostrar = new JTextField();
-                    passwordMostrar.setEditable(false);
-                    passwordMostrar.setBackground(new Color(0, 0, 51));
-                    passwordMostrar.setForeground(Color.WHITE);
-                    passwordMostrar.setCaretColor(Color.WHITE);
-                    passwordMostrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    passwordMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    passwordMostrar.setBounds(287, 237, 263, 24);
-                    panel_1.add(passwordMostrar);
-                    passwordMostrar.setVisible(false); // Oculto por defecto
+                    txtContraVisible = new JTextField();
+                    txtContraVisible.setEditable(false);
+                    txtContraVisible.setBackground(new Color(0, 0, 51));
+                    txtContraVisible.setForeground(Color.WHITE);
+                    txtContraVisible.setCaretColor(Color.WHITE);
+                    txtContraVisible.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtContraVisible.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtContraVisible.setBounds(287, 237, 263, 24);
+                    panel_1.add(txtContraVisible);
+                    txtContraVisible.setVisible(false);
                 }
 
-                // Checkbox Activo
+                // Botón Mostrar Contraseña
                 {
-                    JCheckBox chckbxNewCheckBox = new JCheckBox("Activo");
-                    chckbxNewCheckBox.setSelected(true);
-                    chckbxNewCheckBox.setForeground(Color.WHITE);
-                    chckbxNewCheckBox.setBackground(new Color(102, 102, 204));
-                    chckbxNewCheckBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    chckbxNewCheckBox.setBounds(12, 273, 113, 25);
-                    panel_1.add(chckbxNewCheckBox);
-                }
-
-                {
-                    JButton btnMostrar = new JButton("Mostrar Contraseña");
+                    btnMostrar = new JButton("Mostrar Contraseña");
                     btnMostrar.setForeground(Color.WHITE);
                     btnMostrar.setBackground(new Color(0, 0, 51));
                     btnMostrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -248,22 +245,44 @@ public class DetallesCliente extends JDialog {
                     btnMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
                     btnMostrar.setBounds(405, 273, 145, 25);
                     panel_1.add(btnMostrar);
-
-                 
-                    btnMostrar.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            if (passwordMostrar.isVisible()) {
-                                passwordMostrar.setVisible(false);
-                                passwordField.setVisible(true);
-                                btnMostrar.setText("Mostrar Contraseña");
-                            } else {
-                                passwordMostrar.setText(new String(passwordField.getPassword()));
-                                passwordMostrar.setVisible(true);
-                                passwordField.setVisible(false);
-                                btnMostrar.setText("Ocultar Contraseña");
-                            }
-                        }
-                    });
+                }
+                {
+                	JLabel label = new JLabel("Fecha Registro");
+                	label.setForeground(Color.WHITE);
+                	label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                	label.setBounds(12, 273, 91, 16);
+                	panel_1.add(label);
+                }
+                {
+                	txtFechaRegistro = new JTextField();
+                	txtFechaRegistro.setText((String) null);
+                	txtFechaRegistro.setForeground(Color.WHITE);
+                	txtFechaRegistro.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                	txtFechaRegistro.setEditable(false);
+                	txtFechaRegistro.setCaretColor(Color.WHITE);
+                	txtFechaRegistro.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                	txtFechaRegistro.setBackground(new Color(0, 0, 51));
+                	txtFechaRegistro.setBounds(12, 303, 122, 24);
+                	panel_1.add(txtFechaRegistro);
+                }
+                {
+                	lblFechaDesactivacion = new JLabel("Fecha Desactivacion");
+                	lblFechaDesactivacion.setForeground(Color.WHITE);
+                	lblFechaDesactivacion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                	lblFechaDesactivacion.setBounds(153, 274, 122, 16);
+                	panel_1.add(lblFechaDesactivacion);
+                }
+                {
+                	txtFechaDesactivacion = new JTextField();
+                	txtFechaDesactivacion.setText((String) null);
+                	txtFechaDesactivacion.setForeground(Color.WHITE);
+                	txtFechaDesactivacion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                	txtFechaDesactivacion.setEditable(false);
+                	txtFechaDesactivacion.setCaretColor(Color.WHITE);
+                	txtFechaDesactivacion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                	txtFechaDesactivacion.setBackground(new Color(0, 0, 51));
+                	txtFechaDesactivacion.setBounds(153, 303, 122, 24);
+                	panel_1.add(txtFechaDesactivacion);
                 }
             }
 
@@ -272,7 +291,7 @@ public class DetallesCliente extends JDialog {
                 JPanel panel_2 = new JPanel();
                 panel_2.setLayout(null);
                 panel_2.setBackground(new Color(102, 102, 204));
-                panel_2.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), 
+                panel_2.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Historial de Contratos", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
                 panel_2.setBounds(12, 372, 567, 216);
                 panel.add(panel_2);
@@ -283,13 +302,12 @@ public class DetallesCliente extends JDialog {
                     panel_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
                     panel_3.setBounds(12, 33, 543, 170);
                     panel_2.add(panel_3);
-                    // Aquí irá tu JTable o lista de contratos más adelante
                 }
             }
 
             // ====================== BOTONES DE ACCIÓN ======================
             {
-                JButton btnRealizarPago = new JButton("Realizar Pago");
+                btnRealizarPago = new JButton("Realizar Pago");
                 btnRealizarPago.setForeground(Color.WHITE);
                 btnRealizarPago.setBackground(new Color(0, 0, 51));
                 btnRealizarPago.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -299,9 +317,9 @@ public class DetallesCliente extends JDialog {
                 panel.add(btnRealizarPago);
             }
             {
-                JButton btnCerrarContrato = new JButton("Cerrar Contrato");
+                btnCerrarContrato = new JButton("Cerrar Contrato");
                 btnCerrarContrato.setForeground(Color.WHITE);
-                btnCerrarContrato.setBackground(new Color(102, 0, 0)); // Rojo oscuro
+                btnCerrarContrato.setBackground(new Color(102, 0, 0));
                 btnCerrarContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
                 btnCerrarContrato.setFocusPainted(false);
                 btnCerrarContrato.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
@@ -310,7 +328,7 @@ public class DetallesCliente extends JDialog {
             }
         }
 
-        // ====================== BOTONES INFERIORES OK / CANCEL ======================
+        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -319,22 +337,62 @@ public class DetallesCliente extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            okButton.setActionCommand("OK");
-            buttonPane.add(okButton);
-            getRootPane().setDefaultButton(okButton);
-
-            JButton cancelButton = new JButton("Cancel");
+            cancelButton = new JButton("Salir");
+            cancelButton.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		dispose();
+            	}
+            });
             cancelButton.setForeground(Color.WHITE);
             cancelButton.setBackground(new Color(102, 0, 0));
             cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             cancelButton.setFocusPainted(false);
-            cancelButton.setActionCommand("Cancel");
             buttonPane.add(cancelButton);
+        }
+        btnMostrar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (txtContraVisible.isVisible()) {
+                    txtContraVisible.setVisible(false);
+                    txtContra.setVisible(true);
+                    btnMostrar.setText("Mostrar Contraseña");
+                } else {
+                    txtContraVisible.setText(new String(txtContra.getPassword()));
+                    txtContraVisible.setVisible(true);
+                    txtContra.setVisible(false);
+                    btnMostrar.setText("Ocultar Contraseña");
+                }
+            }
+        });
+
+        loadCliente();
+    }
+
+    private void loadCliente() {
+        if (miCliente == null) return;
+
+        txtCodigo.setText(miCliente.getCodigo());
+        txtNombre.setText(miCliente.getNombre());
+        txtCedula.setText(miCliente.getCedula());
+        txtTelefono.setText(miCliente.getTelefono());
+        txtDireccion.setText(miCliente.getDireccion());
+        txtCorreo.setText(miCliente.getEmail());
+
+        if (miCliente.getUsuario() != null) {
+            txtContra.setText(miCliente.getUsuario().getPassword());
+            txtContraVisible.setText(miCliente.getUsuario().getPassword());
+
+            if (miCliente.getUsuario().getFechaRegistro() != null) {
+                txtFechaRegistro.setText(miCliente.getUsuario().getFechaRegistro().toString());
+            }
+
+            if (!miCliente.getUsuario().isActivo()) {
+                txtFechaDesactivacion.setText(miCliente.getUsuario().getFechaDesactivacion().toString());
+                lblFechaDesactivacion.setVisible(true);
+                txtFechaDesactivacion.setVisible(true);
+            } else {
+                lblFechaDesactivacion.setVisible(false);
+                txtFechaDesactivacion.setVisible(false);
+            }
         }
     }
 }

@@ -112,6 +112,33 @@ public class PrincipalAdmin extends JFrame {
 		mnClientes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		menuBar.add(mnClientes);
 		
+		JMenuItem menuItem = new JMenuItem("Registrar");
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RegistrarCliente registrar = new RegistrarCliente(null);
+				registrar.setModal(true);
+				registrar.setVisible(true);
+			}
+		});
+		menuItem.setForeground(Color.WHITE);
+		menuItem.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuItem.setBackground(new Color(0, 0, 102));
+		mnClientes.add(menuItem);
+		
+		JMenuItem menuItem_1 = new JMenuItem("Listar");
+		menuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GestionClientes gestion = new GestionClientes();
+				gestion.setModal(true);
+				gestion.setVisible(true);
+						
+			}
+		});
+		menuItem_1.setForeground(Color.WHITE);
+		menuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuItem_1.setBackground(new Color(0, 0, 102));
+		mnClientes.add(menuItem_1);
+		
 		JMenu mnContratos = new JMenu("Contratos");
 		mnContratos.setForeground(Color.WHITE);
 		mnContratos.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -234,6 +261,13 @@ public class PrincipalAdmin extends JFrame {
 		cardClientes.add(iconClientes, BorderLayout.CENTER);
 
 		JButton btnGestionarClientes = new JButton("Gestionar");
+		btnGestionarClientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GestionClientes gestion = new GestionClientes();
+				gestion.setModal(true);
+				gestion.setVisible(true);
+			}
+		});
 		btnGestionarClientes.setForeground(Color.WHITE);
 		btnGestionarClientes.setBackground(new Color(0, 0, 51));
 		btnGestionarClientes.setFont(new Font("Segoe UI", Font.PLAIN, 14));

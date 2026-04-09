@@ -18,6 +18,7 @@ public class Usuario {
 	private Rol rol;
 	private LocalDate fechaRegistro;
 	private LocalDate fechaDesactivacion;
+	private boolean empresa;
 	private boolean activo;
 	
 	public String getCodigo() {
@@ -61,5 +62,11 @@ public class Usuario {
 	}
 	public void setFechaDesactivacion(LocalDate fechaDesactivacion) {
 		this.fechaDesactivacion = fechaDesactivacion;
+	}
+	public boolean isEmpresa() {
+		return empresa;
+	}
+	public void setEmpresa(boolean empresa) {
+		this.empresa = empresa;
 	}
 }

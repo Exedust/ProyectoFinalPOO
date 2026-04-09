@@ -465,6 +465,7 @@ public class RegistrarEmpleado extends JDialog {
             loadEmpleado();
         } else {
             clean();
+            checkActivo.setVisible(false);
         }
 		
 	}
@@ -523,7 +524,7 @@ public class RegistrarEmpleado extends JDialog {
         user.setActivo(checkActivo.isSelected());
 
         Empleado nuevo = new Empleado(nombre, cedula, correo, telefono, direccion, user, comision, salario);
-        
+        nuevo.getUsuario().setEmpresa(false);
         if(miEmpleado == null)
         	return Altice.getInstance().registrarEmpleado(nuevo);
         

@@ -77,7 +77,6 @@ public class Altice {
 		this.misUsuarios = misUsuarios;
 	}
 
-	
 	public boolean registrarEmpleado(Empleado empleado) {
 	    if (empleado == null || empleado.getCodigo() == null) {
 	        return false;
@@ -134,7 +133,72 @@ public class Altice {
 
 	    return true;
 	}
+
+	//
+	//CLIENTE
+	//
+	public boolean registrarCliente(Cliente cliente) {
+	    if (cliente == null || cliente.getCodigo() == null) {
+	        return false;
+	    }
+
+	    String codigo = cliente.getCodigo();
+	    String cedula = cliente.getCedula();
+
+	    if (buscarClienteById(codigo) != null) {
+	        return false;
+	    }
+	    if (buscarClienteByCedula(cedula) != null) {
+	        return false;
+	    }
+
+	    misClientes.add(cliente);
+	    if (cliente.getUsuario() != null) {
+	        misUsuarios.add(cliente.getUsuario());
+	    }
+
+	    genClienteid++;
+	    return true;
+	}
 	
+
+	public boolean modificarCliente(Cliente nuevo) {
+	    if (nuevo == null || nuevo.getCodigo() == null) {
+	        return false;
+	    }
+
+	    int indice = buscarIndexClienteById(nuevo.getCodigo());
+
+	    if (indice == -1) {
+	        return false;
+	    }
+	    misClientes.set(indice, nuevo);
+	    
+	    if (nuevo.getUsuario() != null) {
+	        int indiceUsuario = buscarIndexUsuarioByCodigo(nuevo.getCodigo());
+	        if (indiceUsuario != -1) {
+	            misUsuarios.set(indiceUsuario, nuevo.getUsuario());
+	        }
+	    }
+
+	    return true;
+	}
+
+	public boolean desactivarCliente(String codigo) {
+	    if (codigo == null) return false;
+
+	    int indice = buscarIndexClienteById(codigo);
+	    if (indice == -1) {
+	        return false;
+	    }
+
+	    Cliente cliente = misClientes.get(indice);
+	    if (cliente.getUsuario() != null) {
+	        cliente.getUsuario().setActivo(false);
+	        cliente.getUsuario().setFechaDesactivacion(LocalDate.now());
+	    }
+	    return true;
+	}
 //
 //METODOS DE BUSQUEDA
 //
@@ -172,6 +236,27 @@ public class Altice {
         return -1;
     }
 
+    public Cliente buscarClienteById(String codigo) {
+        if (codigo == null) return null;
+        for (Cliente c : misClientes) {
+            if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    private int buscarIndexClienteById(String codigo) {
+        if (codigo == null) return -1;
+        for (int i = 0; i < misClientes.size(); i++) {
+            Cliente c = misClientes.get(i);
+            if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+	
     public int buscarIndexUsuarioByCodigo(String codigo) {
         if (codigo == null) return -1;
 
@@ -185,6 +270,7 @@ public class Altice {
     }
     
     public Cliente buscarClienteByCedula(String cedula) {
+        if (cedula == null) return null;
         for (Cliente c : misClientes) {
             if (c.getCedula() != null && c.getCedula().equals(cedula)) {
                 return c;
@@ -279,6 +365,11 @@ public class Altice {
 
 	public static void setGenServicioid(int genServicioid) {
 		Altice.genServicioid = genServicioid;
+	}
+
+	public Object tieneDeuda(String codigo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	
