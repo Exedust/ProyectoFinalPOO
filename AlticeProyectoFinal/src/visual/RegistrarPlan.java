@@ -537,19 +537,19 @@ public class RegistrarPlan extends JDialog {
         if (chkbxInternet.isSelected()) {
             nuevo.setBajadamegas((int) spnBajada.getValue());
             nuevo.setSubidamegas((int) spnSubida.getValue());
-            nuevo.setPrecioInternet((float)spnPrecioInternet.getValue());
+            nuevo.setPrecioInternet(((Number) spnPrecioInternet.getValue()).floatValue());
         }
 
         if (chckbxCable.isSelected()) {
             nuevo.setPackBasico(checkPackBasico.isSelected());
             nuevo.setPackHD(checkPackHD.isSelected());
-            nuevo.setPrecioCable((float)spnPrecioCable.getValue());
+            nuevo.setPrecioCable(((Number) spnPrecioCable.getValue()).floatValue());
         }
 
         if (chckbxTelefonia.isSelected()) {
             nuevo.setMinutos((int) spnMinutos.getValue());
             nuevo.setGb((int) spnGigas.getValue());
-            nuevo.setPrecioMovil((float)spnPrecioMovil.getValue());
+            nuevo.setPrecioMovil(((Number) spnPrecioMovil.getValue()).floatValue());
         }
 
         nuevo.setActivo(checkActivo.isSelected());
@@ -708,7 +708,7 @@ public class RegistrarPlan extends JDialog {
                 spnGigas.requestFocus();
                 return false;
             }
-            if (((Number) spnPrecioCable.getValue()).floatValue() <= 0) {
+            if (((Number) spnPrecioMovil.getValue()).floatValue() <= 0) {
                 JOptionPane.showMessageDialog(this, "El precio del servicio Móvil debe ser mayor a 0.", "Error", JOptionPane.ERROR_MESSAGE);
                 spnPrecioMovil.requestFocus();
                 return false;

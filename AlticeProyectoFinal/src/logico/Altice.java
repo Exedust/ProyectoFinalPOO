@@ -81,6 +81,14 @@ public class Altice {
 		this.misUsuarios = misUsuarios;
 	}
 
+	public ArrayList<Servicio> getMisServicios() {
+	    return misServicios;
+	}
+
+	public void setMisServicios(ArrayList<Servicio> misServicios) {
+	    this.misServicios = misServicios;
+	}
+
 	public boolean registrarEmpleado(Empleado empleado) {
 	    if (empleado == null || empleado.getCodigo() == null) {
 	        return false;
@@ -137,6 +145,8 @@ public class Altice {
 
 	    return true;
 	}
+	
+	
 
 	//
 	//CLIENTE
@@ -204,6 +214,7 @@ public class Altice {
 	    return true;
 	}
 
+
 	// ====================== REGISTRAR PLAN ======================
 	public boolean registrarPlan(Plan plan) {
 	    if (plan == null || plan.getCodigo() == null) {
@@ -247,6 +258,56 @@ public class Altice {
 	    return true;
 	}
 	
+
+//
+//SERVICIOS
+//
+	
+public boolean registrarServicio(Servicio servicio) {
+    if (servicio == null || servicio.getCodigo() == null) 
+        return false;
+
+    if (existeServicio(servicio.getTipo())) 
+        return false;
+    
+    for (Servicio s : misServicios) 
+        if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(servicio.getCodigo())) 
+            return false;
+
+    misServicios.add(servicio);
+    genServicioid++;
+    return true;
+}
+
+public boolean modificarServicio(Servicio servicioActualizado) {
+    if (servicioActualizado == null || servicioActualizado.getCodigo() == null) 
+        return false;
+    
+
+    int indice = buscarIndexServicioByCodigo(servicioActualizado.getCodigo());
+    if (indice == -1) 
+        return false; 
+
+    misServicios.set(indice, servicioActualizado);
+    return true;
+}
+
+public boolean desactivarServicio(String codigo) {
+    if (codigo == null || codigo.trim().isEmpty()) 
+        return false;
+   
+    int indice = buscarIndexServicioByCodigo(codigo);
+    if (indice == -1) 
+        return false; 
+    
+    Servicio servicio = misServicios.get(indice);
+    if (!servicio.isActivo()) 
+        return false; 
+
+    servicio.setActivo(false);   
+    return true;
+}
+
 //
 //METODOS DE BUSQUEDA
 //
@@ -379,6 +440,28 @@ public class Altice {
         return -1;
     }
 
+    private int buscarIndexServicioByCodigo(String codigo) {
+        if (codigo == null) return -1;
+
+        for (int i = 0; i < misServicios.size(); i++) {
+            Servicio s = misServicios.get(i);
+            if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    public Servicio buscarServicioByCodigo(String codigo) {
+        if (codigo == null) return null;
+
+        for (Servicio s : misServicios) {
+            if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
+                return s;
+            }
+        }
+        return null;
+    }
     
 //VALIDACIONES
 ///       

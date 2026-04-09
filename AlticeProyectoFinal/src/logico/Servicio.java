@@ -1,13 +1,14 @@
 package logico;
 
 public class Servicio {
-	public Servicio(String codigo, TipoServicio tipo, String descripcion) {
-		super();
-		this.codigo = codigo;
-		this.setTipo(tipo);
-		this.descripcion = descripcion;
-		activo = true;
+	
+	public Servicio(TipoServicio tipo, String descripcion) {
+	    this.codigo = "SERV-" + String.format("%04d", Altice.getInstance().getGenServicioid() + 1);
+	    this.tipo = tipo;
+	    this.descripcion = descripcion;
+	    this.activo = true;
 	}
+	
 	private String codigo;
 	private TipoServicio tipo;
 	private String descripcion;
