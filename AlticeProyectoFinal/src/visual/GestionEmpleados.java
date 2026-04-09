@@ -49,23 +49,6 @@ public class GestionEmpleados extends JDialog {
 	private JButton btnDetalles;
 	private static JComboBox<String> comboFiltrar;
 	
-
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        try {
-            GestionEmpleados dialog = new GestionEmpleados();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Create the dialog.
-     */
     public GestionEmpleados() {
         setTitle("Gestionar Empleados");
         setResizable(false);

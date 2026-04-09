@@ -1,8 +1,10 @@
 package logico;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Solicitud {
+public class Solicitud implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public Solicitud(String codigo, Cliente cliente, TipoSolicitud tipo, String descripcion) {
 		super();
 		this.codigo = codigo;

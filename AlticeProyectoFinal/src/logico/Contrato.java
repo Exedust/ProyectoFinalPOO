@@ -1,9 +1,11 @@
 package logico;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Contrato {
+public class Contrato implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public Contrato(String codigo, Empleado empleado, Cliente cliente, Plan plan) {
 		super();
 		this.codigo = codigo;
@@ -12,6 +14,7 @@ public class Contrato {
 		pagos = new ArrayList<Pago>();
 		this.plan = plan;
 		fechaInicio = LocalDate.now();
+		fechaCierre = null;
 		activo = true;
 	}
 
@@ -21,6 +24,7 @@ public class Contrato {
 	private ArrayList<Pago> pagos;
 	private Plan plan;
 	private LocalDate fechaInicio;
+	private LocalDate fechaCierre;
 	private boolean activo;
 	
 	public int getMesesTranscurridos() {
@@ -117,5 +121,13 @@ public class Contrato {
 
 	public void setFechaInicio(LocalDate fechaInicio) {
 		this.fechaInicio = fechaInicio;
+	}
+
+	public LocalDate getFechaCierre() {
+		return fechaCierre;
+	}
+
+	public void setFechaCierre(LocalDate fechaCierre) {
+		this.fechaCierre = fechaCierre;
 	}
 }

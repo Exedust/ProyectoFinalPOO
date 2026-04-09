@@ -15,6 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+
+import logico.Altice;
+
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.BevelBorder;
@@ -39,6 +42,8 @@ public class PrincipalAdmin extends JFrame {
 	private Dimension dim;
 	
 	private JPanel contentPane;
+	private JLabel lblBienvenido;
+	private JMenuItem btnGuardar;
 
 	/**
 	 * Launch the application.
@@ -208,6 +213,17 @@ public class PrincipalAdmin extends JFrame {
 		mnNewMenu.setForeground(new Color(255, 255, 255));
 		mnNewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		menuBar.add(mnNewMenu);
+		
+		btnGuardar = new JMenuItem("Guardar");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Altice.getInstance().guardarDatos();
+			}
+		});
+		btnGuardar.setForeground(Color.WHITE);
+		btnGuardar.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		btnGuardar.setBackground(new Color(0, 0, 102));
+		mnNewMenu.add(btnGuardar);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(0, 0, 51));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -220,12 +236,15 @@ public class PrincipalAdmin extends JFrame {
 		topPanel.setBackground(new Color(0, 0, 51));
 		topPanel.setLayout(new BorderLayout());
 
-		JLabel lblBienvenido = new JLabel("Bienvenido, ____");
+		lblBienvenido = new JLabel("Bienvenido, ____");
 		lblBienvenido.setForeground(Color.WHITE);
 		lblBienvenido.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 		lblBienvenido.setBorder(new EmptyBorder(5, 10, 5, 10));
 		topPanel.add(lblBienvenido, BorderLayout.WEST);
-
+		
+		if(!Altice.getSesion().getUser().equalsIgnoreCase("admin"))
+			lblBienvenido.setText("Bienvenido, "+Altice.getInstance().buscarEmpleadoById((Altice.getSesion().getCodigo())).getNombre());
+		
 		JButton btnCerrarSesion = new JButton("Cerrar sesión");
 		btnCerrarSesion.setForeground(Color.WHITE);
 		btnCerrarSesion.setBackground(new Color(102, 0, 0));

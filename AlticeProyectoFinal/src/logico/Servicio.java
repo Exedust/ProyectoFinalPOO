@@ -1,7 +1,9 @@
 package logico;
 
-public class Servicio {
-	
+import java.io.Serializable;
+
+public class Servicio implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public Servicio(TipoServicio tipo, String descripcion) {
 	    this.codigo = "SERV-" + String.format("%04d", Altice.getInstance().getGenServicioid() + 1);
 	    this.tipo = tipo;
