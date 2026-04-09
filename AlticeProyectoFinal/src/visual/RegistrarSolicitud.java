@@ -36,6 +36,7 @@ public class RegistrarSolicitud extends JDialog {
     private JTextField txtDireccion;
     private JComboBox<TipoSolicitud> comboTipo;
     private JTextPane txtDescripcion;
+
     private JButton okButton;
     private JButton cancelButton;
 
@@ -77,7 +78,7 @@ public class RegistrarSolicitud extends JDialog {
             {
                 JPanel panelCliente = new JPanel();
                 panelCliente.setBackground(new Color(102, 102, 204));
-                panelCliente.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), 
+                panelCliente.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Datos del Cliente", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
                 panelCliente.setBounds(12, 13, 574, 222);
                 panel.add(panelCliente);
@@ -185,7 +186,7 @@ public class RegistrarSolicitud extends JDialog {
             {
                 JPanel panelSolicitud = new JPanel();
                 panelSolicitud.setLayout(null);
-                panelSolicitud.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), 
+                panelSolicitud.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Datos de la Solicitud", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
                 panelSolicitud.setBackground(new Color(102, 102, 204));
                 panelSolicitud.setBounds(12, 248, 574, 223);
@@ -280,14 +281,14 @@ public class RegistrarSolicitud extends JDialog {
 
         Cliente cliente = (Cliente) persona;
 
+        // ASIGNACIÓN CORRECTA
         txtNombre.setText(cliente.getNombre());
         txtTelefono.setText(cliente.getTelefono());
-        txtCorreo.setText(cliente.getEmail());
-        txtDireccion.setText(cliente.getDireccion());
+        txtCorreo.setText(cliente.getEmail() != null ? cliente.getEmail() : "");
+        txtDireccion.setText(cliente.getDireccion() != null ? cliente.getDireccion() : "");
     }
 
     private void registrarSolicitud() {
-        // Validaciones
         if (txtNombre.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe buscar y seleccionar un cliente primero", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -298,17 +299,17 @@ public class RegistrarSolicitud extends JDialog {
         }
         if (txtDescripcion.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe ingresar una descripción", "Error", JOptionPane.ERROR_MESSAGE);
+            txtDescripcion.requestFocus();
             return;
         }
 
-        // Aquí iría la lógica completa de registro (similar a las otras pantallas)
-        // Por ahora muestro mensaje de éxito
+        // Aquí va la lógica real de registro (por ahora mostramos mensaje)
         JOptionPane.showMessageDialog(this, "Solicitud registrada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        
+
         if (cerrarAlRegistrar) {
             dispose();
         } else {
-            // Limpiar campos para nuevo registro
+            // Limpiar para nuevo registro
             txtCedula.setText("");
             txtNombre.setText("");
             txtTelefono.setText("");
@@ -316,6 +317,7 @@ public class RegistrarSolicitud extends JDialog {
             txtDireccion.setText("");
             txtDescripcion.setText("");
             comboTipo.setSelectedIndex(0);
+            txtCedula.requestFocus();
         }
     }
 }

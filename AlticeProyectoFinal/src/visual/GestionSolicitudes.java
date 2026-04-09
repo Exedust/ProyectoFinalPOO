@@ -66,7 +66,7 @@ public class GestionSolicitudes extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL PRINCIPAL DE TABLA ======================
+        // ====================== PANEL TABLA ======================
         {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
@@ -84,8 +84,8 @@ public class GestionSolicitudes extends JDialog {
             table.setRowHeight(25);
 
             String[] headers = {
-                "Código", "Tipo", "Cliente", "Cédula", "Empleado Asignado", 
-                "Estado", "Fecha Emisión", "Fecha Atención"
+                "CÃ³digo", "Tipo", "Cliente", "CÃ©dula", "Empleado Asignado", 
+                "Estado", "Fecha EmisiÃ³n", "Fecha AtenciÃ³n"
             };
 
             model = new DefaultTableModel() {
@@ -108,14 +108,14 @@ public class GestionSolicitudes extends JDialog {
                         selected = Altice.getInstance().buscarSolicitudByCodigo(codigo);
                         
                         btnModificar.setEnabled(true);
-                        btnCancelar.setEnabled(true);
+                        btnCancelar.setEnabled(selected != null && !selected.isResuelto() && !selected.isCancelada());
                         btnVerDetalles.setEnabled(true);
                     }
                 }
             });
         }
 
-        // ====================== CAMPOS DE BÚSQUEDA ======================
+        // ====================== CAMPOS DE BÃšSQUEDA ======================
         {
             JTextField txtCedula = new JTextField();
             txtCedula.setBackground(new Color(0, 0, 51));
@@ -173,7 +173,7 @@ public class GestionSolicitudes extends JDialog {
 
         // Etiquetas
         {
-            JLabel lblCedula = new JLabel("Cédula");
+            JLabel lblCedula = new JLabel("CÃ©dula");
             lblCedula.setForeground(Color.WHITE);
             lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             lblCedula.setBounds(12, 88, 56, 16);
@@ -235,7 +235,7 @@ public class GestionSolicitudes extends JDialog {
                 RegistrarSolicitud reg = new RegistrarSolicitud(null, false);
                 reg.setModal(true);
                 reg.setVisible(true);
-                loadSolicitudes();
+                loadSolicitudes();        // â† Actualiza despuÃ©s de registrar
             });
             contentPanel.add(btnAgregar);
         }
@@ -284,14 +284,14 @@ public class GestionSolicitudes extends JDialog {
             btnVerDetalles.setEnabled(false);
             btnVerDetalles.addActionListener(e -> {
                 if (selected != null) {
-                    // Aquí abrirías DetallesSolicitud cuando la tengas
-                    JOptionPane.showMessageDialog(this, "Detalles de solicitud (pendiente de implementar)", "Información", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Ventana de DetallesSolicitud pendiente de implementar", 
+                        "InformaciÃ³n", JOptionPane.INFORMATION_MESSAGE);
                 }
             });
             contentPanel.add(btnVerDetalles);
         }
 
-        // Botón Salir
+        // BotÃ³n Salir
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -315,6 +315,7 @@ public class GestionSolicitudes extends JDialog {
     private void loadSolicitudes() {
         model.setRowCount(0);
         row = new Object[8];
+        int total = 0;
 
         for (Solicitud s : Altice.getInstance().getMisSolicitudes()) {
             Cliente cli = s.getCliente();
@@ -330,6 +331,19 @@ public class GestionSolicitudes extends JDialog {
             row[7] = s.getFechaAtencion() != null ? s.getFechaAtencion().toString() : "";
 
             model.addRow(row);
+            total++;
+        }
+
+        // Actualizar contador "Solicitudes Registradas"
+        for (int i = 0; i < contentPanel.getComponentCount(); i++) {
+            java.awt.Component c = contentPanel.getComponent(i);
+            if (c instanceof JLabel) {
+                JLabel lbl = (JLabel) c;
+                if (lbl.getText().startsWith("Solicitudes Registradas")) {
+                    lbl.setText("Solicitudes Registradas: " + String.format("%02d", total));
+                    break;
+                }
+            }
         }
     }
 
@@ -337,20 +351,21 @@ public class GestionSolicitudes extends JDialog {
         if (selected == null) return;
 
         if (selected.isResuelto() || selected.isCancelada()) {
-            JOptionPane.showMessageDialog(this, "No se puede cancelar una solicitud ya completada o cancelada.", 
-                    "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                "No se puede cancelar una solicitud ya completada o cancelada.", 
+                "AcciÃ³n no permitida", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         int opcion = JOptionPane.showConfirmDialog(this,
-                "¿Desea cancelar esta solicitud?",
-                "Confirmar Cancelación",
+                "Â¿Desea cancelar esta solicitud?",
+                "Confirmar CancelaciÃ³n",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
 
         if (opcion == JOptionPane.YES_OPTION) {
             if (Altice.getInstance().cancelarSolicitud(selected.getCodigo())) {
-                JOptionPane.showMessageDialog(this, "Solicitud cancelada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Solicitud cancelada correctamente", "Ã‰xito", JOptionPane.INFORMATION_MESSAGE);
                 loadSolicitudes();
                 btnModificar.setEnabled(false);
                 btnCancelar.setEnabled(false);
