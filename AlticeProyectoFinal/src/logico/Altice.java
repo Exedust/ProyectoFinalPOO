@@ -203,6 +203,50 @@ public class Altice {
 	    }
 	    return true;
 	}
+
+	// ====================== REGISTRAR PLAN ======================
+	public boolean registrarPlan(Plan plan) {
+	    if (plan == null || plan.getCodigo() == null) {
+	        return false;
+	    }
+
+	    if (buscarPlanByCodigo(plan.getCodigo()) != null) {
+	        return false;
+	    }
+
+	    misPlanes.add(plan);
+	    genPlanid++;
+	    return true;
+	}
+
+	public boolean modificarPlan(Plan nuevoPlan) {
+	    if (nuevoPlan == null || nuevoPlan.getCodigo() == null) {
+	        return false;
+	    }
+
+	    int indice = buscarIndexPlanByCodigo(nuevoPlan.getCodigo());
+	    if (indice == -1) {
+	        return false;
+	    }
+
+	    misPlanes.set(indice, nuevoPlan);
+	    return true;
+	}
+
+	public boolean desactivarPlan(String codigo) {
+	    if (codigo == null) return false;
+
+	    int indice = buscarIndexPlanByCodigo(codigo);
+	    if (indice == -1) {
+	        return false;
+	    }
+
+	    Plan plan = misPlanes.get(indice);
+	    plan.setActivo(false);
+
+	    return true;
+	}
+	
 //
 //METODOS DE BUSQUEDA
 //
@@ -297,6 +341,25 @@ public class Altice {
         return null;
     }
 
+    public Contrato buscarContratoByCodigo(String codigo) {
+        for (Contrato c : misContratos) {
+            if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
+                return c;
+            }
+        }
+        return null;
+    }
+    
+    public Plan buscarPlanByNombre(String nombre)
+    {
+    	for(Plan p: misPlanes)
+    	{
+    		if(p.getNombre().equalsIgnoreCase(nombre))
+    			return p;
+    	}
+    	return null;
+    }
+    
     public Plan buscarPlanByCodigo(String codigo) {
         for (Plan p : misPlanes) {
             if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
@@ -306,13 +369,14 @@ public class Altice {
         return null;
     }
 
-    public Contrato buscarContratoByCodigo(String codigo) {
-        for (Contrato c : misContratos) {
-            if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
-                return c;
+    public int buscarIndexPlanByCodigo(String codigo) {
+        for (int i = 0; i < misPlanes.size(); i++) {
+            Plan p = misPlanes.get(i);
+            if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
+                return i;
             }
         }
-        return null;
+        return -1;
     }
 
     

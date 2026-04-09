@@ -12,6 +12,7 @@ public class Plan {
 		precioInternet = 0;
 		precioMovil = 0;
 		precioCable = 0;
+		activo = true;
 	}
 	private String codigo;
 	private String nombre;
@@ -24,15 +25,17 @@ public class Plan {
 	
 	private boolean tieneMovil;
 	private int minutos;
-	private float gb;
+	private int gb;
 	
 	private boolean tieneCable;
 	private boolean packBasico;
-	private boolean packPremium;
+	private boolean packHD;
 	
 	private float precioInternet;
 	private float precioMovil;
 	private float precioCable;
+	
+	private boolean activo;
 	
 	public void agregar(Servicio s, float precio)
 	{
@@ -85,7 +88,7 @@ public class Plan {
 		}
 	}
 	
-	public float getMonto()
+	public Float getMonto()
 	{
 		return precioInternet + precioMovil + precioCable;
 	}
@@ -151,10 +154,10 @@ public class Plan {
 	public void setMinutos(int minutos) {
 		this.minutos = minutos;
 	}
-	public float getGb() {
+	public int getGb() {
 		return gb;
 	}
-	public void setGb(float gb) {
+	public void setGb(int gb) {
 		this.gb = gb;
 	}
 	public boolean isTieneCable() {
@@ -169,11 +172,11 @@ public class Plan {
 	public void setPackBasico(boolean packBasico) {
 		this.packBasico = packBasico;
 	}
-	public boolean isPackPremium() {
-		return packPremium;
+	public boolean isPackHD() {
+		return packHD;
 	}
-	public void setPackPremium(boolean packPremium) {
-		this.packPremium = packPremium;
+	public void setPackHD(boolean packHD) {
+		this.packHD = packHD;
 	}
 	public float getPrecioInternet() {
 		return precioInternet;
@@ -192,5 +195,11 @@ public class Plan {
 	}
 	public void setPrecioCable(float precioCable) {
 		this.precioCable = precioCable;
+	}
+	public boolean isActivo() {
+		return activo;
+	}
+	public void setActivo(boolean activo) {
+		this.activo = activo;
 	}
 }

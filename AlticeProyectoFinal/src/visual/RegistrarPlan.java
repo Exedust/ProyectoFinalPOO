@@ -12,22 +12,30 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import logico.Altice;
+import logico.Plan;
 import logico.TipoServicio;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 public class RegistrarPlan extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private JTextField txtNombre;           // Nombre
-    private JTextPane txtDescripcion;             // Descripción
-    private JTextField txtCostoTotal;         // Costo Total
+    private Plan miPlan;
+    
+    private JTextField txtNombre;          
+    private JTextPane txtDescripcion;            
+    private JTextField txtCostoTotal;         
 
     private JCheckBox chkbxInternet;
     private JCheckBox chckbxCable;
@@ -40,15 +48,20 @@ public class RegistrarPlan extends JDialog {
     private JSpinner spnSubida;
     private JSpinner spnPrecioInternet;
     private JCheckBox checkPackBasico;
-    private JCheckBox checkPackPremium;
+    private JCheckBox checkPackHD;
     private JSpinner spnPrecioCable;
     private JSpinner spnMinutos;
     private JButton btnCancelar;
     private JButton btnAceptar;
+    private JSpinner spnPrecioMovil;
+    private JSpinner spnGigas;
+    private JCheckBox checkActivo;
+    private JLabel label;
+    private JTextField txtCodigo;
 
     public static void main(String[] args) {
         try {
-            RegistrarPlan dialog = new RegistrarPlan();
+            RegistrarPlan dialog = new RegistrarPlan(null);
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {
@@ -56,10 +69,16 @@ public class RegistrarPlan extends JDialog {
         }
     }
 
-    public RegistrarPlan() {
+    public RegistrarPlan(Plan plan) {
+    	miPlan = plan;
+    	
         setTitle("Registrar Plan");
+        if(miPlan != null)
+        	setTitle("Modificar Plan");
+        
         setResizable(false);
-        setBounds(100, 100, 595, 783);
+        setBounds(100, 100, 595, 818);
+        setLocationRelativeTo(null);
         
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
@@ -83,7 +102,7 @@ public class RegistrarPlan extends JDialog {
                 panelGeneral.setLayout(null);
                 panelGeneral.setBackground(new Color(102, 102, 204));
                 panelGeneral.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                panelGeneral.setBounds(23, 13, 510, 207);
+                panelGeneral.setBounds(22, 46, 510, 207);
                 panel.add(panelGeneral);
 
                 {
@@ -130,7 +149,7 @@ public class RegistrarPlan extends JDialog {
                 panelServicios.setBackground(new Color(102, 102, 204));
                 panelServicios.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Servicios Incluidos", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelServicios.setBounds(23, 245, 510, 71);
+                panelServicios.setBounds(22, 278, 510, 71);
                 panel.add(panelServicios);
 
                 {
@@ -166,7 +185,7 @@ public class RegistrarPlan extends JDialog {
                 panelInternet.setBackground(new Color(102, 102, 204));
                 panelInternet.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Internet", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelInternet.setBounds(23, 339, 137, 232);
+                panelInternet.setBounds(22, 372, 137, 232);
                 panel.add(panelInternet);
 
                 {
@@ -178,6 +197,7 @@ public class RegistrarPlan extends JDialog {
                 }
                 {
                     spnBajada = new JSpinner();
+                    spnBajada.setModel(new SpinnerNumberModel(new Integer(5), new Integer(5), null, new Integer(1)));
                     spnBajada.setForeground(Color.WHITE);
                     spnBajada.setBackground(new Color(51, 51, 102));
                     spnBajada.setBounds(23, 59, 91, 22);
@@ -192,6 +212,7 @@ public class RegistrarPlan extends JDialog {
                 }
                 {
                     spnSubida = new JSpinner();
+                    spnSubida.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
                     spnSubida.setForeground(Color.WHITE);
                     spnSubida.setBackground(new Color(51, 51, 102));
                     spnSubida.setBounds(23, 123, 91, 22);
@@ -206,6 +227,7 @@ public class RegistrarPlan extends JDialog {
                 }
                 {
                     spnPrecioInternet = new JSpinner();
+                    spnPrecioInternet.setModel(new SpinnerNumberModel(new Float(0), null, null, new Float(1)));
                     spnPrecioInternet.setForeground(Color.WHITE);
                     spnPrecioInternet.setBackground(new Color(51, 51, 102));
                     spnPrecioInternet.setBounds(23, 186, 91, 22);
@@ -220,7 +242,7 @@ public class RegistrarPlan extends JDialog {
                 panelCable.setBackground(new Color(102, 102, 204));
                 panelCable.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Cable", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelCable.setBounds(215, 339, 137, 232);
+                panelCable.setBounds(214, 372, 137, 232);
                 panel.add(panelCable);
 
                 {
@@ -232,6 +254,7 @@ public class RegistrarPlan extends JDialog {
                 }
                 {
                     spnPrecioCable = new JSpinner();
+                    spnPrecioCable.setModel(new SpinnerNumberModel(new Float(0), null, null, new Float(1)));
                     spnPrecioCable.setForeground(Color.WHITE);
                     spnPrecioCable.setBackground(new Color(51, 51, 102));
                     spnPrecioCable.setBounds(23, 186, 91, 22);
@@ -246,12 +269,12 @@ public class RegistrarPlan extends JDialog {
                     panelCable.add(checkPackBasico);
                 }
                 {
-                    checkPackPremium = new JCheckBox("Pack Premium");
-                    checkPackPremium.setForeground(Color.WHITE);
-                    checkPackPremium.setBackground(new Color(102, 102, 204));
-                    checkPackPremium.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    checkPackPremium.setBounds(12, 110, 113, 25);
-                    panelCable.add(checkPackPremium);
+                    checkPackHD = new JCheckBox("Pack HD");
+                    checkPackHD.setForeground(Color.WHITE);
+                    checkPackHD.setBackground(new Color(102, 102, 204));
+                    checkPackHD.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    checkPackHD.setBounds(12, 110, 113, 25);
+                    panelCable.add(checkPackHD);
                 }
             }
 
@@ -262,7 +285,7 @@ public class RegistrarPlan extends JDialog {
                 panelMovil.setBackground(new Color(102, 102, 204));
                 panelMovil.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Movil", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelMovil.setBounds(396, 339, 137, 232);
+                panelMovil.setBounds(395, 372, 137, 232);
                 panel.add(panelMovil);
 
                 {
@@ -274,6 +297,7 @@ public class RegistrarPlan extends JDialog {
                 }
                 {
                     spnMinutos = new JSpinner();
+                    spnMinutos.setModel(new SpinnerNumberModel(new Integer(10), new Integer(10), null, new Integer(1)));
                     spnMinutos.setForeground(Color.WHITE);
                     spnMinutos.setBackground(new Color(51, 51, 102));
                     spnMinutos.setBounds(23, 59, 91, 22);
@@ -287,7 +311,7 @@ public class RegistrarPlan extends JDialog {
                     panelMovil.add(lblGigas);
                 }
                 {
-                    JSpinner spnGigas = new JSpinner();
+                    spnGigas = new JSpinner();
                     spnGigas.setForeground(Color.WHITE);
                     spnGigas.setBackground(new Color(51, 51, 102));
                     spnGigas.setBounds(23, 123, 91, 22);
@@ -301,7 +325,8 @@ public class RegistrarPlan extends JDialog {
                     panelMovil.add(lblPrecio);
                 }
                 {
-                    JSpinner spnPrecioMovil = new JSpinner();
+                    spnPrecioMovil = new JSpinner();
+                    spnPrecioMovil.setModel(new SpinnerNumberModel(new Float(0), null, null, new Float(1)));
                     spnPrecioMovil.setForeground(Color.WHITE);
                     spnPrecioMovil.setBackground(new Color(51, 51, 102));
                     spnPrecioMovil.setBounds(23, 186, 91, 22);
@@ -316,11 +341,12 @@ public class RegistrarPlan extends JDialog {
                 panelCosto.setBackground(new Color(102, 102, 204));
                 panelCosto.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Costo Total", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelCosto.setBounds(23, 608, 510, 61);
+                panelCosto.setBounds(22, 641, 510, 61);
                 panel.add(panelCosto);
 
                 {
                     txtCostoTotal = new JTextField();
+                    txtCostoTotal.setHorizontalAlignment(SwingConstants.CENTER);
                     txtCostoTotal.setEditable(false);
                     txtCostoTotal.setBackground(new Color(0, 0, 51));
                     txtCostoTotal.setForeground(Color.WHITE);
@@ -330,6 +356,34 @@ public class RegistrarPlan extends JDialog {
                     txtCostoTotal.setBounds(197, 24, 116, 24);
                     panelCosto.add(txtCostoTotal);
                 }
+                
+                checkActivo = new JCheckBox("Activo");
+                checkActivo.setBounds(410, 23, 77, 25);
+                panelCosto.add(checkActivo);
+                checkActivo.setSelected(true);
+                checkActivo.setForeground(Color.WHITE);
+                checkActivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+                checkActivo.setBackground(new Color(102, 102, 204));
+            }
+            {
+            	label = new JLabel("C\u00F3digo");
+            	label.setForeground(Color.WHITE);
+            	label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            	label.setBounds(22, 13, 56, 16);
+            	panel.add(label);
+            }
+            {
+            	txtCodigo = new JTextField();
+            	txtCodigo.setForeground(Color.WHITE);
+            	txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            	txtCodigo.setEditable(false);
+            	txtCodigo.setColumns(10);
+            	txtCodigo.setCaretColor(Color.WHITE);
+            	txtCodigo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            	txtCodigo.setBackground(new Color(0, 0, 51));
+            	txtCodigo.setBounds(77, 9, 112, 24);
+            	panel.add(txtCodigo);
+            	txtCodigo.setText(String.format("PL-%05d", Altice.getGenPlanid()));
             }
         }
 
@@ -344,6 +398,7 @@ public class RegistrarPlan extends JDialog {
             btnAceptar = new JButton("Aceptar");
             btnAceptar.addActionListener(new ActionListener() {
             	public void actionPerformed(ActionEvent e) {
+            		registrarPlan();
             	}
             });
             btnAceptar.setForeground(Color.WHITE);
@@ -355,6 +410,11 @@ public class RegistrarPlan extends JDialog {
             getRootPane().setDefaultButton(btnAceptar);
 
             btnCancelar = new JButton("Cancelar");
+            btnCancelar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		dispose();
+            	}
+            });
             btnCancelar.setForeground(Color.WHITE);
             btnCancelar.setBackground(new Color(102, 0, 0));
             btnCancelar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -362,13 +422,41 @@ public class RegistrarPlan extends JDialog {
             btnCancelar.setActionCommand("Cancel");
             buttonPane.add(btnCancelar);
         }
+        // ====================== LISTENERS ======================
         ActionListener servicioListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panelInternet.setVisible(chkbxInternet.isSelected());
                 panelCable.setVisible(chckbxCable.isSelected());
                 panelMovil.setVisible(chckbxTelefonia.isSelected());
+
+                if (!chkbxInternet.isSelected()) {
+                    spnBajada.setValue(5);
+                    spnSubida.setValue(1);
+                    spnPrecioInternet.setValue(0);
+                }
+                if (!chckbxCable.isSelected()) {
+                    checkPackBasico.setSelected(false);
+                    checkPackHD.setSelected(false);
+                    spnPrecioCable.setValue(0);
+                }
+                if (!chckbxTelefonia.isSelected()) {
+                    spnMinutos.setValue(10);
+                    spnGigas.setValue(0);
+                    spnPrecioMovil.setValue(0);
+                }
+                actualizarCostoTotal();
             }
         };
+
+        ChangeListener cambioListener = new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                actualizarCostoTotal();
+            }
+        };
+
+        spnPrecioInternet.addChangeListener(cambioListener);
+        spnPrecioCable.addChangeListener(cambioListener);
+        spnPrecioMovil.addChangeListener(cambioListener);
 
         chkbxInternet.addActionListener(servicioListener);
         chckbxCable.addActionListener(servicioListener);
@@ -377,10 +465,257 @@ public class RegistrarPlan extends JDialog {
         panelInternet.setVisible(false);
         panelCable.setVisible(false);
         panelMovil.setVisible(false);
-        chkbxInternet.setEnabled(false);
-        chckbxCable.setEnabled(false);
-        chckbxTelefonia.setEnabled(false);
-        comprobarServicios();
+
+        chkbxInternet.setEnabled(true);  
+        chckbxCable.setEnabled(true);
+        chckbxTelefonia.setEnabled(true);
+
+        actualizarCostoTotal();
+
+        if (miPlan != null) {
+            loadPlan(miPlan);
+            checkActivo.setVisible(true);
+        } else {
+            checkActivo.setVisible(false);
+            txtCodigo.setText(String.format("PL-%05d", Altice.getGenPlanid()));
+        }
+    }
+    
+    private void registrarPlan() {
+        if (miPlan != null) {
+            if (registrar()) {
+                JOptionPane.showMessageDialog(this, "Plan modificado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	            if (!checkActivo.isSelected()) {
+	                Altice.getInstance().desactivarPlan(miPlan.getCodigo());
+	            }
+	            dispose();
+            }
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea registrar este plan?",
+                "Confirmar Registro",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        if (registrar()) {
+            JOptionPane.showMessageDialog(this, "Plan registrado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            clean();
+            txtNombre.requestFocus();
+            
+        }
+    }
+
+    private boolean registrar() {
+        if (!validar()) {
+            return false;
+        }
+
+        String codigo = txtCodigo.getText();
+        String nombre = txtNombre.getText().trim();
+        String descripcion = txtDescripcion.getText().trim();
+
+        Plan nuevo;
+
+        if (miPlan == null) {
+            nuevo = new Plan(codigo, nombre, descripcion);
+        } else {
+            nuevo = miPlan;
+            nuevo.setNombre(nombre);
+            nuevo.setDescripcion(descripcion);
+        }
+
+        nuevo.setTieneInternet(chkbxInternet.isSelected());
+        nuevo.setTieneCable(chckbxCable.isSelected());
+        nuevo.setTieneMovil(chckbxTelefonia.isSelected());
+
+        if (chkbxInternet.isSelected()) {
+            nuevo.setBajadamegas((int) spnBajada.getValue());
+            nuevo.setSubidamegas((int) spnSubida.getValue());
+            nuevo.setPrecioInternet((float)spnPrecioInternet.getValue());
+        }
+
+        if (chckbxCable.isSelected()) {
+            nuevo.setPackBasico(checkPackBasico.isSelected());
+            nuevo.setPackHD(checkPackHD.isSelected());
+            nuevo.setPrecioCable((float)spnPrecioCable.getValue());
+        }
+
+        if (chckbxTelefonia.isSelected()) {
+            nuevo.setMinutos((int) spnMinutos.getValue());
+            nuevo.setGb((int) spnGigas.getValue());
+            nuevo.setPrecioMovil((float)spnPrecioMovil.getValue());
+        }
+
+        nuevo.setActivo(checkActivo.isSelected());
+
+        if (miPlan == null) {
+            return Altice.getInstance().registrarPlan(nuevo);
+        } else {
+            return Altice.getInstance().modificarPlan(nuevo);
+        }
+    }
+    
+    private void clean() {
+        txtNombre.setText("");
+        txtDescripcion.setText("");
+
+        checkActivo.setSelected(true);
+
+        chkbxInternet.setSelected(false);
+        chckbxCable.setSelected(false);
+        chckbxTelefonia.setSelected(false);
+
+        panelInternet.setVisible(chkbxInternet.isSelected());
+        panelCable.setVisible(chckbxCable.isSelected());
+        panelMovil.setVisible(chckbxTelefonia.isSelected());
+        
+        spnBajada.setValue(5);
+        spnSubida.setValue(1);
+        spnPrecioInternet.setValue(0);
+        checkPackBasico.setSelected(false);
+        checkPackHD.setSelected(false);
+        spnPrecioCable.setValue(0);
+
+        spnMinutos.setValue(0);
+        spnGigas.setValue(0);
+        spnPrecioMovil.setValue(0);
+        	
+        txtCodigo.setText(String.format("PL-%05d", Altice.getGenPlanid()));
+        txtCostoTotal.setText("RD$0.0");
+    }
+    private void loadPlan(Plan plan) {
+        if (plan == null) return;
+
+        txtNombre.setText(plan.getNombre());
+        txtDescripcion.setText(plan.getDescripcion());
+        txtCodigo.setText(plan.getCodigo());
+
+        chkbxInternet.setSelected(plan.isTieneInternet());
+        chckbxCable.setSelected(plan.isTieneCable());
+        chckbxTelefonia.setSelected(plan.isTieneMovil());
+
+        panelInternet.setVisible(chkbxInternet.isSelected());
+        panelCable.setVisible(chckbxCable.isSelected());
+        panelMovil.setVisible(chckbxTelefonia.isSelected());
+
+        if (plan.isTieneInternet()) {
+            spnBajada.setValue(plan.getBajadamegas());
+            spnSubida.setValue(plan.getSubidamegas());
+            spnPrecioInternet.setValue(plan.getPrecioInternet());
+        }
+
+        if (plan.isTieneCable()) {
+            checkPackBasico.setSelected(plan.isPackBasico());
+            checkPackHD.setSelected(plan.isPackHD());
+            spnPrecioCable.setValue(plan.getPrecioCable());
+        }
+
+        if (plan.isTieneMovil()) {
+            spnMinutos.setValue(plan.getMinutos());
+            spnGigas.setValue(plan.getGb());
+            spnPrecioMovil.setValue(plan.getPrecioMovil());
+        }
+
+        checkActivo.setSelected(plan.isActivo());
+
+        actualizarCostoTotal();
+    }
+    private boolean validar() {
+        
+        String nombre = txtNombre.getText().trim();
+        
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar el nombre del plan.", "Error", JOptionPane.ERROR_MESSAGE);
+            txtNombre.requestFocus();
+            return false;
+        }
+
+        if (txtDescripcion.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar una descripción del plan.", "Error", JOptionPane.ERROR_MESSAGE);
+            txtDescripcion.requestFocus();
+            return false;
+        }
+
+        Plan planExistente = Altice.getInstance().buscarPlanByNombre(nombre);
+        
+        if (planExistente != null) {
+            if (miPlan != null && miPlan.getCodigo().equals(planExistente.getCodigo())) {
+            } else {
+                if (planExistente.isActivo()) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Ya existe un plan activo con este nombre.", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                    txtNombre.requestFocus();
+                    return false;
+                }
+            }
+        }
+
+        if (!chkbxInternet.isSelected() && !chckbxCable.isSelected() && !chckbxTelefonia.isSelected()) {
+            JOptionPane.showMessageDialog(this, 
+                "Debe seleccionar al menos un servicio (Internet, Cable o Móvil).", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+            chkbxInternet.requestFocus();
+            return false;
+        }
+        
+        if (chkbxInternet.isSelected()) {
+            if ((int) spnBajada.getValue() <= 0) {
+                JOptionPane.showMessageDialog(this, "La velocidad de bajada debe ser mayor a 0 Mbps.", "Error", JOptionPane.ERROR_MESSAGE);
+                spnBajada.requestFocus();
+                return false;
+            }
+            if ((int) spnSubida.getValue() <= 0) {
+                JOptionPane.showMessageDialog(this, "La velocidad de subida debe ser mayor a 0 Mbps.", "Error", JOptionPane.ERROR_MESSAGE);
+                spnSubida.requestFocus();
+                return false;
+            }
+            if (((Number) spnPrecioInternet.getValue()).floatValue() <= 0) {
+                JOptionPane.showMessageDialog(this, "El precio del servicio de Internet debe ser mayor a 0.", "Error", JOptionPane.ERROR_MESSAGE);
+                spnPrecioInternet.requestFocus();
+                return false;
+            }
+        }
+
+        if (chckbxCable.isSelected()) {
+            if (((Number) spnPrecioCable.getValue()).floatValue() <= 0) {
+                JOptionPane.showMessageDialog(this, "El precio del servicio de Cable debe ser mayor a 0.", "Error", JOptionPane.ERROR_MESSAGE);
+                spnPrecioCable.requestFocus();
+                return false;
+            }
+            if (!checkPackBasico.isSelected() && !checkPackHD.isSelected()) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pack de Cable (Básico o HD).", "Error", JOptionPane.ERROR_MESSAGE);
+                checkPackBasico.requestFocus();
+                return false;
+            }
+        }
+
+        // ====================== VALIDACIÓN MOVIL ======================
+        if (chckbxTelefonia.isSelected()) {
+            if ((int) spnMinutos.getValue() <= 0) {
+                JOptionPane.showMessageDialog(this, "La cantidad de minutos debe ser mayor a 0.", "Error", JOptionPane.ERROR_MESSAGE);
+                spnMinutos.requestFocus();
+                return false;
+            }
+            if ((int) spnGigas.getValue() <= 0) {
+                JOptionPane.showMessageDialog(this, "La cantidad de gigas debe ser mayor a 0.", "Error", JOptionPane.ERROR_MESSAGE);
+                spnGigas.requestFocus();
+                return false;
+            }
+            if (((Number) spnPrecioCable.getValue()).floatValue() <= 0) {
+                JOptionPane.showMessageDialog(this, "El precio del servicio Móvil debe ser mayor a 0.", "Error", JOptionPane.ERROR_MESSAGE);
+                spnPrecioMovil.requestFocus();
+                return false;
+            }
+        }
+
+        return true;
     }
     
     public void comprobarServicios()
@@ -392,5 +727,20 @@ public class RegistrarPlan extends JDialog {
     	if(Altice.getInstance().existeServicio(TipoServicio.MOVIL))
     		chckbxTelefonia.setEnabled(true);
     	
+    }
+    private void actualizarCostoTotal() {
+        float total = 0f;
+
+        if (chkbxInternet.isSelected()) {
+            total += ((Number) spnPrecioInternet.getValue()).floatValue();
+        }
+        if (chckbxCable.isSelected()) {
+            total += ((Number) spnPrecioCable.getValue()).floatValue();
+        }
+        if (chckbxTelefonia.isSelected()) {
+            total += ((Number) spnPrecioMovil.getValue()).floatValue();
+        }
+
+        txtCostoTotal.setText(String.format("RD$ %.2f", total));
     }
 }
