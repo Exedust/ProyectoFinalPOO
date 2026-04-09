@@ -2,120 +2,219 @@ package visual;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
+import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.UIManager;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import logico.Altice;
+import logico.Servicio;
+import logico.TipoServicio;
 
 public class RegistrarServicio extends JDialog {
 
-	private final JPanel contentPanel = new JPanel();
-	private JButton cancelButton;
-	private JButton okButton;
+    private final JPanel contentPanel = new JPanel();
+    private Servicio miServicio;
+    private boolean cerrarAlRegistrar;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			RegistrarServicio dialog = new RegistrarServicio();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    private JComboBox<TipoServicio> comboTipo;
+    private JTextPane txtDescripcion;
+    private JCheckBox checkActivo;
+    private JButton okButton;
+    private JButton cancelButton;
 
-	/**
-	 * Create the dialog.
-	 */
-	public RegistrarServicio() {
-		setBackground(new Color(0, 0, 51));
-		setTitle("Registrar Servicio");
-		setResizable(false);
-		setBounds(100, 100, 450, 319);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBackground(new Color(0, 0, 51));
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
-		{
-			JPanel panel = new JPanel();
-			panel.setBackground(new Color(102, 102, 204));
-			panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 255)));
-			contentPanel.add(panel, BorderLayout.CENTER);
-			panel.setLayout(null);
-			{
-				JLabel lblNewLabel = new JLabel("Tipo");
-				lblNewLabel.setForeground(new Color(255, 255, 255));
-				lblNewLabel.setBounds(199, 13, 35, 16);
-				panel.add(lblNewLabel);
-			}
-			{
-				JComboBox comboBox = new JComboBox();
-				comboBox.setForeground(new Color(255, 255, 255));
-				comboBox.setBackground(new Color(0, 0, 51));
-				comboBox.setBounds(133, 44, 167, 22);
-				panel.add(comboBox);
-			}
-			{
-				JLabel lblNewLabel_1 = new JLabel("Descripcion");
-				lblNewLabel_1.setForeground(new Color(255, 255, 255));
-				lblNewLabel_1.setBounds(178, 79, 77, 16);
-				panel.add(lblNewLabel_1);
-			}
-			
-			JTextPane textPane = new JTextPane();
-			textPane.setBackground(new Color(0, 0, 51));
-			textPane.setForeground(new Color(255, 255, 255));
-			textPane.setBounds(41, 108, 352, 49);
-			panel.add(textPane);
-			
-			JCheckBox checkBox = new JCheckBox("Activo");
-			checkBox.setSelected(true);
-			checkBox.setForeground(Color.WHITE);
-			checkBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			checkBox.setBackground(new Color(102, 102, 204));
-			checkBox.setBounds(178, 186, 77, 25);
-			panel.add(checkBox);
-		}
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 255)));
-			buttonPane.setBackground(new Color(0, 0, 51));
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				okButton = new JButton("OK");
-				okButton.setForeground(Color.WHITE);
-				okButton.setBackground(new Color(0, 0, 51));
-				okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-				okButton.setFocusPainted(false);
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				cancelButton = new JButton("Cancel");
-				cancelButton.setForeground(Color.WHITE);
-				cancelButton.setBackground(new Color(102, 0, 0));
-				cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-				cancelButton.setFocusPainted(false);
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
-		}
-	}
+    public static void main(String[] args) {
+        try {
+            RegistrarServicio dialog = new RegistrarServicio(null, false);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public RegistrarServicio(Servicio servicio, boolean cerrarAlRegistrar) {
+        this.miServicio = servicio;
+        this.cerrarAlRegistrar = cerrarAlRegistrar;
+
+        setTitle(miServicio == null ? "Registrar Servicio" : "Modificar Servicio");
+        setResizable(false);
+        setBounds(100, 100, 480, 380);
+        setLocationRelativeTo(null);
+
+        getContentPane().setBackground(new Color(0, 0, 51));
+        getContentPane().setLayout(new BorderLayout());
+
+        contentPanel.setBackground(new Color(0, 0, 51));
+        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        getContentPane().add(contentPanel, BorderLayout.CENTER);
+        contentPanel.setLayout(new BorderLayout(0, 0));
+
+        {
+            JPanel panel = new JPanel();
+            panel.setBackground(new Color(102, 102, 204));
+            panel.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "",
+                    TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+            contentPanel.add(panel, BorderLayout.CENTER);
+            panel.setLayout(null);
+
+            {
+                JLabel lblTipo = new JLabel("Tipo de Servicio");
+                lblTipo.setForeground(Color.WHITE);
+                lblTipo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblTipo.setBounds(133, 20, 120, 16);
+                panel.add(lblTipo);
+            }
+            {
+                comboTipo = new JComboBox<>();
+                comboTipo.setBackground(new Color(0, 0, 51));
+                comboTipo.setForeground(Color.WHITE);
+                comboTipo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                comboTipo.setBounds(133, 48, 200, 28);
+                panel.add(comboTipo);
+            }
+            {
+                JLabel lblDescripcion = new JLabel("Descripción");
+                lblDescripcion.setForeground(Color.WHITE);
+                lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblDescripcion.setBounds(133, 90, 120, 16);
+                panel.add(lblDescripcion);
+            }
+            {
+                txtDescripcion = new JTextPane();
+                txtDescripcion.setBackground(new Color(0, 0, 51));
+                txtDescripcion.setForeground(Color.WHITE);
+                txtDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtDescripcion.setBounds(41, 118, 385, 80);
+                panel.add(txtDescripcion);
+            }
+            {
+                checkActivo = new JCheckBox("Activo");
+                checkActivo.setSelected(true);
+                checkActivo.setForeground(Color.WHITE);
+                checkActivo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                checkActivo.setBackground(new Color(102, 102, 204));
+                checkActivo.setBounds(178, 215, 100, 25);
+                panel.add(checkActivo);
+            }
+        }
+
+        {
+            JPanel buttonPane = new JPanel();
+            buttonPane.setBackground(new Color(0, 0, 51));
+            buttonPane.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "",
+                    TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+            buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+            getContentPane().add(buttonPane, BorderLayout.SOUTH);
+
+            okButton = new JButton("OK");
+            okButton.setForeground(Color.WHITE);
+            okButton.setBackground(new Color(0, 0, 51));
+            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            okButton.setFocusPainted(false);
+            okButton.addActionListener(e -> registrarServicio());
+            buttonPane.add(okButton);
+
+            cancelButton = new JButton("Cancelar");
+            cancelButton.setForeground(Color.WHITE);
+            cancelButton.setBackground(new Color(102, 0, 0));
+            cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            cancelButton.setFocusPainted(false);
+            cancelButton.addActionListener(e -> dispose());
+            buttonPane.add(cancelButton);
+        }
+
+        cargarTiposDisponibles();
+
+        if (miServicio != null) {
+            loadServicio();
+        }
+    }
+
+    private void cargarTiposDisponibles() {
+        comboTipo.removeAllItems();
+        for (TipoServicio tipo : TipoServicio.values()) {
+            if (!Altice.getInstance().existeServicio(tipo)) {
+                comboTipo.addItem(tipo);
+            }
+        }
+    }
+
+    private void loadServicio() {
+        if (miServicio == null) return;
+
+        comboTipo.setSelectedItem(miServicio.getTipo());
+        comboTipo.setEnabled(false); // No permitir cambiar el tipo al modificar
+        txtDescripcion.setText(miServicio.getDescripcion());
+        checkActivo.setSelected(miServicio.isActivo());
+    }
+
+    private void registrarServicio() {
+        if (comboTipo.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un tipo de servicio", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (txtDescripcion.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar una descripción", "Error", JOptionPane.ERROR_MESSAGE);
+            txtDescripcion.requestFocus();
+            return;
+        }
+
+        // ==================== MODO MODIFICAR ====================
+        if (miServicio != null) {
+            miServicio.setDescripcion(txtDescripcion.getText().trim());
+            miServicio.setActivo(checkActivo.isSelected());
+
+            if (Altice.getInstance().modificarServicio(miServicio)) {
+                JOptionPane.showMessageDialog(this, "Servicio modificado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al modificar el servicio", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            return;
+        }
+
+        // ==================== MODO REGISTRAR ====================
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea registrar este servicio?",
+                "Confirmar Registro",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) return;
+
+        TipoServicio tipo = (TipoServicio) comboTipo.getSelectedItem();
+        String descripcion = txtDescripcion.getText().trim();
+        boolean activo = checkActivo.isSelected();
+
+        String codigo = "SERV-" + String.format("%04d", Altice.getInstance().getGenServicioid() + 1);
+
+        Servicio nuevo = new Servicio(tipo, descripcion);
+        nuevo.setActivo(activo);
+
+        if (Altice.getInstance().registrarServicio(nuevo)) {
+            JOptionPane.showMessageDialog(this, "Servicio registrado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            
+            if (cerrarAlRegistrar) {
+                dispose();
+            } else {
+                txtDescripcion.setText("");
+                cargarTiposDisponibles();
+                checkActivo.setSelected(true);
+                comboTipo.requestFocus();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al registrar el servicio.\nEs posible que ya exista este tipo.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }

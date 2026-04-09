@@ -4,25 +4,42 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import logico.Altice;
+import logico.Servicio;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Component;   // ← Importante para corregir el error
 
 public class GestionServicios extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
+    
+    private static JTable table;
+    private static DefaultTableModel model;
+    private static Object[] row;
+    private Servicio selected = null;
 
-    /**
-     * Launch the application.
-     */
+    private JButton btnAgregar;
+    private JButton btnModificar;
+    private JButton btnDesactivar;
+    private JButton btnSalir;
+
     public static void main(String[] args) {
         try {
             GestionServicios dialog = new GestionServicios();
@@ -33,17 +50,14 @@ public class GestionServicios extends JDialog {
         }
     }
 
-    /**
-     * Create the dialog.
-     */
     public GestionServicios() {
-        setTitle("Gestionar Pagos");
+        setTitle("Gestionar Servicios");
         setResizable(false);
         setBounds(100, 100, 1280, 495);
-        
+       
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
-        
+       
         contentPanel.setBackground(new Color(0, 0, 51));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -56,71 +70,130 @@ public class GestionServicios extends JDialog {
             panel.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             panel.setBounds(10, 60, 1102, 325);
             contentPanel.add(panel);
-            // Aqu� ir�a tu JTable m�s adelante
+            panel.setLayout(new BorderLayout(0, 0));
+            
+            JScrollPane scrollPane = new JScrollPane();
+            panel.add(scrollPane, BorderLayout.CENTER);
+            
+            table = new JTable();
+            table.setFillsViewportHeight(true);
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            table.setBackground(new Color(0, 0, 51));
+            table.setForeground(Color.WHITE);
+            table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            
+            model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            
+            String[] headers = {"Código", "Tipo", "Descripción", "Estado"};
+            model.setColumnIdentifiers(headers);
+            table.setModel(model);
+            table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
+            scrollPane.setViewportView(table);
+            
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int ind = table.getSelectedRow();
+                    if (ind != -1) {
+                        String codigo = table.getValueAt(ind, 0).toString();
+                        selected = Altice.getInstance().buscarServicioByCodigo(codigo);
+                        
+                        btnModificar.setEnabled(true);
+                        btnDesactivar.setEnabled(true);
+                    }
+                }
+            });
+        }
+
+        // Filtro
+        {
+            JComboBox<String> comboFiltro = new JComboBox<>();
+            comboFiltro.setBackground(new Color(0, 0, 51));
+            comboFiltro.setForeground(Color.WHITE);
+            comboFiltro.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            comboFiltro.setBounds(795, 23, 208, 24);
+            comboFiltro.addItem("Todos");
+            comboFiltro.addItem("Activos");
+            comboFiltro.addItem("Inactivos");
+            contentPanel.add(comboFiltro);
         }
         {
-            JComboBox comboBox = new JComboBox();
-            comboBox.setBackground(new Color(0, 0, 51));
-            comboBox.setForeground(Color.WHITE);
-            comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboBox.setBounds(795, 23, 208, 24);
-            contentPanel.add(comboBox);
+            JButton btnFiltrar = new JButton("Filtrar");
+            btnFiltrar.setForeground(Color.WHITE);
+            btnFiltrar.setBackground(new Color(0, 0, 51));
+            btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnFiltrar.setFocusPainted(false);
+            btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnFiltrar.setBounds(1015, 23, 97, 25);
+            btnFiltrar.addActionListener(e -> loadServicios());
+            contentPanel.add(btnFiltrar);
         }
+
         {
-            JButton btnNewButton_1 = new JButton("Filtrar");
-            btnNewButton_1.setForeground(Color.WHITE);
-            btnNewButton_1.setBackground(new Color(0, 0, 51));
-            btnNewButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_1.setFocusPainted(false);
-            btnNewButton_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_1.setBounds(1015, 23, 97, 25);
-            contentPanel.add(btnNewButton_1);
-        }
-        {
-            JLabel lblContratosRegistrados = new JLabel("Servicios Registrados: 00");
-            lblContratosRegistrados.setForeground(Color.WHITE);
-            lblContratosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblContratosRegistrados.setBounds(12, 32, 216, 16);
-            contentPanel.add(lblContratosRegistrados);
+            JLabel lblServiciosRegistrados = new JLabel("Servicios Registrados: 00");
+            lblServiciosRegistrados.setForeground(Color.WHITE);
+            lblServiciosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblServiciosRegistrados.setBounds(12, 32, 216, 16);
+            contentPanel.add(lblServiciosRegistrados);
         }
 
         // ====================== BOTONES LATERALES ======================
         {
-            JButton btnNewButton_2 = new JButton("Modificar");
-            btnNewButton_2.addActionListener(new ActionListener() {
-            	public void actionPerformed(ActionEvent e) {
-            	}
+            btnAgregar = new JButton("Agregar");
+            btnAgregar.setForeground(Color.WHITE);
+            btnAgregar.setBackground(new Color(0, 0, 51));
+            btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnAgregar.setFocusPainted(false);
+            btnAgregar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnAgregar.setBounds(1150, 284, 97, 25);
+            btnAgregar.addActionListener(e -> {
+                RegistrarServicio reg = new RegistrarServicio(null, false);
+                reg.setModal(true);
+                reg.setVisible(true);
+                loadServicios();
             });
-            btnNewButton_2.setForeground(Color.WHITE);
-            btnNewButton_2.setBackground(new Color(0, 0, 51));
-            btnNewButton_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_2.setFocusPainted(false);
-            btnNewButton_2.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_2.setBounds(1150, 322, 97, 25);
-            contentPanel.add(btnNewButton_2);
+            contentPanel.add(btnAgregar);
         }
         {
-            JButton btnModificar = new JButton("Agregar");
+            btnModificar = new JButton("Modificar");
             btnModificar.setForeground(Color.WHITE);
             btnModificar.setBackground(new Color(0, 0, 51));
             btnModificar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnModificar.setFocusPainted(false);
             btnModificar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnModificar.setBounds(1150, 284, 97, 25);
+            btnModificar.setBounds(1150, 322, 97, 25);
+            btnModificar.setEnabled(false);
+            btnModificar.addActionListener(e -> {
+                if (selected != null) {
+                    RegistrarServicio reg = new RegistrarServicio(selected, false);
+                    reg.setModal(true);
+                    reg.setVisible(true);
+                    loadServicios();
+                    btnModificar.setEnabled(false);
+                    btnDesactivar.setEnabled(false);
+                }
+            });
             contentPanel.add(btnModificar);
         }
         {
-            JButton btnDesactivar = new JButton("Desactivar");
+            btnDesactivar = new JButton("Desactivar");
             btnDesactivar.setForeground(Color.WHITE);
-            btnDesactivar.setBackground(new Color(102, 0, 0));  // Rojo oscuro como en el ejemplo
+            btnDesactivar.setBackground(new Color(102, 0, 0));
             btnDesactivar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnDesactivar.setFocusPainted(false);
             btnDesactivar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             btnDesactivar.setBounds(1150, 360, 97, 25);
+            btnDesactivar.setEnabled(false);
+            btnDesactivar.addActionListener(e -> desactivarServicio());
             contentPanel.add(btnDesactivar);
         }
 
-        // ====================== BOTONES INFERIORES (OK / CANCEL) ======================
+        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -129,22 +202,64 @@ public class GestionServicios extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            okButton.setActionCommand("OK");
-            buttonPane.add(okButton);
-            getRootPane().setDefaultButton(okButton);
+            btnSalir = new JButton("Salir");
+            btnSalir.setForeground(Color.WHITE);
+            btnSalir.setBackground(new Color(102, 0, 0));
+            btnSalir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btnSalir.setFocusPainted(false);
+            btnSalir.addActionListener(e -> dispose());
+            buttonPane.add(btnSalir);
+        }
 
-            JButton cancelButton = new JButton("Cancel");
-            cancelButton.setForeground(Color.WHITE);
-            cancelButton.setBackground(new Color(102, 0, 0));
-            cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            cancelButton.setFocusPainted(false);
-            cancelButton.setActionCommand("Cancel");
-            buttonPane.add(cancelButton);
+        loadServicios();
+    }
+
+    private void loadServicios() {
+        model.setRowCount(0);
+        row = new Object[4];
+        int count = 0;
+
+        for (Servicio s : Altice.getInstance().getMisServicios()) {
+            row[0] = s.getCodigo();
+            row[1] = s.getTipo().name();
+            row[2] = s.getDescripcion();
+            row[3] = s.isActivo() ? "Activo" : "Inactivo";
+            
+            model.addRow(row);
+            count++;
+        }
+
+        // Actualizar contador
+        for (Component c : contentPanel.getComponents()) {
+            if (c instanceof JLabel) {
+                JLabel label = (JLabel) c;
+                if (label.getText().startsWith("Servicios Registrados")) {
+                    label.setText("Servicios Registrados: " + String.format("%02d", count));
+                    break;
+                }
+            }
+        }
+    }
+
+    private void desactivarServicio() {
+        if (selected == null) return;
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea desactivar este servicio?",
+                "Confirmar Desactivación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) return;
+
+        if (Altice.getInstance().desactivarServicio(selected.getCodigo())) {
+            JOptionPane.showMessageDialog(this, "Servicio desactivado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            loadServicios();
+            btnModificar.setEnabled(false);
+            btnDesactivar.setEnabled(false);
+            selected = null;
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo desactivar el servicio", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
