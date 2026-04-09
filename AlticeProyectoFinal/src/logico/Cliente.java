@@ -1,8 +1,10 @@
 package logico;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Cliente extends Persona {
+public class Cliente extends Persona implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	public Cliente(String nombre, String cedula, String email, String telefono, String direccion, Usuario usuario) {
 		super(nombre, cedula, email, telefono, direccion, usuario);

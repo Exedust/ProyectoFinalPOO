@@ -1,10 +1,11 @@
 package logico;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Altice {
-	
+public class Altice implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private static Altice altice;
 	
 	private static Usuario sesion;
@@ -45,6 +46,19 @@ public class Altice {
 			altice = new Altice();
 		return altice;
 	}
+	
+    public static void setInstance(Altice nuevaInstancia) {
+        altice = nuevaInstancia;
+    }
+	
+	public boolean guardarDatos() {
+	    return GestorArchivos.guardar(this);
+	}
+
+	public boolean cargarDatos() {
+	    return GestorArchivos.cargar();
+	}
+	
 	public ArrayList<Plan> getMisPlanes() {
 		return misPlanes;
 	}
@@ -91,6 +105,12 @@ public class Altice {
 	public void setMisServicios(ArrayList<Servicio> misServicios) {
 	    this.misServicios = misServicios;
 	}
+	
+	public void regUsuario(Usuario usuario) {
+        if (usuario != null && usuario.getCodigo() != null) {
+            misUsuarios.add(usuario);
+        }
+    }
 
 	public boolean registrarEmpleado(Empleado empleado) {
 	    if (empleado == null || empleado.getCodigo() == null) {
@@ -320,7 +340,7 @@ public boolean registrarSolicitud(Solicitud solicitud) {
     if (buscarSolicitudByCodigo(solicitud.getCodigo()) != null) 
         return false;
     
-    misSolicitudes.add(solicitud);
+    getMisSolicitudes().add(solicitud);
     genSolicitudid++;
     return true;
 }
@@ -332,7 +352,7 @@ public boolean modificarSolicitud(Solicitud solicitudActualizada) {
     if (indice == -1) 
         return false;
     
-    misSolicitudes.set(indice, solicitudActualizada);
+    getMisSolicitudes().set(indice, solicitudActualizada);
     return true;
 }
 //
@@ -342,7 +362,7 @@ public boolean cancelarSolicitud(String codigo) {
     int indice = buscarIndexSolicitudByCodigo(codigo);
     if (indice == -1) 
         return false;
-    Solicitud solicitud = misSolicitudes.get(indice);
+    Solicitud solicitud = getMisSolicitudes().get(indice);
     solicitud.cancelar();       
     return true;
 }
@@ -353,7 +373,7 @@ public boolean cancelarSolicitud(String codigo) {
 public Solicitud buscarSolicitudByCodigo(String codigo) {
     if (codigo == null) return null;
 
-    for (Solicitud s : misSolicitudes) {
+    for (Solicitud s : getMisSolicitudes()) {
         if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
             return s;
         }
@@ -364,8 +384,8 @@ public Solicitud buscarSolicitudByCodigo(String codigo) {
 private int buscarIndexSolicitudByCodigo(String codigo) {
     if (codigo == null) return -1;
 
-    for (int i = 0; i < misSolicitudes.size(); i++) {
-        Solicitud s = misSolicitudes.get(i);
+    for (int i = 0; i < getMisSolicitudes().size(); i++) {
+        Solicitud s = getMisSolicitudes().get(i);
         if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
             return i;
         }
@@ -600,20 +620,95 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
 		return null;
 	}
 
-	public static Usuario getUser() {
-		return sesion;
+	// ====================== REGISTRAR CONTRATO ======================
+	public boolean registrarContrato(Contrato contrato) {
+	    if (contrato == null || contrato.getCodigo() == null) {
+	        return false;
+	    }
+
+	    if (buscarContratoByCodigo(contrato.getCodigo()) != null) {
+	        return false;
+	    }
+
+	    misContratos.add(contrato);
+	    genContratoid++;                  
+	    return true;
 	}
 
-	public static void setUser(Usuario user) {
-		Altice.sesion = user;
+	public boolean cerrarContrato(String codigo) {
+	    if (codigo == null) return false;
+
+	    int indice = buscarIndexContratoByCodigo(codigo);
+	    if (indice == -1) {
+	        return false;
+	    }
+
+	    Contrato contrato = misContratos.get(indice);
+	    contrato.setActivo(false);
+	    contrato.setFechaCierre(LocalDate.now());
+
+	    return true;
 	}
+
+	public int buscarIndexContratoByCodigo(String codigo) {
+	    for (int i = 0; i < misContratos.size(); i++) {
+	        Contrato c = misContratos.get(i);
+	        if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
+	            return i;
+	        }
+	    }
+	    return -1;
+	}
+	
+    public static Usuario getSesion() {
+        return sesion;
+    }
+
+    public static void setSesion(Usuario usuario) {
+        sesion = usuario;
+    }
+
+
+    public boolean confirmarLogin(String username, String password) {
+        if (username == null || password == null) {
+            return false;
+        }
+
+        for (Usuario u : misUsuarios) {
+            if (u.getUser() != null && u.getUser().equals(username) &&
+                u.getPassword() != null && u.getPassword().equals(password)) {
+                
+                if (u.isActivo()) {
+                    sesion = u;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void cerrarSesion() {
+        sesion = null;
+    }
+
+    public boolean haySesionActiva() {
+        return sesion != null;
+    }
+
+    public Rol getRolUsuarioLogueado() {
+        if (sesion != null && sesion.getRol() != null) {
+            return sesion.getRol();
+        }
+        return null;
+    }
 
 	public ArrayList<Solicitud> getMisSolicitudes() {
-	    return misSolicitudes;
+		return misSolicitudes;
 	}
 
 	public void setMisSolicitudes(ArrayList<Solicitud> misSolicitudes) {
-	    this.misSolicitudes = misSolicitudes;
+		this.misSolicitudes = misSolicitudes;
 	}
-	
 }

@@ -1,6 +1,9 @@
 package logico;
 
-public abstract class Persona {
+import java.io.Serializable;
+
+public abstract class Persona implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public Persona(String nombre, String cedula, String email, String telefono, String direccion, Usuario usuario) {
 		super();
 		this.nombre = nombre;

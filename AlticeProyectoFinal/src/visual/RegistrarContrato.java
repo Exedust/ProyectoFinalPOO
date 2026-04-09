@@ -22,8 +22,10 @@ import java.awt.Color;
 import javax.swing.border.TitledBorder;
 
 import logico.Altice;
+import logico.Contrato;
 import logico.Empleado;
 import logico.Persona;
+import logico.Plan;
 
 import javax.swing.UIManager;
 import javax.swing.JComboBox;
@@ -35,10 +37,8 @@ import javax.swing.JCheckBox;
 public class RegistrarContrato extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	
 	private Persona selected;
 	
-	private ButtonGroup groupCliente;
 	private JPanel buttonPane;
 	private JButton okButton;
 	private JButton cancelButton;
@@ -52,11 +52,12 @@ public class RegistrarContrato extends JDialog {
 	private JTextField txtCorreo;
 	private JTextField txtDireccion;
 	private JPanel panel_1;
-	private JCheckBox chckbxNewCheckBox;
+	private JCheckBox checkActivo;
 	private JLabel lblPlan;
 	private JTextField txtCodigo;
 	private JLabel label_8;
 	private JButton btnNuevo;
+	private JComboBox<String> comboPlan;
 
 	public static void main(String[] args) {
 		try {
@@ -71,6 +72,7 @@ public class RegistrarContrato extends JDialog {
 	public RegistrarContrato() {
 		setResizable(false);
 		setTitle("Registrar Contrato");
+		
 		setBounds(100, 100, 697, 709);
 		setLocationRelativeTo(null);
 		getContentPane().setBackground(new Color(0, 0, 51));
@@ -200,12 +202,12 @@ public class RegistrarContrato extends JDialog {
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBackground(new Color(0, 0, 51));
-		comboBox.setForeground(Color.WHITE);
-		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		comboBox.setBounds(47, 49, 548, 33);
-		panel_1.add(comboBox);
+		comboPlan = new JComboBox();
+		comboPlan.setBackground(new Color(0, 0, 51));
+		comboPlan.setForeground(Color.WHITE);
+		comboPlan.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		comboPlan.setBounds(47, 49, 548, 33);
+		panel_1.add(comboPlan);
 		
 		lblPlan = new JLabel("Plan");
 		lblPlan.setForeground(Color.WHITE);
@@ -213,13 +215,13 @@ public class RegistrarContrato extends JDialog {
 		lblPlan.setBounds(298, 13, 38, 16);
 		panel_1.add(lblPlan);
 		
-		chckbxNewCheckBox = new JCheckBox("Activo");
-		chckbxNewCheckBox.setBackground(new Color(102, 102, 204));
-		chckbxNewCheckBox.setForeground(new Color(255, 255, 255));
-		chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		chckbxNewCheckBox.setSelected(true);
-		chckbxNewCheckBox.setBounds(292, 539, 77, 25);
-		panel.add(chckbxNewCheckBox);
+		checkActivo = new JCheckBox("Activo");
+		checkActivo.setBackground(new Color(102, 102, 204));
+		checkActivo.setForeground(new Color(255, 255, 255));
+		checkActivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		checkActivo.setSelected(true);
+		checkActivo.setBounds(292, 539, 77, 25);
+		panel.add(checkActivo);
 		
 		txtCodigo = new JTextField();
 		txtCodigo.setEditable(false);
@@ -259,6 +261,7 @@ public class RegistrarContrato extends JDialog {
 		        txtCorreo.setText(selected.getEmail());
 		        txtCedula.setEditable(false);
 		        btnBuscar.setVisible(false);
+		        cargarPlanes();
 			}
 		});
 		btnNuevo.setBounds(77, 84, 97, 25);
@@ -293,39 +296,150 @@ public class RegistrarContrato extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+		txtCodigo.setText(String.format("CO-%05d", Altice.getGenContratoid()));
+		cargarPlanes();
 	}
 	private void buscar() {
-        String cedula = txtCedula.getText().trim();
-        if (cedula.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese una cédula/RNC", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+	    String cedula = txtCedula.getText().trim();
+	    if (cedula.isEmpty()) {
+	        JOptionPane.showMessageDialog(this, "Ingrese una cédula/RNC", "Error", JOptionPane.ERROR_MESSAGE);
+	        return;
+	    }
 
-        Persona persona = Altice.getInstance().buscarPersonaByCedula(cedula);
+	    Persona persona = Altice.getInstance().buscarPersonaByCedula(cedula);
 
-        if (persona == null) {
-            JOptionPane.showMessageDialog(this, "Cédula/RNC no registrado.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+	    if (persona == null) {
+	        JOptionPane.showMessageDialog(this, "Cédula/RNC no registrado.", "Error", JOptionPane.ERROR_MESSAGE);
+	        return;
+	    }
 
-        selected = persona;
+	    selected = persona;
 
-        txtNombre.setText(persona.getNombre());
-        txtTelefono.setText(persona.getTelefono());
-        txtDireccion.setText(persona.getDireccion());
-        txtCorreo.setText(persona.getEmail());
+	    txtNombre.setText(persona.getNombre());
+	    txtTelefono.setText(persona.getTelefono());
+	    txtDireccion.setText(persona.getDireccion());
+	    txtCorreo.setText(persona.getEmail());
 
-        if (persona instanceof Empleado) {
-            JOptionPane.showMessageDialog(this, 
-                "Empleado detectado.\nSe incluirá planes especiales.", 
-                "Contrato Interno", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
+	    cargarPlanes();
 
-    private void registrarContrato() {
-        if (selected == null) {
-            JOptionPane.showMessageDialog(this, "Debe buscar y seleccionar una persona primero.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-    }
+	    if (persona instanceof Empleado) {
+	        JOptionPane.showMessageDialog(this, 
+	            "Empleado detectado.\nSe mostrarán planes con prefijo EMP (beneficios internos).", 
+	            "Contrato Interno", JOptionPane.INFORMATION_MESSAGE);
+	    }
+	}
+
+	private void registrarContrato() {
+	    if (selected == null) {
+	        JOptionPane.showMessageDialog(this, "Debe buscar y seleccionar una persona primero.", 
+	            "Error", JOptionPane.ERROR_MESSAGE);
+	        return;
+	    }
+
+	    if (comboPlan.getSelectedItem() == null || 
+	        comboPlan.getSelectedItem().toString().contains("No hay planes")) {
+	        JOptionPane.showMessageDialog(this, "Debe seleccionar un plan válido.", 
+	            "Error", JOptionPane.ERROR_MESSAGE);
+	        return;
+	    }
+
+	    int opcion = JOptionPane.showConfirmDialog(this,
+	            "¿Desea registrar este contrato?",
+	            "Confirmar Registro",
+	            JOptionPane.YES_NO_OPTION,
+	            JOptionPane.QUESTION_MESSAGE);
+
+	    if (opcion != JOptionPane.YES_OPTION) {
+	        return;
+	    }
+/*
+	    if (registrar()) {
+	        JOptionPane.showMessageDialog(this, "Contrato registrado correctamente", 
+	            "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	        }
+ */        
+	}
+    /*
+	private boolean registrar() {
+	    if (!validar()) {
+	        return false;
+	    }
+
+	    String codigo = txtCodigo.getText();
+	    Plan planSeleccionado = obtenerPlanSeleccionado();
+
+	    if (planSeleccionado == null) {
+	        JOptionPane.showMessageDialog(this, "No se pudo obtener el plan seleccionado.", 
+	            "Error", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    Contrato nuevoContrato = new Contrato(codigo, selected, planSeleccionado);
+	    nuevoContrato.setActivo(checkActivo.isSelected());
+
+
+	    return Altice.getInstance().registrarContrato(nuevoContrato);
+	}
+	*/
+	private boolean validar() {
+	    if (selected == null) {
+	        JOptionPane.showMessageDialog(this, "Debe seleccionar una persona (cliente o empleado).", 
+	            "Error", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    if (comboPlan.getSelectedItem() == null || 
+	        comboPlan.getSelectedItem().toString().contains("No hay planes")) {
+	        JOptionPane.showMessageDialog(this, "Debe seleccionar un plan válido.", 
+	            "Error", JOptionPane.ERROR_MESSAGE);
+	        comboPlan.requestFocus();
+	        return false;
+	    }
+
+	    return true;
+	}
+	
+	private Plan obtenerPlanSeleccionado() {
+	    String itemSeleccionado = (String) comboPlan.getSelectedItem();
+	    if (itemSeleccionado == null) return null;
+
+	    String nombrePlan = itemSeleccionado.replace("EMP - ", "");
+
+	    for (Plan p : Altice.getInstance().getMisPlanes()) {
+	        if (p.getNombre().equalsIgnoreCase(nombrePlan) && p.isActivo()) {
+	            return p;
+	        }
+	    }
+	    return null;
+	}
+	
+	private void cargarPlanes() {
+	    comboPlan.removeAllItems();
+
+	    boolean esEmpleado = (selected instanceof Empleado);
+
+	    for (Plan p : Altice.getInstance().getMisPlanes()) {
+	        if (!p.isActivo()) continue;   // Solo planes activos
+
+	        String nombrePlan = p.getNombre();
+
+	        if (esEmpleado) {
+	            comboPlan.addItem(nombrePlan);
+	        } 
+	        else {
+	            if (!nombrePlan.startsWith("EMP")) {
+	                comboPlan.addItem(nombrePlan);
+	            }
+	        }
+	    }
+
+	    if (comboPlan.getItemCount() == 0) {
+	        if (esEmpleado) {
+	            comboPlan.addItem("No hay planes activos disponibles");
+	        } else {
+	            comboPlan.addItem("No hay planes disponibles para clientes");
+	        }
+	    }
+	}
+    
 }

@@ -1,8 +1,11 @@
 package logico;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Usuario {
+public class Usuario implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
 	public Usuario(String codigo, String user, String password, Rol rol) {
 		super();
 		this.codigo = codigo;

@@ -1,8 +1,10 @@
 package logico;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Empleado extends Persona {
+public class Empleado extends Persona implements Serializable{
+	private static final long serialVersionUID = 1L;
 	public Empleado(String nombre, String cedula, String email, String telefono, String direccion, Usuario usuario,
 			float comision, float salario) {
 		super(nombre, cedula, email, telefono, direccion, usuario);
