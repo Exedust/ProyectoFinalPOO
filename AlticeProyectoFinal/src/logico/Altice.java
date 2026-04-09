@@ -33,6 +33,7 @@ public class Altice {
 		misContratos = new ArrayList<>();
 		misPagos = new ArrayList<>();
 		misUsuarios = new ArrayList<>();
+		misServicios = new ArrayList<>();
 	}
 	
 	public static Altice getInstance()
@@ -318,15 +319,17 @@ public class Altice {
 //VALIDACIONES
 ///       
 
-    public boolean existeServicio(TipoServicio tipo)
-    {
-    	for(Servicio serv: misServicios)
-    	{
-    		if(serv.getTipo() == tipo)
-    			return true;
-    	}
-    	
-    	return false;
+    public boolean existeServicio(TipoServicio tipo) {
+        if (tipo == null) {
+            return false;
+        }
+
+        for (Servicio serv : misServicios) {
+            if (serv.getTipo() == tipo && serv.isActivo()) {  
+                return true;
+            }
+        }
+        return false;
     }
     
 	public static int getGenClienteid() {

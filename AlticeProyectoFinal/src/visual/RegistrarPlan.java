@@ -12,6 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+
+import logico.Altice;
+import logico.TipoServicio;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -373,5 +377,20 @@ public class RegistrarPlan extends JDialog {
         panelInternet.setVisible(false);
         panelCable.setVisible(false);
         panelMovil.setVisible(false);
+        chkbxInternet.setEnabled(false);
+        chckbxCable.setEnabled(false);
+        chckbxTelefonia.setEnabled(false);
+        comprobarServicios();
+    }
+    
+    public void comprobarServicios()
+    {
+    	if(Altice.getInstance().existeServicio(TipoServicio.INTERNET))
+    		chkbxInternet.setEnabled(true);
+    	if(Altice.getInstance().existeServicio(TipoServicio.CABLE))
+    		chckbxCable.setEnabled(true);
+    	if(Altice.getInstance().existeServicio(TipoServicio.MOVIL))
+    		chckbxTelefonia.setEnabled(true);
+    	
     }
 }
