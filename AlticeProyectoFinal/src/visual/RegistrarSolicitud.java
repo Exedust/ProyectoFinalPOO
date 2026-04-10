@@ -88,7 +88,7 @@ public class RegistrarSolicitud extends JDialog {
                     JLabel lblCedula = new JLabel("Cédula / RNC");
                     lblCedula.setForeground(Color.WHITE);
                     lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblCedula.setBounds(10, 21, 90, 16);
+                    lblCedula.setBounds(12, 13, 90, 16);
                     panelCliente.add(lblCedula);
                 }
                 {
@@ -133,7 +133,7 @@ public class RegistrarSolicitud extends JDialog {
                     JLabel lblTelefono = new JLabel("Teléfono");
                     lblTelefono.setForeground(Color.WHITE);
                     lblTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblTelefono.setBounds(287, 79, 56, 16);
+                    lblTelefono.setBounds(12, 143, 56, 16);
                     panelCliente.add(lblTelefono);
                 }
                 {
@@ -150,7 +150,7 @@ public class RegistrarSolicitud extends JDialog {
                     JLabel lblCorreo = new JLabel("Correo");
                     lblCorreo.setForeground(Color.WHITE);
                     lblCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblCorreo.setBounds(287, 143, 56, 16);
+                    lblCorreo.setBounds(287, 79, 56, 16);
                     panelCliente.add(lblCorreo);
                 }
                 {
@@ -167,7 +167,7 @@ public class RegistrarSolicitud extends JDialog {
                     JLabel lblDireccion = new JLabel("Dirección");
                     lblDireccion.setForeground(Color.WHITE);
                     lblDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblDireccion.setBounds(10, 143, 56, 16);
+                    lblDireccion.setBounds(287, 143, 56, 16);
                     panelCliente.add(lblDireccion);
                 }
                 {
@@ -251,6 +251,10 @@ public class RegistrarSolicitud extends JDialog {
         }
 
         cargarTiposSolicitud();
+
+        if (miSolicitud != null) {
+            loadSolicitud();   // Cargar datos en modo Modificar
+        }
     }
 
     private void cargarTiposSolicitud() {
@@ -258,6 +262,23 @@ public class RegistrarSolicitud extends JDialog {
         for (TipoSolicitud tipo : TipoSolicitud.values()) {
             comboTipo.addItem(tipo);
         }
+    }
+
+    private void loadSolicitud() {
+        if (miSolicitud == null) return;
+
+        Cliente cliente = miSolicitud.getCliente();
+
+        txtCedula.setText(cliente != null ? cliente.getCedula() : "");
+        txtNombre.setText(cliente != null ? cliente.getNombre() : "");
+        txtTelefono.setText(cliente != null ? cliente.getTelefono() : "");
+        txtCorreo.setText(cliente != null ? cliente.getEmail() : "");
+        txtDireccion.setText(cliente != null ? cliente.getDireccion() : "");
+
+        txtCedula.setEditable(false);           // No se puede cambiar el cliente
+        comboTipo.setSelectedItem(miSolicitud.getTipo());
+        comboTipo.setEnabled(false);            // No se puede cambiar el tipo
+        txtDescripcion.setText(miSolicitud.getDescripcion());
     }
 
     private void buscarCliente() {
@@ -281,7 +302,6 @@ public class RegistrarSolicitud extends JDialog {
 
         Cliente cliente = (Cliente) persona;
 
-
         txtNombre.setText(cliente.getNombre());
         txtTelefono.setText(cliente.getTelefono());
         txtCorreo.setText(cliente.getEmail() != null ? cliente.getEmail() : "");
@@ -303,41 +323,50 @@ public class RegistrarSolicitud extends JDialog {
             return;
         }
 
-        // Obtener cliente
-        Cliente cliente = (Cliente) Altice.getInstance().buscarPersonaByCedula(txtCedula.getText().trim());
-        if (cliente == null) {
-            JOptionPane.showMessageDialog(this, "Cliente no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         TipoSolicitud tipo = (TipoSolicitud) comboTipo.getSelectedItem();
         String descripcion = txtDescripcion.getText().trim();
 
-        // Generar código automático
-        String codigo = "SOL-" + String.format("%04d", Altice.getInstance().getGenSolicitudid() + 1);
+        if (miSolicitud != null) {
+            // ==================== MODO MODIFICAR ====================
+            miSolicitud.setDescripcion(descripcion);
+            // Tipo y cliente no se cambian en modificar
 
-        // Crear la solicitud
-        Solicitud nuevaSolicitud = new Solicitud(codigo, cliente, tipo, descripcion);
-
-        // Registrar en Altice
-        if (Altice.getInstance().registrarSolicitud(nuevaSolicitud)) {
-            JOptionPane.showMessageDialog(this, "Solicitud registrada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            
-            if (cerrarAlRegistrar) {
+            if (Altice.getInstance().modificarSolicitud(miSolicitud)) {
+                JOptionPane.showMessageDialog(this, "Solicitud modificada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
             } else {
-                // Limpiar para registrar otra
-                txtCedula.setText("");
-                txtNombre.setText("");
-                txtTelefono.setText("");
-                txtCorreo.setText("");
-                txtDireccion.setText("");
-                txtDescripcion.setText("");
-                comboTipo.setSelectedIndex(0);
-                txtCedula.requestFocus();
+                JOptionPane.showMessageDialog(this, "Error al modificar la solicitud", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Error al registrar la solicitud", "Error", JOptionPane.ERROR_MESSAGE);
+            // ==================== MODO REGISTRAR ====================
+            Cliente cliente = (Cliente) Altice.getInstance().buscarPersonaByCedula(txtCedula.getText().trim());
+            if (cliente == null) {
+                JOptionPane.showMessageDialog(this, "Cliente no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String codigo = "SOL-" + String.format("%04d", Altice.getInstance().getGenSolicitudid() + 1);
+
+            Solicitud nuevaSolicitud = new Solicitud(codigo, cliente, tipo, descripcion);
+
+            if (Altice.getInstance().registrarSolicitud(nuevaSolicitud)) {
+                JOptionPane.showMessageDialog(this, "Solicitud registrada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                
+                if (cerrarAlRegistrar) {
+                    dispose();
+                } else {
+                    txtCedula.setText("");
+                    txtNombre.setText("");
+                    txtTelefono.setText("");
+                    txtCorreo.setText("");
+                    txtDireccion.setText("");
+                    txtDescripcion.setText("");
+                    comboTipo.setSelectedIndex(0);
+                    txtCedula.requestFocus();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al registrar la solicitud", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 }
