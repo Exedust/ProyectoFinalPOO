@@ -197,7 +197,7 @@ public class RegistrarPlan extends JDialog {
                 }
                 {
                     spnBajada = new JSpinner();
-                    spnBajada.setModel(new SpinnerNumberModel(new Integer(5), new Integer(5), null, new Integer(1)));
+                    spnBajada.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
                     spnBajada.setForeground(Color.WHITE);
                     spnBajada.setBackground(new Color(51, 51, 102));
                     spnBajada.setBounds(23, 59, 91, 22);
@@ -212,7 +212,7 @@ public class RegistrarPlan extends JDialog {
                 }
                 {
                     spnSubida = new JSpinner();
-                    spnSubida.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+                    spnSubida.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
                     spnSubida.setForeground(Color.WHITE);
                     spnSubida.setBackground(new Color(51, 51, 102));
                     spnSubida.setBounds(23, 123, 91, 22);
@@ -297,7 +297,7 @@ public class RegistrarPlan extends JDialog {
                 }
                 {
                     spnMinutos = new JSpinner();
-                    spnMinutos.setModel(new SpinnerNumberModel(new Integer(10), new Integer(10), null, new Integer(1)));
+                    spnMinutos.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
                     spnMinutos.setForeground(Color.WHITE);
                     spnMinutos.setBackground(new Color(51, 51, 102));
                     spnMinutos.setBounds(23, 59, 91, 22);
@@ -430,8 +430,8 @@ public class RegistrarPlan extends JDialog {
                 panelMovil.setVisible(chckbxTelefonia.isSelected());
 
                 if (!chkbxInternet.isSelected()) {
-                    spnBajada.setValue(5);
-                    spnSubida.setValue(1);
+                    spnBajada.setValue(0);
+                    spnSubida.setValue(0);
                     spnPrecioInternet.setValue(0);
                 }
                 if (!chckbxCable.isSelected()) {
@@ -440,7 +440,7 @@ public class RegistrarPlan extends JDialog {
                     spnPrecioCable.setValue(0);
                 }
                 if (!chckbxTelefonia.isSelected()) {
-                    spnMinutos.setValue(10);
+                    spnMinutos.setValue(0);
                     spnGigas.setValue(0);
                     spnPrecioMovil.setValue(0);
                 }
@@ -576,8 +576,8 @@ public class RegistrarPlan extends JDialog {
         panelCable.setVisible(chckbxCable.isSelected());
         panelMovil.setVisible(chckbxTelefonia.isSelected());
         
-        spnBajada.setValue(5);
-        spnSubida.setValue(1);
+        spnBajada.setValue(0);
+        spnSubida.setValue(0);
         spnPrecioInternet.setValue(0);
         checkPackBasico.setSelected(false);
         checkPackHD.setSelected(false);

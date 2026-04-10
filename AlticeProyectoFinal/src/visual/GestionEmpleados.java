@@ -74,6 +74,7 @@ public class GestionEmpleados extends JDialog {
             panel.add(scrollPane, BorderLayout.CENTER);
             
             table = new JTable();
+            table.setRowHeight(25);
             table.setFillsViewportHeight(true);
     		table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
     		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

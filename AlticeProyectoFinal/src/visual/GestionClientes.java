@@ -88,6 +88,7 @@ public class GestionClientes extends JDialog {
             panel.add(scrollPane, BorderLayout.CENTER);
 
             table = new JTable();
+            table.setRowHeight(25);
             table.setFillsViewportHeight(true);
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
