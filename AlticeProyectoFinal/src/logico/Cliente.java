@@ -26,9 +26,25 @@ public class Cliente extends Persona implements Serializable {
 		this.contratos = contratos;
 	}
 
-	public ArrayList<Pago> getPagos() {
-		return pagos;
-	}
+    public void agregarPago(Pago pago) {
+        if (pago != null && !this.pagos.contains(pago)) {
+            this.pagos.add(pago);
+        }
+    }
+
+    public ArrayList<Pago> getPagos() {
+        return pagos;
+    }
+
+    public ArrayList<Pago> getPagosPendientes() {
+        ArrayList<Pago> pendientes = new ArrayList<>();
+        for (Pago p : pagos) {
+            if (p.isPendiente()) {
+                pendientes.add(p);
+            }
+        }
+        return pendientes;
+    }
 
 	public void setPagos(ArrayList<Pago> pagos) {
 		this.pagos = pagos;

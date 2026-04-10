@@ -1,5 +1,6 @@
 package logico;
 
+import java.io.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,8 +18,7 @@ public class Altice implements Serializable{
 	private ArrayList<Pago> misPagos;
 	private ArrayList<Usuario> misUsuarios;
 	private ArrayList<Servicio> misServicios;
-	private ArrayList<Solicitud> misSolicitudes;//
-	
+	private ArrayList<Solicitud> misSolicitudes;
 	
 	private static int genClienteid = 0;
 	private static int genEmpleadoid = 0;
@@ -47,17 +47,73 @@ public class Altice implements Serializable{
 		return altice;
 	}
 	
-    public static void setInstance(Altice nuevaInstancia) {
-        altice = nuevaInstancia;
-    }
-	
-	public boolean guardarDatos() {
-	    return GestorArchivos.guardar(this);
-	}
+    public boolean guardarDatos() {
+        try {
+            FileOutputStream fos = new FileOutputStream("altice.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-	public boolean cargarDatos() {
-	    return GestorArchivos.cargar();
-	}
+            oos.writeObject(this);
+
+            oos.close();
+            fos.close();
+
+            System.out.println("Datos guardados correctamente en altice.dat");
+            return true;
+
+        } catch (IOException e) {
+            System.out.println("Error al guardar los datos.");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean cargarDatos() {
+        try {
+            FileInputStream fis = new FileInputStream("altice.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            Altice alticeCargada = (Altice) ois.readObject();
+
+            altice = alticeCargada;
+
+            ois.close();
+            fis.close();
+
+            System.out.println("Datos cargados correctamente desde altice.dat");
+            return true;
+
+        } catch (FileNotFoundException e) {
+            System.out.println("No se encontró el archivo altice.dat. Se iniciará con datos vacíos.");
+            return false;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error al cargar los datos.");
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        oos.writeInt(genClienteid);
+        oos.writeInt(genEmpleadoid);
+        oos.writeInt(genContratoid);
+        oos.writeInt(genPlanid);
+        oos.writeInt(genSolicitudid);
+        oos.writeInt(genPagoid);
+        oos.writeInt(genServicioid);
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();   
+        genClienteid = ois.readInt();
+        genEmpleadoid = ois.readInt();
+        genContratoid = ois.readInt();
+        genPlanid = ois.readInt();
+        genSolicitudid = ois.readInt();
+        genPagoid = ois.readInt();
+        genServicioid = ois.readInt();
+    }
+    
 	
 	public ArrayList<Plan> getMisPlanes() {
 		return misPlanes;
@@ -543,6 +599,27 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
         return null;
     }
     
+    public Pago buscarPagoByCodigo(String codigo) {
+        if (codigo == null) return null;
+        for (Pago p : misPagos) {
+            if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    private int buscarIndexPagoByCodigo(String codigo) {
+        if (codigo == null) return -1;
+        for (int i = 0; i < misPagos.size(); i++) {
+            Pago p = misPagos.get(i);
+            if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
 //VALIDACIONES
 ///       
 
@@ -619,8 +696,94 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+//	
+//PAGOS
+//
+    public boolean registrarPago(Pago pago) {
+        if (pago == null || pago.getCodigo() == null || pago.getContrato() == null) {
+            return false;
+        }
+        if (buscarPagoByCodigo(pago.getCodigo()) != null) {
+            return false;
+        }
 
-	// ====================== REGISTRAR CONTRATO ======================
+        misPagos.add(pago);
+        genPagoid++;
+
+        Contrato contrato = pago.getContrato();
+        if (contrato != null) {
+            contrato.agregarPago(pago);
+        }
+        Persona cliente = pago.getCliente();
+        if (cliente instanceof Cliente) {
+            ((Cliente) cliente).agregarPago(pago);
+        }
+
+        return true;
+    }
+    // ====================== GENERACIÓN DE PAGOS MENSUALES ======================
+    public void producirPagos() {
+        LocalDate hoy = LocalDate.now();
+        int diaActual = hoy.getDayOfMonth();
+        int mesActual = hoy.getMonthValue();
+        int añoActual = hoy.getYear();
+
+        for (Contrato contrato : misContratos) {
+            if (!contrato.isActivo()) continue;
+
+            int diaDePago = contrato.getFechaInicio().getDayOfMonth();
+
+            if (diaActual != diaDePago) continue;
+
+            boolean yaTienePagoEsteMes = false;
+
+            for (Pago pago : contrato.getPagos()) {
+                if (pago.getFechaRegistro() != null &&
+                    pago.getFechaRegistro().getDayOfMonth() == diaDePago &&
+                    pago.getFechaRegistro().getMonthValue() == mesActual &&
+                    pago.getFechaRegistro().getYear() == añoActual) {
+                    
+                    yaTienePagoEsteMes = true;
+                    break;
+                }
+            }
+            if (!yaTienePagoEsteMes) {
+                String codigoPago = String.format("P-%05d", genPagoid + 1);
+                float monto = contrato.getPlan().getMonto();
+
+                Pago nuevoPago = new Pago(codigoPago, contrato.getCliente(), contrato, monto);
+
+                LocalDate fechaCorrecta = LocalDate.of(añoActual, mesActual, diaDePago);
+                nuevoPago.setFechaRegistro(fechaCorrecta);
+
+                registrarPago(nuevoPago);
+            }
+        }
+    }
+    
+    public boolean realizarPago(String codigoPago) {
+        if (codigoPago == null || codigoPago.trim().isEmpty()) {
+            return false;
+        }
+
+        Pago pago = buscarPagoByCodigo(codigoPago);
+        if (pago == null) {
+            return false;
+        }
+
+        if (!pago.isPendiente()) {
+            return false;
+        }
+
+        pago.setPendiente(false);
+        pago.setFechaPago(LocalDate.now());
+
+        return true;
+    }
+//	
+//CONTRATO
+//
 	public boolean registrarContrato(Contrato contrato) {
 	    if (contrato == null || contrato.getCodigo() == null) {
 	        return false;

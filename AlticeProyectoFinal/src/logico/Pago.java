@@ -5,21 +5,25 @@ import java.time.LocalDate;
 
 public class Pago implements Serializable{
 	private static final long serialVersionUID = 1L;
-	public Pago(String codigo, Persona cliente, float monto) {
+	public Pago(String codigo, Persona cliente, Contrato contrato, float monto) {
 		super();
 		this.codigo = codigo;
 		this.setCliente(cliente);
+		this.setContrato(contrato);
 		this.monto = monto;
 		this.setPendiente(true);
 		this.setActivo(true);
 		fechaRegistro = LocalDate.now();
+		fechaPago = null;
 	}
 	private String codigo;
 	private Persona cliente;
+	private Contrato contrato;
 	private float monto;
 	private boolean pendiente;
 	private boolean activo;
 	private LocalDate fechaRegistro;
+	private LocalDate fechaPago;
 	
 	public String getCodigo() {
 		return codigo;
@@ -56,5 +60,17 @@ public class Pago implements Serializable{
 	}
 	public void setActivo(boolean activo) {
 		this.activo = activo;
+	}
+	public LocalDate getFechaPago() {
+		return fechaPago;
+	}
+	public void setFechaPago(LocalDate fechaPago) {
+		this.fechaPago = fechaPago;
+	}
+	public Contrato getContrato() {
+		return contrato;
+	}
+	public void setContrato(Contrato contrato) {
+		this.contrato = contrato;
 	}
 }
