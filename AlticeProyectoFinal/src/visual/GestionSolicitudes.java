@@ -20,6 +20,7 @@ import logico.Cliente;
 import logico.Empleado;
 import logico.EstadoSolicitud;
 import logico.Persona;
+import logico.Rol;
 
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
@@ -52,7 +53,6 @@ public class GestionSolicitudes extends JDialog {
 
     private static JComboBox<String> comboFiltrar;
 
-    // Etiquetas dinámicas de conteo
     private JLabel lblTotal;
     private JLabel lblPendientes;
     private JLabel lblEnProceso;
@@ -61,6 +61,7 @@ public class GestionSolicitudes extends JDialog {
     private JLabel lblCedula;
     private JLabel lblNombre;
     private JButton btnAsignar;
+    private JButton btnCompletar;
 
     public static void main(String[] args) {
         try {
@@ -132,7 +133,9 @@ public class GestionSolicitudes extends JDialog {
                         btnVerDetalles.setEnabled(true);
                         btnCancelar.setEnabled(selected != null && 
                             !selected.isResuelto() && !selected.isCancelada());
-                        btnAsignar.setEnabled(true);
+                        btnAsignar.setEnabled(!selected.isEnProceso());
+                        btnCompletar.setEnabled(true);
+                        comprobarRol();
                     }
                 }
             });
@@ -190,7 +193,6 @@ public class GestionSolicitudes extends JDialog {
             contentPanel.add(btnBuscarNombre);
         }
 
-        // Filtro por Estado
         {
             comboFiltrar = new JComboBox<>();
             comboFiltrar.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -254,38 +256,42 @@ public class GestionSolicitudes extends JDialog {
         // ====================== BOTONES LATERALES ======================
         {
             btnAgregar = new JButton("Agregar");
+            btnAgregar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+                    RegistrarSolicitud reg = new RegistrarSolicitud(null, false);
+                    reg.setModal(true);
+                    reg.setVisible(true);
+                    loadSolicitudes();
+            	}
+            });
             btnAgregar.setForeground(Color.WHITE);
             btnAgregar.setBackground(new Color(0, 0, 51));
             btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnAgregar.setFocusPainted(false);
             btnAgregar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             btnAgregar.setBounds(1143, 145, 97, 25);
-            btnAgregar.addActionListener(e -> {
-                RegistrarSolicitud reg = new RegistrarSolicitud(null, false);
-                reg.setModal(true);
-                reg.setVisible(true);
-                loadSolicitudes();
-            });
             contentPanel.add(btnAgregar);
         }
         {
             btnModificar = new JButton("Modificar");
+            btnModificar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+                    if (selected != null) {
+                        RegistrarSolicitud reg = new RegistrarSolicitud(selected, false);
+                        reg.setModal(true);
+                        reg.setVisible(true);
+                        loadSolicitudes();
+                        desactivarBotones();
+                    }
+            	}
+            });
             btnModificar.setForeground(Color.WHITE);
             btnModificar.setBackground(new Color(0, 0, 51));
             btnModificar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnModificar.setFocusPainted(false);
             btnModificar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnModificar.setBounds(1143, 183, 97, 25);
+            btnModificar.setBounds(1143, 232, 97, 25);
             btnModificar.setEnabled(false);
-            btnModificar.addActionListener(e -> {
-                if (selected != null) {
-                    RegistrarSolicitud reg = new RegistrarSolicitud(selected, false);
-                    reg.setModal(true);
-                    reg.setVisible(true);
-                    loadSolicitudes();
-                    desactivarBotones();
-                }
-            });
             contentPanel.add(btnModificar);
         }
         {
@@ -293,6 +299,7 @@ public class GestionSolicitudes extends JDialog {
             btnCancelar.addActionListener(new ActionListener() {
             	public void actionPerformed(ActionEvent e) {
             		cancelarSolicitud();
+            		loadSolicitudes();
             		desactivarBotones();
             	}
             });
@@ -301,7 +308,7 @@ public class GestionSolicitudes extends JDialog {
             btnCancelar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnCancelar.setFocusPainted(false);
             btnCancelar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnCancelar.setBounds(1143, 221, 97, 25);
+            btnCancelar.setBounds(1143, 270, 97, 25);
             btnCancelar.setEnabled(false);
             contentPanel.add(btnCancelar);
         }
@@ -312,7 +319,7 @@ public class GestionSolicitudes extends JDialog {
             btnVerDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnVerDetalles.setFocusPainted(false);
             btnVerDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnVerDetalles.setBounds(1143, 326, 97, 25);
+            btnVerDetalles.setBounds(1143, 375, 97, 25);
             btnVerDetalles.setEnabled(false);
             
             btnVerDetalles.addActionListener(new ActionListener() {
@@ -357,6 +364,17 @@ public class GestionSolicitudes extends JDialog {
         	btnAsignar = new JButton("Asignar");
         	btnAsignar.addActionListener(new ActionListener() {
         		public void actionPerformed(ActionEvent e) {
+        			if(Altice.getInstance().getRolUsuarioLogueado() == Rol.TECNICO)
+        			{
+        				asignarSolicitudTecnico();
+        			}
+        			else
+        			{
+        				AsignarSolicitud asignar = new AsignarSolicitud(selected);
+        				asignar.setModal(true);
+        				asignar.setVisible(true);
+        			}
+        			loadSolicitudes();
         			desactivarBotones();
         		}
         	});
@@ -366,9 +384,35 @@ public class GestionSolicitudes extends JDialog {
         	btnAsignar.setEnabled(false);
         	btnAsignar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
         	btnAsignar.setBackground(new Color(0, 0, 51));
-        	btnAsignar.setBounds(1143, 288, 97, 25);
+        	btnAsignar.setBounds(1143, 337, 97, 25);
         	btnAsignar.setEnabled(false);
         	contentPanel.add(btnAsignar);
+        }
+        {
+        	btnCompletar = new JButton("Completar");
+        	btnCompletar.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			if(selected.isEnProceso())
+        			{
+        				if(Altice.getInstance().getRolUsuarioLogueado() == Rol.TECNICO)
+        				{
+        					completarSolicitudTecnico();
+        				}
+        				else
+        					completarSolicitudComercial();
+        			}
+        			loadSolicitudes();
+        			desactivarBotones();
+        		}
+        	});
+        	btnCompletar.setForeground(Color.WHITE);
+        	btnCompletar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	btnCompletar.setFocusPainted(false);
+        	btnCompletar.setEnabled(false);
+        	btnCompletar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        	btnCompletar.setBackground(new Color(0, 0, 51));
+        	btnCompletar.setBounds(1143, 196, 97, 25);
+        	contentPanel.add(btnCompletar);
         }
 
         // ====================== BOTÓN SALIR ======================
@@ -381,11 +425,15 @@ public class GestionSolicitudes extends JDialog {
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
             btnSalir = new JButton("Salir");
+            btnSalir.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		dispose();
+            	}
+            });
             btnSalir.setForeground(Color.WHITE);
             btnSalir.setBackground(new Color(102, 0, 0));
             btnSalir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             btnSalir.setFocusPainted(false);
-            btnSalir.addActionListener(e -> dispose());
             buttonPane.add(btnSalir);
         }
 
@@ -453,6 +501,7 @@ public class GestionSolicitudes extends JDialog {
         }
 
         actualizarContadores();
+        comprobarRol();
     }
 
     private void actualizarContadores() {
@@ -478,6 +527,14 @@ public class GestionSolicitudes extends JDialog {
                 "Acción no permitida", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        
+        if(!selected.getEmpleado().getCodigo().equalsIgnoreCase(Altice.getSesion().getCodigo()))
+        {
+            JOptionPane.showMessageDialog(this,
+                    "No estás a cargo de esta solicitud.",
+                    "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+                return;
+        }
 
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Desea cancelar esta solicitud?",
@@ -501,6 +558,154 @@ public class GestionSolicitudes extends JDialog {
         btnCancelar.setEnabled(false);
         btnVerDetalles.setEnabled(false);
         btnAsignar.setEnabled(false);
+        btnCompletar.setEnabled(false);
         selected = null;
+    }
+    
+    private void comprobarRol()
+    {
+    	if(Altice.getInstance().getRolUsuarioLogueado() == Rol.TECNICO)
+    	{
+    		btnModificar.setEnabled(false);
+    	}
+    }
+    private void asignarSolicitudTecnico() {
+        if (selected == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Debe seleccionar una solicitud primero.", 
+                "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (selected.isResuelto() || selected.isCancelada()) {
+            JOptionPane.showMessageDialog(this, 
+                "Esta solicitud ya está " + selected.getEstado().name().toLowerCase() + 
+                " y no puede ser asignada.", 
+                "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if(Altice.getInstance().estaDisponibleTecnico(Altice.getSesion().getCodigo()))
+        {
+            JOptionPane.showMessageDialog(this, 
+                    "Ya tienes una solicitud en proceso, no puedes asignarte otra.", 
+                    "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+                return;
+        }
+        if(selected.isEnProceso())
+        {
+        	JOptionPane.showMessageDialog(this, "Esta solicitud ya ha sido tomada por " + selected.getEmpleado().getNombre() + ".",
+        			"Acción no permitida", JOptionPane.WARNING_MESSAGE);
+        	return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Seguro desea tomar esta solicitud?",
+                "Asignar Solicitud",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+        String codigoTecnico = Altice.getSesion().getCodigo();
+
+        if (Altice.getInstance().asignarTecnicoASolicitud(selected.getCodigo(), codigoTecnico)) {
+            JOptionPane.showMessageDialog(this, 
+                "Solicitud asignada correctamente a usted.", 
+                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            
+            desactivarBotones();     
+        } else {
+            JOptionPane.showMessageDialog(this, 
+                "No se pudo asignar la solicitud.\nVerifique que no esté ya asignada o finalizada.", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void completarSolicitudComercial() {
+        if (selected == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Debe seleccionar una solicitud primero.", 
+                "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (selected.isCancelada()) {
+            JOptionPane.showMessageDialog(this, 
+                "No se puede completar una solicitud cancelada. ", "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (selected.isResuelto()) {
+            JOptionPane.showMessageDialog(this, 
+                "Esta solicitud ya ha sido resuelta.", "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Seguro desea marcar esta solicitud como resuelta?",
+                "Resolver Solicitud",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+        if(Altice.getInstance().completarSolicitud(selected.getCodigo()))
+        {
+            JOptionPane.showMessageDialog(this, 
+                    "Solicitud resuelta correctamente.", 
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                
+                desactivarBotones();   
+        }
+        else {
+            JOptionPane.showMessageDialog(this, 
+                "No se pudo resolver la solicitud.", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private void completarSolicitudTecnico() {
+        if (selected == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Debe seleccionar una solicitud primero.", 
+                "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (selected.getEmpleado().getCodigo() != Altice.getSesion().getCodigo()) {
+            JOptionPane.showMessageDialog(this, 
+                "No estás a cargo de esta solicitud.", "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (selected.isCancelada()) {
+            JOptionPane.showMessageDialog(this, 
+                "No se puede completar una solicitud cancelada. ", "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (selected.isResuelto()) {
+            JOptionPane.showMessageDialog(this, 
+                "Esta solicitud ya ha sido resuelta.", "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Seguro desea marcar esta solicitud como resuelta?",
+                "Resolver Solicitud",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+        if(Altice.getInstance().completarSolicitud(selected.getCodigo()))
+        {
+            JOptionPane.showMessageDialog(this, 
+                    "Solicitud resuelta correctamente.", 
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                
+                desactivarBotones();   
+        }
+        else {
+            JOptionPane.showMessageDialog(this, 
+                "No se pudo resolver la solicitud.", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

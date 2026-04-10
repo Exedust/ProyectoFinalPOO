@@ -129,21 +129,38 @@ public class Login extends JFrame {
         String password = new String(txtContra.getPassword());
 
         if (usuario.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar usuario y contraseña", 
+            JOptionPane.showMessageDialog(this, "Debe ingresar usuario y contraseña",
                 "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         if (Altice.getInstance().confirmarLogin(usuario, password)) {
-            JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso", 
+            
+            Rol rol = Altice.getInstance().getRolUsuarioLogueado();
+
+            JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso",
                 "Bienvenido", JOptionPane.INFORMATION_MESSAGE);
 
             dispose();
+
             Altice.getInstance().producirPagos();
-            PrincipalAdmin principal = new PrincipalAdmin();
-            principal.setVisible(true);
+
+            if (rol == Rol.ADMINISTRADOR) {
+                PrincipalAdmin principal = new PrincipalAdmin();
+                principal.setVisible(true);
+            } 
+            else if (rol == Rol.TECNICO || rol == Rol.COMERCIAL) {
+                PrincipalEmpleado principal = new PrincipalEmpleado();
+                principal.setVisible(true);
+            } 
+            else {
+                JOptionPane.showMessageDialog(this, 
+                    "Rol no reconocido. Contacte al administrador.", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
         } else {
-            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", 
+            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos",
                 "Acceso denegado", JOptionPane.ERROR_MESSAGE);
             txtContra.setText("");
             txtContra.requestFocus();

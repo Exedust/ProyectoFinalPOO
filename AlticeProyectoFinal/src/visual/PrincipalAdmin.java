@@ -214,6 +214,32 @@ public class PrincipalAdmin extends JFrame {
 		mnPlanes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		menuBar.add(mnPlanes);
 		
+		JMenuItem menuItem_6 = new JMenuItem("Registrar");
+		menuItem_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RegistrarPlan plan = new RegistrarPlan(null);
+				plan.setModal(true);
+				plan.setVisible(true);
+			}
+		});
+		menuItem_6.setForeground(Color.WHITE);
+		menuItem_6.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuItem_6.setBackground(new Color(0, 0, 102));
+		mnPlanes.add(menuItem_6);
+		
+		JMenuItem menuItem_7 = new JMenuItem("Listar");
+		menuItem_7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GestionPlanes plan = new GestionPlanes();
+				plan.setModal(true);
+				plan.setVisible(true);
+			}
+		});
+		menuItem_7.setForeground(Color.WHITE);
+		menuItem_7.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuItem_7.setBackground(new Color(0, 0, 102));
+		mnPlanes.add(menuItem_7);
+		
 		JMenu mnServicios = new JMenu("Servicios");
 		mnServicios.setForeground(Color.WHITE);
 		mnServicios.setFont(new Font("Segoe UI", Font.PLAIN, 18));

@@ -44,7 +44,7 @@ public class Altice implements Serializable {
 			altice = new Altice();
 		return altice;
 	}
-
+	
 	public boolean guardarDatos() {
 		try {
 			FileOutputStream fos = new FileOutputStream("altice.dat");
@@ -173,6 +173,23 @@ public class Altice implements Serializable {
 			misUsuarios.add(usuario);
 		}
 	}
+	
+    public boolean estaDisponibleTecnico(String codigo) {
+        Empleado emp = buscarEmpleadoById(codigo);
+    	if (emp == null || emp.getRol() != Rol.TECNICO) {
+            return false;
+        }
+
+        for (Solicitud s : misSolicitudes) {
+            if (s.getEmpleado() != null && 
+                s.getEmpleado().getCodigo().equals(emp.getCodigo()) &&
+                s.getEstado() == EstadoSolicitud.EN_PROCESO) {
+                
+                return false;
+            }
+        }
+        return true; 
+    }
 
 	public float calcularDeudaContrato(Contrato contrato) {
 		if (contrato == null || contrato.getPagos() == null) {

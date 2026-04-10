@@ -21,6 +21,7 @@ import logico.Altice;
 import logico.Cliente;
 import logico.Empleado;
 import logico.Persona;
+import logico.Rol;
 import logico.Solicitud;
 import logico.TipoSolicitud;
 
@@ -350,7 +351,11 @@ public class RegistrarSolicitud extends JDialog {
 
         if (Altice.getInstance().registrarSolicitud(nuevaSolicitud)) {
             JOptionPane.showMessageDialog(this, "Solicitud registrada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
+            if(Altice.getSesion().getRol() == Rol.TECNICO)
+            {
+            	Altice.getInstance().asignarTecnicoASolicitud(codigo, Altice.getSesion().getCodigo());
+            	JOptionPane.showMessageDialog(this, "Se te ha asignado a esta solicitud correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            }
             if (cerrarAlRegistrar) {
                 dispose();
             } else {
