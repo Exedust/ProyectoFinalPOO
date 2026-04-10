@@ -481,6 +481,20 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
 
         return null;
     }
+    public int contarSolicitudesTotal() {
+        return misSolicitudes.size();
+    }
+
+    public int contarSolicitudesPorEstado(EstadoSolicitud estado) {
+        if (estado == null) return 0;
+        int count = 0;
+        for (Solicitud s : misSolicitudes) {
+            if (s.getEstado() == estado) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     public Contrato buscarContratoByCodigo(String codigo) {
         for (Contrato c : misContratos) {

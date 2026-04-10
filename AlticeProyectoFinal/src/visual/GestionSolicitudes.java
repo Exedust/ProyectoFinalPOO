@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -17,6 +18,7 @@ import logico.Altice;
 import logico.Solicitud;
 import logico.Cliente;
 import logico.Empleado;
+import logico.EstadoSolicitud;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -36,11 +38,24 @@ public class GestionSolicitudes extends JDialog {
     private static Object[] row;
     private Solicitud selected = null;
 
+    private JTextField txtCedula;
+    private JTextField txtNombre;
+    private JButton btnBuscarCedula;
+    private JButton btnBuscarNombre;
     private JButton btnAgregar;
     private JButton btnModificar;
     private JButton btnCancelar;
     private JButton btnVerDetalles;
     private JButton btnSalir;
+
+    private static JComboBox<String> comboFiltrar;
+
+    // Etiquetas dinámicas de conteo
+    private JLabel lblTotal;
+    private JLabel lblPendientes;
+    private JLabel lblEnProceso;
+    private JLabel lblCompletadas;
+    private JLabel lblCanceladas;
 
     public static void main(String[] args) {
         try {
@@ -66,17 +81,17 @@ public class GestionSolicitudes extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL TABLA ======================
+        // ====================== PANEL DE LA TABLA ======================
         {
-            JPanel panel = new JPanel();
-            panel.setBackground(new Color(102, 102, 204));
-            panel.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            panel.setBounds(12, 145, 1102, 496);
-            contentPanel.add(panel);
-            panel.setLayout(new BorderLayout(0, 0));
+            JPanel panelTabla = new JPanel();
+            panelTabla.setBackground(new Color(102, 102, 204));
+            panelTabla.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            panelTabla.setBounds(12, 145, 1102, 496);
+            contentPanel.add(panelTabla);
+            panelTabla.setLayout(new BorderLayout(0, 0));
 
             JScrollPane scrollPane = new JScrollPane();
-            panel.add(scrollPane, BorderLayout.CENTER);
+            panelTabla.add(scrollPane, BorderLayout.CENTER);
 
             table = new JTable();
             table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -84,7 +99,7 @@ public class GestionSolicitudes extends JDialog {
             table.setRowHeight(25);
 
             String[] headers = {
-                "Código", "Tipo", "Cliente", "Cédula", "Empleado Asignado", 
+                "Código", "Tipo", "Cliente", "Cédula", "Empleado Asignado",
                 "Estado", "Fecha Emisión", "Fecha Atención"
             };
 
@@ -106,10 +121,11 @@ public class GestionSolicitudes extends JDialog {
                     if (ind != -1) {
                         String codigo = table.getValueAt(ind, 0).toString();
                         selected = Altice.getInstance().buscarSolicitudByCodigo(codigo);
-                        
+
                         btnModificar.setEnabled(true);
-                        btnCancelar.setEnabled(selected != null && !selected.isResuelto() && !selected.isCancelada());
                         btnVerDetalles.setEnabled(true);
+                        btnCancelar.setEnabled(selected != null && 
+                            !selected.isResuelto() && !selected.isCancelada());
                     }
                 }
             });
@@ -117,7 +133,7 @@ public class GestionSolicitudes extends JDialog {
 
         // ====================== CAMPOS DE BÚSQUEDA ======================
         {
-            JTextField txtCedula = new JTextField();
+            txtCedula = new JTextField();
             txtCedula.setBackground(new Color(0, 0, 51));
             txtCedula.setForeground(Color.WHITE);
             txtCedula.setCaretColor(Color.WHITE);
@@ -127,7 +143,7 @@ public class GestionSolicitudes extends JDialog {
             contentPanel.add(txtCedula);
         }
         {
-            JTextField txtNombre = new JTextField();
+            txtNombre = new JTextField();
             txtNombre.setBackground(new Color(0, 0, 51));
             txtNombre.setForeground(Color.WHITE);
             txtNombre.setCaretColor(Color.WHITE);
@@ -137,27 +153,39 @@ public class GestionSolicitudes extends JDialog {
             contentPanel.add(txtNombre);
         }
         {
-            JButton btnBuscar = new JButton("Buscar");
-            btnBuscar.setForeground(Color.WHITE);
-            btnBuscar.setBackground(new Color(0, 0, 51));
-            btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnBuscar.setFocusPainted(false);
-            btnBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnBuscar.setBounds(500, 109, 97, 25);
-            contentPanel.add(btnBuscar);
+            btnBuscarCedula = new JButton("Buscar Cédula");
+            btnBuscarCedula.setForeground(Color.WHITE);
+            btnBuscarCedula.setBackground(new Color(0, 0, 51));
+            btnBuscarCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnBuscarCedula.setFocusPainted(false);
+            btnBuscarCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnBuscarCedula.setBounds(500, 109, 120, 25);
+            btnBuscarCedula.addActionListener(e -> loadSolicitudes());
+            contentPanel.add(btnBuscarCedula);
         }
         {
-            JComboBox<String> comboFiltro = new JComboBox<>();
-            comboFiltro.setBackground(new Color(0, 0, 51));
-            comboFiltro.setForeground(Color.WHITE);
-            comboFiltro.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboFiltro.setBounds(797, 110, 208, 24);
-            comboFiltro.addItem("Todos");
-            comboFiltro.addItem("Pendientes");
-            comboFiltro.addItem("En Proceso");
-            comboFiltro.addItem("Completadas");
-            comboFiltro.addItem("Canceladas");
-            contentPanel.add(comboFiltro);
+            btnBuscarNombre = new JButton("Buscar Nombre");
+            btnBuscarNombre.setForeground(Color.WHITE);
+            btnBuscarNombre.setBackground(new Color(0, 0, 51));
+            btnBuscarNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnBuscarNombre.setFocusPainted(false);
+            btnBuscarNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnBuscarNombre.setBounds(632, 109, 130, 25);
+            btnBuscarNombre.addActionListener(e -> loadSolicitudes());
+            contentPanel.add(btnBuscarNombre);
+        }
+
+        // Filtro por Estado
+        {
+            comboFiltrar = new JComboBox<>();
+            comboFiltrar.setModel(new DefaultComboBoxModel<>(new String[] {
+                "Todos", "Pendientes", "En Proceso", "Completadas", "Canceladas"
+            }));
+            comboFiltrar.setBackground(new Color(0, 0, 51));
+            comboFiltrar.setForeground(Color.WHITE);
+            comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            comboFiltrar.setBounds(780, 110, 200, 24);
+            contentPanel.add(comboFiltrar);
         }
         {
             JButton btnFiltrar = new JButton("Filtrar");
@@ -166,59 +194,45 @@ public class GestionSolicitudes extends JDialog {
             btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnFiltrar.setFocusPainted(false);
             btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnFiltrar.setBounds(1017, 110, 97, 25);
+            btnFiltrar.setBounds(990, 110, 97, 25);
             btnFiltrar.addActionListener(e -> loadSolicitudes());
             contentPanel.add(btnFiltrar);
         }
 
-        // Etiquetas
+        // ====================== ETIQUETAS DE CONTEO ======================
         {
-            JLabel lblCedula = new JLabel("Cédula");
-            lblCedula.setForeground(Color.WHITE);
-            lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblCedula.setBounds(12, 88, 56, 16);
-            contentPanel.add(lblCedula);
+            lblTotal = new JLabel("Solicitudes Registradas: 00");
+            lblTotal.setForeground(Color.WHITE);
+            lblTotal.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblTotal.setBounds(12, 23, 230, 16);
+            contentPanel.add(lblTotal);
         }
         {
-            JLabel lblNombre = new JLabel("Nombre");
-            lblNombre.setForeground(Color.WHITE);
-            lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNombre.setBounds(256, 88, 56, 16);
-            contentPanel.add(lblNombre);
-        }
-        {
-            JLabel lblSolicitudesRegistradas = new JLabel("Solicitudes Registradas: 00");
-            lblSolicitudesRegistradas.setForeground(Color.WHITE);
-            lblSolicitudesRegistradas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblSolicitudesRegistradas.setBounds(12, 23, 216, 16);
-            contentPanel.add(lblSolicitudesRegistradas);
-        }
-        {
-            JLabel lblPendientes = new JLabel("Solicitudes Pendientes: 00");
+            lblPendientes = new JLabel("Solicitudes Pendientes: 00");
             lblPendientes.setForeground(Color.WHITE);
             lblPendientes.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblPendientes.setBounds(12, 59, 216, 16);
+            lblPendientes.setBounds(12, 59, 230, 16);
             contentPanel.add(lblPendientes);
         }
         {
-            JLabel lblEnProceso = new JLabel("Solicitudes En Proceso: 00");
+            lblEnProceso = new JLabel("Solicitudes En Proceso: 00");
             lblEnProceso.setForeground(Color.WHITE);
             lblEnProceso.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblEnProceso.setBounds(240, 59, 216, 16);
+            lblEnProceso.setBounds(250, 59, 230, 16);
             contentPanel.add(lblEnProceso);
         }
         {
-            JLabel lblCompletadas = new JLabel("Solicitudes Completadas: 00");
+            lblCompletadas = new JLabel("Solicitudes Completadas: 00");
             lblCompletadas.setForeground(Color.WHITE);
             lblCompletadas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblCompletadas.setBounds(468, 59, 216, 16);
+            lblCompletadas.setBounds(488, 59, 230, 16);
             contentPanel.add(lblCompletadas);
         }
         {
-            JLabel lblCanceladas = new JLabel("Solicitudes Canceladas: 00");
+            lblCanceladas = new JLabel("Solicitudes Canceladas: 00");
             lblCanceladas.setForeground(Color.WHITE);
             lblCanceladas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblCanceladas.setBounds(696, 59, 216, 16);
+            lblCanceladas.setBounds(726, 59, 230, 16);
             contentPanel.add(lblCanceladas);
         }
 
@@ -235,7 +249,7 @@ public class GestionSolicitudes extends JDialog {
                 RegistrarSolicitud reg = new RegistrarSolicitud(null, false);
                 reg.setModal(true);
                 reg.setVisible(true);
-                loadSolicitudes();        // ← Actualiza después de registrar
+                loadSolicitudes();
             });
             contentPanel.add(btnAgregar);
         }
@@ -254,9 +268,6 @@ public class GestionSolicitudes extends JDialog {
                     reg.setModal(true);
                     reg.setVisible(true);
                     loadSolicitudes();
-                    btnModificar.setEnabled(false);
-                    btnCancelar.setEnabled(false);
-                    btnVerDetalles.setEnabled(false);
                 }
             });
             contentPanel.add(btnModificar);
@@ -282,16 +293,31 @@ public class GestionSolicitudes extends JDialog {
             btnVerDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             btnVerDetalles.setBounds(1143, 259, 97, 25);
             btnVerDetalles.setEnabled(false);
-            btnVerDetalles.addActionListener(e -> {
-                if (selected != null) {
-                    JOptionPane.showMessageDialog(this, "Ventana de DetallesSolicitud pendiente de implementar", 
-                        "Información", JOptionPane.INFORMATION_MESSAGE);
+            
+            btnVerDetalles.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (selected != null) {
+                        try {
+                            DetallesSolicitud detalles = new DetallesSolicitud(selected);
+                            detalles.setModal(true);
+                            detalles.setVisible(true);
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(GestionSolicitudes.this, 
+                                "Error al abrir los detalles: " + ex.getMessage(), 
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(GestionSolicitudes.this, 
+                            "Debe seleccionar una solicitud primero.", 
+                            "Aviso", JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             });
             contentPanel.add(btnVerDetalles);
         }
 
-        // Botón Salir
+        // ====================== BOTÓN SALIR ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -315,44 +341,70 @@ public class GestionSolicitudes extends JDialog {
     private void loadSolicitudes() {
         model.setRowCount(0);
         row = new Object[8];
-        int total = 0;
+
+        String filtro = (String) comboFiltrar.getSelectedItem();
 
         for (Solicitud s : Altice.getInstance().getMisSolicitudes()) {
-            Cliente cli = s.getCliente();
-            Empleado emp = s.getEmpleado();
+            boolean incluir = false;
 
-            row[0] = s.getCodigo();
-            row[1] = s.getTipo().name();
-            row[2] = (cli != null) ? cli.getNombre() : "N/A";
-            row[3] = (cli != null) ? cli.getCedula() : "N/A";
-            row[4] = (emp != null) ? emp.getNombre() : "No asignado";
-            row[5] = s.getEstado().name();
-            row[6] = s.getFechaRegistro() != null ? s.getFechaRegistro().toString() : "";
-            row[7] = s.getFechaAtencion() != null ? s.getFechaAtencion().toString() : "";
-
-            model.addRow(row);
-            total++;
-        }
-
-        // Actualizar contador "Solicitudes Registradas"
-        for (int i = 0; i < contentPanel.getComponentCount(); i++) {
-            java.awt.Component c = contentPanel.getComponent(i);
-            if (c instanceof JLabel) {
-                JLabel lbl = (JLabel) c;
-                if (lbl.getText().startsWith("Solicitudes Registradas")) {
-                    lbl.setText("Solicitudes Registradas: " + String.format("%02d", total));
+            switch (filtro) {
+                case "Todos":
+                    incluir = true;
                     break;
-                }
+                case "Pendientes":
+                    incluir = s.getEstado() == EstadoSolicitud.PENDIENTE;
+                    break;
+                case "En Proceso":
+                    incluir = s.getEstado() == EstadoSolicitud.EN_PROCESO;
+                    break;
+                case "Completadas":
+                    incluir = s.getEstado() == EstadoSolicitud.COMPLETADA;
+                    break;
+                case "Canceladas":
+                    incluir = s.getEstado() == EstadoSolicitud.CANCELADA;
+                    break;
+            }
+
+            if (incluir) {
+                Cliente cli = s.getCliente();
+                Empleado emp = s.getEmpleado();
+
+                row[0] = s.getCodigo();
+                row[1] = s.getTipo().name();
+                row[2] = (cli != null) ? cli.getNombre() : "N/A";
+                row[3] = (cli != null) ? cli.getCedula() : "N/A";
+                row[4] = (emp != null) ? emp.getNombre() : "No asignado";
+                row[5] = s.getEstado().name();
+                row[6] = s.getFechaRegistro() != null ? s.getFechaRegistro().toString() : "";
+                row[7] = s.getFechaAtencion() != null ? s.getFechaAtencion().toString() : "";
+
+                model.addRow(row);
             }
         }
+
+        actualizarContadores();
+    }
+
+    private void actualizarContadores() {
+        int total = Altice.getInstance().getMisSolicitudes().size();
+        int pendientes = Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.PENDIENTE);
+        int enProceso = Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.EN_PROCESO);
+        int completadas = Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.COMPLETADA);
+        int canceladas = Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.CANCELADA);
+
+        lblTotal.setText("Solicitudes Registradas: " + String.format("%02d", total));
+        lblPendientes.setText("Solicitudes Pendientes: " + String.format("%02d", pendientes));
+        lblEnProceso.setText("Solicitudes En Proceso: " + String.format("%02d", enProceso));
+        lblCompletadas.setText("Solicitudes Completadas: " + String.format("%02d", completadas));
+        lblCanceladas.setText("Solicitudes Canceladas: " + String.format("%02d", canceladas));
     }
 
     private void cancelarSolicitud() {
         if (selected == null) return;
 
         if (selected.isResuelto() || selected.isCancelada()) {
-            JOptionPane.showMessageDialog(this, 
-                "No se puede cancelar una solicitud ya completada o cancelada.", 
+            JOptionPane.showMessageDialog(this,
+                "No se puede cancelar una solicitud ya completada o cancelada.",
                 "Acción no permitida", JOptionPane.WARNING_MESSAGE);
             return;
         }
