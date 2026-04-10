@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import logico.Altice;
 import logico.Contrato;
+import logico.Pago;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -28,11 +29,11 @@ import java.awt.Component;
 
 public class GestionContratos extends JDialog {
 
-    private final static JPanel contentPanel = new JPanel();
-   
-    private static JTable table;
-    private static DefaultTableModel model;
-    private static Object[] row;
+    private final JPanel contentPanel = new JPanel();
+ 
+    private JTable table;
+    private DefaultTableModel model;
+    private Object[] row;
     private Contrato selected = null;
 
     private JButton btnAgregar;
@@ -41,7 +42,7 @@ public class GestionContratos extends JDialog {
     private JButton btnDetalles;
     private JButton btnSalir;
 
-    private static JComboBox<String> comboFiltrar;
+    private JComboBox<String> comboFiltrar;
 
     public static void main(String[] args) {
         try {
@@ -198,15 +199,13 @@ public class GestionContratos extends JDialog {
             btnAgregar.setBounds(1143, 145, 97, 25);
             contentPanel.add(btnAgregar);
         }
+
         {
             btnCerrarContrato = new JButton("Cerrar Contrato");
             btnCerrarContrato.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (selected != null) {
                         cerrarContrato();
-                        btnPagar.setEnabled(false);
-                        btnCerrarContrato.setEnabled(false);
-                        btnDetalles.setEnabled(false);
                     }
                 }
             });
@@ -219,6 +218,7 @@ public class GestionContratos extends JDialog {
             btnCerrarContrato.setEnabled(false);
             contentPanel.add(btnCerrarContrato);
         }
+
         {
             btnPagar = new JButton("Realizar Pago");
             btnPagar.setForeground(Color.WHITE);
@@ -230,20 +230,17 @@ public class GestionContratos extends JDialog {
             btnPagar.setEnabled(false);
             contentPanel.add(btnPagar);
         }
+
         {
             btnDetalles = new JButton("Detalles");
             btnDetalles.addActionListener(new ActionListener() {
-            	public void actionPerformed(ActionEvent e) {
-            		if(selected != null)
-            		{
-            			DetallesContrato nuevo = new DetallesContrato(selected);
-            			nuevo.setModal(true);
-            			nuevo.setVisible(true);
-                        btnPagar.setEnabled(false);
-                        btnCerrarContrato.setEnabled(false);
-                        btnDetalles.setEnabled(false);
-            		}
-            	}
+                public void actionPerformed(ActionEvent e) {
+                    if (selected != null) {
+                        DetallesContrato nuevo = new DetallesContrato(selected);
+                        nuevo.setModal(true);
+                        nuevo.setVisible(true);
+                    }
+                }
             });
             btnDetalles.setForeground(Color.WHITE);
             btnDetalles.setBackground(new Color(0, 0, 51));
@@ -280,10 +277,10 @@ public class GestionContratos extends JDialog {
         loadContratos();
     }
 
-    // ====================== MÉTODO DE CARGA ======================
-    public static void loadContratos() {
+    public void loadContratos() {
         if (model == null) return;
         model.setRowCount(0);
+        
         row = new Object[table.getColumnCount()];
 
         String filtro = comboFiltrar.getSelectedItem().toString();
@@ -305,14 +302,17 @@ public class GestionContratos extends JDialog {
             }
 
             if (incluir) {
+                float deuda = Altice.getInstance().calcularDeudaContrato(c);
+                String estado = (deuda > 0) ? "Pendiente" : "Al Día";
+
                 row[0] = c.getCodigo();
                 row[1] = c.getCliente().getNombre();
                 row[2] = c.getCliente().getCedula();
                 row[3] = c.getPlan().getNombre();
                 row[4] = c.getFechaInicio() != null ? c.getFechaInicio().toString() : "";
                 row[5] = c.getFechaCierre() != null ? c.getFechaCierre().toString() : "";
-                row[6] = c.isActivo() ? "Activo" : "Cerrado";
-                row[7] = "RD$ 0.00";   // Deuda pendiente (lo trataremos después)
+                row[6] = estado;
+                row[7] = String.format("RD$ %.2f", deuda);
 
                 model.addRow(row);
                 count++;
@@ -331,6 +331,8 @@ public class GestionContratos extends JDialog {
         }
     }
 
+
+
     private void cerrarContrato() {
         if (selected == null) return;
 
@@ -347,6 +349,7 @@ public class GestionContratos extends JDialog {
             loadContratos();
             btnCerrarContrato.setEnabled(false);
             btnPagar.setEnabled(false);
+            btnDetalles.setEnabled(false);
             selected = null;
         } else {
             JOptionPane.showMessageDialog(this, "No se pudo cerrar el contrato", "Error", JOptionPane.ERROR_MESSAGE);

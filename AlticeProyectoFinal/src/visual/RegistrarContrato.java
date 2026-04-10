@@ -27,6 +27,8 @@ import logico.Contrato;
 import logico.Empleado;
 import logico.Persona;
 import logico.Plan;
+import logico.Solicitud;
+import logico.TipoSolicitud;
 
 import javax.swing.UIManager;
 import javax.swing.JComboBox;
@@ -58,6 +60,7 @@ public class RegistrarContrato extends JDialog {
 	private JLabel label_8;
 	private JButton btnNuevo;
 	private JComboBox<String> comboPlan;
+	private JCheckBox checkInstalacion;
 
 	public static void main(String[] args) {
 		try {
@@ -73,7 +76,7 @@ public class RegistrarContrato extends JDialog {
 		setResizable(false);
 		setTitle("Registrar Contrato");
 		
-		setBounds(100, 100, 697, 644);
+		setBounds(100, 100, 697, 693);
 		setLocationRelativeTo(null);
 		getContentPane().setBackground(new Color(0, 0, 51));
 		getContentPane().setLayout(new BorderLayout());
@@ -249,7 +252,7 @@ public class RegistrarContrato extends JDialog {
 		        txtCedula.setText(selected.getCedula());
 		        txtNombre.setText(selected.getNombre());
 		        txtTelefono.setText(selected.getTelefono());
-		        txtDireccion.setText(selected.getTelefono());
+		        txtDireccion.setText(selected.getDireccion());
 		        txtCorreo.setText(selected.getEmail());
 		        txtCedula.setEditable(false);
 		        btnBuscar.setVisible(false);
@@ -284,7 +287,12 @@ public class RegistrarContrato extends JDialog {
 				getRootPane().setDefaultButton(btnAceptar);
 			}
 			{
-				cancelButton = new JButton("Cancel");
+				cancelButton = new JButton("Cancelar");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setForeground(Color.WHITE);
 				cancelButton.setBackground(new Color(102, 0, 0));
 				cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -294,6 +302,15 @@ public class RegistrarContrato extends JDialog {
 			}
 		}
 		txtCodigo.setText(String.format("CO-%05d", Altice.getGenContratoid()));
+		
+		checkInstalacion = new JCheckBox("Requiere Instalacion");
+		checkInstalacion.setSelected(true);
+		checkInstalacion.setForeground(Color.WHITE);
+		checkInstalacion.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		checkInstalacion.setBackground(new Color(102, 102, 204));
+		checkInstalacion.setBounds(243, 547, 174, 25);
+		panel.add(checkInstalacion);
+		
 		cargarPlanes();
 	}
 	private void buscar() {
@@ -323,6 +340,8 @@ public class RegistrarContrato extends JDialog {
 	        JOptionPane.showMessageDialog(this, 
 	            "Empleado detectado.\nSe mostrarán planes con prefijo EMP (beneficios internos).", 
 	            "Contrato Interno", JOptionPane.INFORMATION_MESSAGE);
+				checkInstalacion.setSelected(false);
+				checkInstalacion.setVisible(false);
 	    }
 	}
 
@@ -353,11 +372,11 @@ public class RegistrarContrato extends JDialog {
 	            "Error", JOptionPane.ERROR_MESSAGE);
 	        return;
 	    }
-
-	    if (comboPlan.getSelectedItem() == null || 
+	    if (comboPlan.getSelectedItem() == null ||
 	        comboPlan.getSelectedItem().toString().contains("No hay planes")) {
 	        JOptionPane.showMessageDialog(this, "Debe seleccionar un plan válido.",
 	            "Error", JOptionPane.ERROR_MESSAGE);
+	        comboPlan.requestFocus();
 	        return;
 	    }
 
@@ -374,9 +393,29 @@ public class RegistrarContrato extends JDialog {
 	    if (registrar()) {
 	        JOptionPane.showMessageDialog(this, "Contrato registrado correctamente",
 	            "Éxito", JOptionPane.INFORMATION_MESSAGE);
-	        
-	        clean();                    
-	        txtCedula.requestFocus();   
+
+	        // ====================== CREAR SOLICITUD DE INSTALACIÓN ======================
+	        if (checkInstalacion.isSelected() && selected instanceof Cliente) {
+	            String codigoSoli = "SOL-" + String.format("%05d", Altice.getGenSolicitudid() + 1);
+	            Cliente client = (Cliente)selected;
+	            Solicitud solicitud = new Solicitud(codigoSoli, client, TipoSolicitud.INSTALACION, 
+	                "Instalación de equipo nuevo para el contrato " + txtCodigo.getText());
+
+	            if (Altice.getInstance().registrarSolicitud(solicitud)) {
+	                JOptionPane.showMessageDialog(this, 
+	                    "Solicitud de instalación creada correctamente", 
+	                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	            } else {
+	                JOptionPane.showMessageDialog(this, 
+	                    "Contrato registrado, pero no se pudo crear la solicitud de instalación", 
+	                    "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            }
+	        }
+
+	        Altice.getInstance().producirPagos();
+
+	        clean();
+	        txtCedula.requestFocus();
 	    }
 	}
 
@@ -402,7 +441,7 @@ public class RegistrarContrato extends JDialog {
 
 	private boolean validar() {
 	    if (selected == null) {
-	        JOptionPane.showMessageDialog(this, "Debe seleccionar una persona (cliente o empleado).", 
+	        JOptionPane.showMessageDialog(this, "Debe seleccionar una persona.", 
 	            "Error", JOptionPane.ERROR_MESSAGE);
 	        return false;
 	    }
@@ -460,6 +499,4 @@ public class RegistrarContrato extends JDialog {
 	        }
 	    }
 	}
-	
-    
 }

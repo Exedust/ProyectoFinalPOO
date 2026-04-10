@@ -19,6 +19,8 @@ import logico.Solicitud;
 import logico.Cliente;
 import logico.Empleado;
 import logico.EstadoSolicitud;
+import logico.Persona;
+
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -366,7 +368,7 @@ public class GestionSolicitudes extends JDialog {
             }
 
             if (incluir) {
-                Cliente cli = s.getCliente();
+                Persona cli = s.getCliente();
                 Empleado emp = s.getEmpleado();
 
                 row[0] = s.getCodigo();

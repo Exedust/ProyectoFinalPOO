@@ -1,8 +1,8 @@
 package visual;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 import logico.Solicitud;
 import logico.Cliente;
 import logico.Empleado;
+import logico.Persona;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -34,6 +35,8 @@ public class DetallesSolicitud extends JDialog {
     private JTextField txtFechaRegistro;
     private JTextField txtFechaAtencion;
 
+    private JLabel lblDescripcion;
+
     public static void main(String[] args) {
         try {
             DetallesSolicitud dialog = new DetallesSolicitud(null);
@@ -49,7 +52,7 @@ public class DetallesSolicitud extends JDialog {
 
         setResizable(false);
         setTitle("Detalles de Solicitud");
-        setBounds(100, 100, 650, 720);
+        setBounds(100, 100, 650, 780);   // Aumentado un poco la altura
         setLocationRelativeTo(null);
 
         getContentPane().setBackground(new Color(0, 0, 51));
@@ -74,7 +77,7 @@ public class DetallesSolicitud extends JDialog {
                 panelInfo.setLayout(null);
                 panelInfo.setBackground(new Color(102, 102, 204));
                 panelInfo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                panelInfo.setBounds(12, 13, 600, 280);
+                panelInfo.setBounds(12, 13, 600, 252);
                 panel.add(panelInfo);
 
                 {
@@ -95,7 +98,6 @@ public class DetallesSolicitud extends JDialog {
                     txtCodigo.setBounds(12, 42, 180, 24);
                     panelInfo.add(txtCodigo);
                 }
-
                 {
                     JLabel lblTipo = new JLabel("Tipo de Solicitud");
                     lblTipo.setForeground(Color.WHITE);
@@ -114,7 +116,6 @@ public class DetallesSolicitud extends JDialog {
                     txtTipo.setBounds(12, 109, 180, 24);
                     panelInfo.add(txtTipo);
                 }
-
                 {
                     JLabel lblEstado = new JLabel("Estado");
                     lblEstado.setForeground(Color.WHITE);
@@ -133,7 +134,6 @@ public class DetallesSolicitud extends JDialog {
                     txtEstado.setBounds(220, 109, 180, 24);
                     panelInfo.add(txtEstado);
                 }
-
                 {
                     JLabel lblFechaRegistro = new JLabel("Fecha de Registro");
                     lblFechaRegistro.setForeground(Color.WHITE);
@@ -152,7 +152,6 @@ public class DetallesSolicitud extends JDialog {
                     txtFechaRegistro.setBounds(12, 179, 180, 24);
                     panelInfo.add(txtFechaRegistro);
                 }
-
                 {
                     JLabel lblFechaAtencion = new JLabel("Fecha de Atención");
                     lblFechaAtencion.setForeground(Color.WHITE);
@@ -178,9 +177,8 @@ public class DetallesSolicitud extends JDialog {
                 JPanel panelClienteInfo = new JPanel();
                 panelClienteInfo.setLayout(null);
                 panelClienteInfo.setBackground(new Color(102, 102, 204));
-                panelClienteInfo.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
-                        "Cliente", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
-                panelClienteInfo.setBounds(12, 310, 600, 120);
+                panelClienteInfo.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
+                panelClienteInfo.setBounds(12, 278, 600, 110);
                 panel.add(panelClienteInfo);
 
                 {
@@ -201,7 +199,6 @@ public class DetallesSolicitud extends JDialog {
                     txtClienteNombre.setBounds(12, 42, 280, 24);
                     panelClienteInfo.add(txtClienteNombre);
                 }
-
                 {
                     JLabel lblClienteCedula = new JLabel("Cédula");
                     lblClienteCedula.setForeground(Color.WHITE);
@@ -227,9 +224,8 @@ public class DetallesSolicitud extends JDialog {
                 JPanel panelEmpleado = new JPanel();
                 panelEmpleado.setLayout(null);
                 panelEmpleado.setBackground(new Color(102, 102, 204));
-                panelEmpleado.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
-                        "Empleado Asignado", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
-                panelEmpleado.setBounds(12, 445, 600, 80);
+                panelEmpleado.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
+                panelEmpleado.setBounds(12, 401, 600, 80);
                 panel.add(panelEmpleado);
 
                 {
@@ -251,6 +247,34 @@ public class DetallesSolicitud extends JDialog {
                     panelEmpleado.add(txtEmpleadoAsignado);
                 }
             }
+
+            // ====================== PANEL DESCRIPCIÓN (NUEVO) ======================
+            {
+                JPanel panelDescripcion = new JPanel();
+                panelDescripcion.setLayout(null);
+                panelDescripcion.setBackground(new Color(102, 102, 204));
+                panelDescripcion.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
+                panelDescripcion.setBounds(12, 505, 600, 130);
+                panel.add(panelDescripcion);
+
+                {
+                    lblDescripcion = new JLabel("Descripción");
+                    lblDescripcion.setForeground(Color.WHITE);
+                    lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    lblDescripcion.setBounds(12, 13, 100, 16);
+                    panelDescripcion.add(lblDescripcion);
+                }
+                {
+                    txtDescripcion = new JTextPane();
+                    txtDescripcion.setEditable(false);
+                    txtDescripcion.setBackground(new Color(0, 0, 51));
+                    txtDescripcion.setForeground(Color.WHITE);
+                    txtDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    txtDescripcion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    txtDescripcion.setBounds(12, 40, 576, 80);
+                    panelDescripcion.add(txtDescripcion);
+                }
+            }
         }
 
         // ====================== BOTÓN CERRAR ======================
@@ -267,7 +291,11 @@ public class DetallesSolicitud extends JDialog {
             btnCerrar.setBackground(new Color(102, 0, 0));
             btnCerrar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             btnCerrar.setFocusPainted(false);
-            btnCerrar.addActionListener(e -> dispose());
+            btnCerrar.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                }
+            });
             buttonPane.add(btnCerrar);
         }
 
@@ -279,20 +307,33 @@ public class DetallesSolicitud extends JDialog {
     private void loadSolicitud() {
         if (miSolicitud == null) return;
 
-        Cliente cli = miSolicitud.getCliente();
-        Empleado emp = miSolicitud.getEmpleado();
+        txtCodigo.setText(miSolicitud.getCodigo() != null ? miSolicitud.getCodigo() : "");
+        txtTipo.setText(miSolicitud.getTipo() != null ? miSolicitud.getTipo().name() : "SIN TIPO");
+        txtDescripcion.setText(miSolicitud.getDescripcion() != null ? miSolicitud.getDescripcion() : "");
+        txtEstado.setText(miSolicitud.getEstado() != null ? miSolicitud.getEstado().name() : "DESCONOCIDO");
 
-        txtCodigo.setText(miSolicitud.getCodigo());
-        txtTipo.setText(miSolicitud.getTipo().name());
-        txtDescripcion.setText(miSolicitud.getDescripcion());
-        txtEstado.setText(miSolicitud.getEstado().name());
         txtFechaRegistro.setText(miSolicitud.getFechaRegistro() != null ? 
                 miSolicitud.getFechaRegistro().toString() : "");
+
         txtFechaAtencion.setText(miSolicitud.getFechaAtencion() != null ? 
                 miSolicitud.getFechaAtencion().toString() : "");
 
-        txtClienteNombre.setText(cli != null ? cli.getNombre() : "N/A");
-        txtClienteCedula.setText(cli != null ? cli.getCedula() : "N/A");
-        txtEmpleadoAsignado.setText(emp != null ? emp.getNombre() : "No asignado");
+        // Cliente
+        Persona cli = miSolicitud.getCliente();
+        if (cli != null) {
+            txtClienteNombre.setText(cli.getNombre() != null ? cli.getNombre() : "N/A");
+            txtClienteCedula.setText(cli.getCedula() != null ? cli.getCedula() : "N/A");
+        } else {
+            txtClienteNombre.setText("N/A");
+            txtClienteCedula.setText("N/A");
+        }
+
+        // Empleado
+        Empleado emp = miSolicitud.getEmpleado();
+        if (emp != null) {
+            txtEmpleadoAsignado.setText(emp.getNombre() != null ? emp.getNombre() : "No asignado");
+        } else {
+            txtEmpleadoAsignado.setText("No asignado");
+        }
     }
 }

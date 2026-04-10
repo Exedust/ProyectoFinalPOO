@@ -13,15 +13,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-
 import logico.Altice;
 import logico.Cliente;
+import logico.Pago;
 
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -33,12 +32,12 @@ public class GestionClientes extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
     private Cliente selected = null;
-    
+   
     private JTextField txtCedula;
     private JTextField txtNombre;
     private JButton btnCedula;
     private JButton btnNombre;
-    private static JComboBox comboFiltrar;
+    private static JComboBox<String> comboFiltrar;
     private JButton btnFiltrar;
     private JButton btnAgregar;
     private JButton btnModificar;
@@ -48,13 +47,10 @@ public class GestionClientes extends JDialog {
     private JButton btnSalir;
     private JScrollPane scrollPane;
     private static JTable table;
-    
-	private static DefaultTableModel model;
-	private static Object[] row;
+   
+    private static DefaultTableModel model;
+    private static Object[] row;
 
-    /**
-     * Launch the application.
-     */
     public static void main(String[] args) {
         try {
             GestionClientes dialog = new GestionClientes();
@@ -65,22 +61,21 @@ public class GestionClientes extends JDialog {
         }
     }
 
-    /**
-     * Create the dialog.
-     */
     public GestionClientes() {
         setTitle("Gestionar Clientes");
         setResizable(false);
         setBounds(100, 100, 1280, 770);
         setLocationRelativeTo(null);
+
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
-        
+       
         contentPanel.setBackground(new Color(0, 0, 51));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
+        // ====================== PANEL PRINCIPAL DE TABLA ======================
         {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
@@ -88,47 +83,46 @@ public class GestionClientes extends JDialog {
             panel.setBounds(12, 145, 1102, 496);
             contentPanel.add(panel);
             panel.setLayout(new BorderLayout(0, 0));
-            {
-            	scrollPane = new JScrollPane();
-            	panel.add(scrollPane, BorderLayout.CENTER);
-            	{
-            		table = new JTable();
-            		table.setFillsViewportHeight(true);
-            		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            		scrollPane.setViewportView(table);
 
-                    String[] headers = {
-                        "Código", "Cédula", "Nombre", "Teléfono", 
-                        "Correo", "Tipo", "Estado"
-                    };
+            scrollPane = new JScrollPane();
+            panel.add(scrollPane, BorderLayout.CENTER);
 
-                    model = new DefaultTableModel() {
-                        @Override
-                        public boolean isCellEditable(int row, int column) {
-                            return false;
-                        }
-                    };
-                    model.setColumnIdentifiers(headers);
-                    table.setModel(model);
-                    table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
-                    scrollPane.setViewportView(table);
+            table = new JTable();
+            table.setFillsViewportHeight(true);
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-                    table.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            int ind = table.getSelectedRow();
-                            if (ind != -1) {
-                                String codigo = table.getValueAt(ind, 0).toString();
-                                selected = Altice.getInstance().buscarClienteById(codigo);
-                                btnModificar.setEnabled(true);
-                                btnDesactivar.setEnabled(true);
-                                btnDetalles.setEnabled(true);
-                                btnPagar.setEnabled(true);
-                            }
-                        }
-                    });
-            	}
-            }
+            model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+
+            String[] headers = {
+                "Código", "Cédula", "Nombre", "Teléfono",
+                "Correo", "Tipo", "Estado", "Deuda"
+            };
+            model.setColumnIdentifiers(headers);
+            table.setModel(model);
+            table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
+            scrollPane.setViewportView(table);
+
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int ind = table.getSelectedRow();
+                    if (ind != -1) {
+                        String codigo = table.getValueAt(ind, 0).toString();
+                        selected = Altice.getInstance().buscarClienteById(codigo);
+
+                        btnModificar.setEnabled(true);
+                        btnDesactivar.setEnabled(true);
+                        btnDetalles.setEnabled(true);
+                        btnPagar.setEnabled(true);
+                    }
+                }
+            });
         }
 
         // ====================== CAMPOS DE BÚSQUEDA ======================
@@ -141,7 +135,6 @@ public class GestionClientes extends JDialog {
             txtCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             txtCedula.setBounds(12, 110, 232, 24);
             contentPanel.add(txtCedula);
-            txtCedula.setColumns(10);
         }
         {
             txtNombre = new JTextField();
@@ -152,7 +145,6 @@ public class GestionClientes extends JDialog {
             txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             txtNombre.setBounds(365, 110, 232, 24);
             contentPanel.add(txtNombre);
-            txtNombre.setColumns(10);
         }
         {
             btnNombre = new JButton("Buscar");
@@ -165,8 +157,8 @@ public class GestionClientes extends JDialog {
             contentPanel.add(btnNombre);
         }
         {
-            comboFiltrar = new JComboBox();
-            comboFiltrar.setModel(new DefaultComboBoxModel(new String[] {"Todos", "Personas", "Empresas", "Inactivos"}));
+            comboFiltrar = new JComboBox<>();
+            comboFiltrar.setModel(new DefaultComboBoxModel<>(new String[] {"Todos", "Personas", "Empresas", "Inactivos"}));
             comboFiltrar.setBackground(new Color(0, 0, 51));
             comboFiltrar.setForeground(Color.WHITE);
             comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -176,9 +168,9 @@ public class GestionClientes extends JDialog {
         {
             btnFiltrar = new JButton("Filtrar");
             btnFiltrar.addActionListener(new ActionListener() {
-            	public void actionPerformed(ActionEvent e) {
-            		loadClientes();
-            	}
+                public void actionPerformed(ActionEvent e) {
+                    loadClientes();
+                }
             });
             btnFiltrar.setForeground(Color.WHITE);
             btnFiltrar.setBackground(new Color(0, 0, 51));
@@ -225,17 +217,24 @@ public class GestionClientes extends JDialog {
             lblClientesPendientes.setBounds(240, 59, 216, 16);
             contentPanel.add(lblClientesPendientes);
         }
+        {
+            JLabel label = new JLabel("Clientes Pendientes: 00");
+            label.setForeground(Color.WHITE);
+            label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            label.setBounds(468, 59, 216, 16);
+            contentPanel.add(label);
+        }
 
         // ====================== BOTONES LATERALES ======================
         {
             btnAgregar = new JButton("Agregar");
             btnAgregar.addActionListener(new ActionListener() {
-            	public void actionPerformed(ActionEvent e) {
-            		RegistrarCliente registrar = new RegistrarCliente(null,false);
-            		registrar.setModal(true);
-            		registrar.setVisible(true);
-            		loadClientes();
-            	}
+                public void actionPerformed(ActionEvent e) {
+                    RegistrarCliente registrar = new RegistrarCliente(null, false);
+                    registrar.setModal(true);
+                    registrar.setVisible(true);
+                    loadClientes();
+                }
             });
             btnAgregar.setForeground(Color.WHITE);
             btnAgregar.setBackground(new Color(0, 0, 51));
@@ -245,20 +244,22 @@ public class GestionClientes extends JDialog {
             btnAgregar.setBounds(1143, 145, 97, 25);
             contentPanel.add(btnAgregar);
         }
+
         {
             btnModificar = new JButton("Modificar");
             btnModificar.addActionListener(new ActionListener() {
-            	public void actionPerformed(ActionEvent e) {
-            		RegistrarCliente modificar = new RegistrarCliente(selected,true);
-            		modificar.setModal(true);
-            		modificar.setVisible(true);
-            		loadClientes();
-            		btnModificar.setEnabled(false);
-                	btnDesactivar.setEnabled(false);
-                	btnPagar.setEnabled(false);
-                	btnDetalles.setEnabled(false);
-            		
-            	}
+                public void actionPerformed(ActionEvent e) {
+                    if (selected != null) {
+                        RegistrarCliente modificar = new RegistrarCliente(selected, true);
+                        modificar.setModal(true);
+                        modificar.setVisible(true);
+                        loadClientes();
+                        btnModificar.setEnabled(false);
+                        btnDesactivar.setEnabled(false);
+                        btnPagar.setEnabled(false);
+                        btnDetalles.setEnabled(false);
+                    }
+                }
             });
             btnModificar.setForeground(Color.WHITE);
             btnModificar.setBackground(new Color(0, 0, 51));
@@ -268,26 +269,28 @@ public class GestionClientes extends JDialog {
             btnModificar.setBounds(1143, 183, 97, 25);
             contentPanel.add(btnModificar);
         }
+
         {
             btnDesactivar = new JButton("Desactivar");
             btnDesactivar.addActionListener(new ActionListener() {
-            	public void actionPerformed(ActionEvent e) {
-            		desactivar();
-            		btnModificar.setEnabled(false);
-                	btnDesactivar.setEnabled(false);
-                	btnPagar.setEnabled(false);
-                	btnDetalles.setEnabled(false);
-                	loadClientes();
-            	}
+                public void actionPerformed(ActionEvent e) {
+                    desactivar();
+                    btnModificar.setEnabled(false);
+                    btnDesactivar.setEnabled(false);
+                    btnPagar.setEnabled(false);
+                    btnDetalles.setEnabled(false);
+                    loadClientes();
+                }
             });
             btnDesactivar.setForeground(Color.WHITE);
-            btnDesactivar.setBackground(new Color(102, 0, 0));  // Rojo oscuro como en el ejemplo
+            btnDesactivar.setBackground(new Color(102, 0, 0));
             btnDesactivar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnDesactivar.setFocusPainted(false);
             btnDesactivar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             btnDesactivar.setBounds(1143, 221, 97, 25);
             contentPanel.add(btnDesactivar);
         }
+
         {
             btnPagar = new JButton("Realizar Pago");
             btnPagar.setForeground(Color.WHITE);
@@ -298,46 +301,43 @@ public class GestionClientes extends JDialog {
             btnPagar.setBounds(1143, 302, 97, 25);
             contentPanel.add(btnPagar);
         }
+
         {
-        	JLabel label = new JLabel("Clientes Pendientes: 00");
-        	label.setForeground(Color.WHITE);
-        	label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        	label.setBounds(468, 59, 216, 16);
-        	contentPanel.add(label);
-        }
-        {
-        	btnDetalles = new JButton("Detalles");
-        	btnDetalles.addActionListener(new ActionListener() {
-        		public void actionPerformed(ActionEvent e) {
-        			DetallesCliente detalles = new DetallesCliente(selected);
-        			detalles.setModal(true);
-        			detalles.setVisible(true);
-            		btnModificar.setEnabled(false);
-                	btnDesactivar.setEnabled(false);
-                	btnPagar.setEnabled(false);
-                	btnDetalles.setEnabled(false);
-        		}
-        	});
-        	btnDetalles.setForeground(Color.WHITE);
-        	btnDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        	btnDetalles.setFocusPainted(false);
-        	btnDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-        	btnDetalles.setBackground(new Color(0, 0, 51));
-        	btnDetalles.setBounds(1143, 340, 97, 25);
-        	contentPanel.add(btnDetalles);
-        }
-        {
-        	btnCedula = new JButton("Buscar");
-        	btnCedula.setForeground(Color.WHITE);
-        	btnCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        	btnCedula.setFocusPainted(false);
-        	btnCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-        	btnCedula.setBackground(new Color(0, 0, 51));
-        	btnCedula.setBounds(256, 110, 97, 25);
-        	contentPanel.add(btnCedula);
+            btnDetalles = new JButton("Detalles");
+            btnDetalles.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (selected != null) {
+                        DetallesCliente detalles = new DetallesCliente(selected);
+                        detalles.setModal(true);
+                        detalles.setVisible(true);
+                        btnModificar.setEnabled(false);
+                        btnDesactivar.setEnabled(false);
+                        btnPagar.setEnabled(false);
+                        btnDetalles.setEnabled(false);
+                    }
+                }
+            });
+            btnDetalles.setForeground(Color.WHITE);
+            btnDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnDetalles.setFocusPainted(false);
+            btnDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnDetalles.setBackground(new Color(0, 0, 51));
+            btnDetalles.setBounds(1143, 340, 97, 25);
+            contentPanel.add(btnDetalles);
         }
 
-        // ====================== BOTONES INFERIORES (OK / CANCEL) ======================
+        {
+            btnCedula = new JButton("Buscar");
+            btnCedula.setForeground(Color.WHITE);
+            btnCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnCedula.setFocusPainted(false);
+            btnCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnCedula.setBackground(new Color(0, 0, 51));
+            btnCedula.setBounds(256, 110, 97, 25);
+            contentPanel.add(btnCedula);
+        }
+
+        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -348,42 +348,31 @@ public class GestionClientes extends JDialog {
 
             btnSalir = new JButton("Salir");
             btnSalir.addActionListener(new ActionListener() {
-            	public void actionPerformed(ActionEvent e) {
-            		dispose();
-            	}
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                }
             });
             btnSalir.setForeground(Color.WHITE);
             btnSalir.setBackground(new Color(102, 0, 0));
             btnSalir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             btnSalir.setFocusPainted(false);
-            btnSalir.setActionCommand("Cancel");
             buttonPane.add(btnSalir);
         }
-        {
-            JPanel panelTabla = new JPanel();
-            panelTabla.setBackground(new Color(102, 102, 204));
-            panelTabla.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            panelTabla.setBounds(12, 145, 1102, 496);
-            contentPanel.add(panelTabla);
-            panelTabla.setLayout(new BorderLayout(0, 0));
 
-            JScrollPane scrollPane = new JScrollPane();
-            panelTabla.add(scrollPane, BorderLayout.CENTER);
-
-        }
         loadClientes();
-        if(selected == null)
-        {
-        	btnModificar.setEnabled(false);
-        	btnDesactivar.setEnabled(false);
-        	btnPagar.setEnabled(false);
-        	btnDetalles.setEnabled(false);
+
+        if (selected == null) {
+            btnModificar.setEnabled(false);
+            btnDesactivar.setEnabled(false);
+            btnPagar.setEnabled(false);
+            btnDetalles.setEnabled(false);
         }
     }
-    
+
+    // ====================== MÉTODO loadClientes ACTUALIZADO ======================
     public static void loadClientes() {
         model.setRowCount(0);
-        row = new Object[table.getColumnCount()];
+        row = new Object[table.getColumnCount()];   // Reinicializamos cada vez
 
         String filtro = comboFiltrar.getSelectedItem().toString();
 
@@ -392,13 +381,17 @@ public class GestionClientes extends JDialog {
 
             switch (filtro) {
                 case "Todos":
-                    incluir = cli.getUsuario().isActivo();
+                    incluir = cli.getUsuario() != null && cli.getUsuario().isActivo();
                     break;
                 case "Personas":
-                    incluir = !cli.getUsuario().isEmpresa() && cli.getUsuario().isActivo();
+                    incluir = cli.getUsuario() != null && 
+                              !cli.getUsuario().isEmpresa() && 
+                              cli.getUsuario().isActivo();
                     break;
                 case "Empresas":
-                    incluir = cli.getUsuario().isEmpresa() && cli.getUsuario().isActivo();
+                    incluir = cli.getUsuario() != null && 
+                              cli.getUsuario().isEmpresa() && 
+                              cli.getUsuario().isActivo();
                     break;
                 case "Inactivos":
                     incluir = cli.getUsuario() != null && !cli.getUsuario().isActivo();
@@ -406,16 +399,35 @@ public class GestionClientes extends JDialog {
             }
 
             if (incluir) {
+                float deuda = calcularDeudaCliente(cli);
+
                 row[0] = cli.getCodigo();
                 row[1] = cli.getCedula();
                 row[2] = cli.getNombre();
                 row[3] = cli.getTelefono();
                 row[4] = cli.getEmail();
-                row[5] = cli.getUsuario().isEmpresa()? "EMPRESA" : "PERSONA";
-                row[6] = Altice.getInstance().tieneDeuda(cli.getCodigo());
+                row[5] = (cli.getUsuario() != null && cli.getUsuario().isEmpresa()) ? "EMPRESA" : "PERSONA";
+                row[6] = (cli.getUsuario() != null && cli.getUsuario().isActivo()) ? "Activo" : "Inactivo";
+                row[7] = String.format("RD$ %.2f", deuda);
+
                 model.addRow(row);
             }
         }
+    }
+
+    private static float calcularDeudaCliente(Cliente cli) {
+        if (cli == null || cli.getPagos() == null) {
+            return 0.0f;
+        }
+
+        float totalDeuda = 0.0f;
+
+        for (Pago p : cli.getPagos()) {
+            if (p.isPendiente()) {
+                totalDeuda += p.getMonto();
+            }
+        }
+        return totalDeuda;
     }
 
     private void desactivar() {
@@ -425,11 +437,11 @@ public class GestionClientes extends JDialog {
                     "Desactivar Cliente",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
-
             if (opcion != JOptionPane.YES_OPTION) return;
 
             Altice.getInstance().desactivarCliente(selected.getCodigo());
             JOptionPane.showMessageDialog(this, "Cliente desactivado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            loadClientes();
         }
     }
 }

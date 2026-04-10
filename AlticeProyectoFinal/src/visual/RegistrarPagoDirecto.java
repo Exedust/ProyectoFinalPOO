@@ -1,263 +1,313 @@
 package visual;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
-
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JTextPane;
-import javax.swing.JCheckBox;
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.UIManager;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import logico.Altice;
+import logico.Pago;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 public class RegistrarPagoDirecto extends JDialog {
 
-	private final JPanel contentPanel = new JPanel();
-	private JButton cancelButton;
-	private JButton okButton;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField;
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_7;
+    private final JPanel contentPanel = new JPanel();
+    private Pago miPago;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			RegistrarPagoDirecto dialog = new RegistrarPagoDirecto();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    private JTextField txtCedula;
+    private JTextField txtNombre;
+    private JTextField txtTelefono;
+    private JTextField txtCorreo;
+    private JTextField txtDireccion;
+    private JTextField txtCodigoContrato;
+    private JTextField txtPlan;
+    private JTextField txtMonto;
 
-	/**
-	 * Create the dialog.
-	 */
-	public RegistrarPagoDirecto() {
-		setBackground(new Color(0, 0, 51));
-		setTitle("Registrar Pago");
-		setResizable(false);
-		setBounds(100, 100, 629, 647);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBackground(new Color(0, 0, 51));
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
-		{
-			JPanel panel = new JPanel();
-			panel.setBackground(new Color(0, 0, 51));
-			panel.setBorder(new LineBorder(Color.WHITE));
-			contentPanel.add(panel, BorderLayout.CENTER);
-			panel.setLayout(null);
-			{
-				JPanel panel_1 = new JPanel();
-				panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Cliente", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-				panel_1.setBackground(new Color(102, 102, 204));
-				panel_1.setForeground(new Color(102, 102, 204));
-				panel_1.setBounds(12, 13, 574, 255);
-				panel.add(panel_1);
-				panel_1.setLayout(null);
-				{
-					JLabel lblNewLabel = new JLabel("Cedula");
-					lblNewLabel.setForeground(new Color(255, 255, 255));
-					lblNewLabel.setBounds(12, 33, 56, 16);
-					panel_1.add(lblNewLabel);
-				}
-				{
-					JLabel label = new JLabel("Nombre");
-					label.setForeground(Color.WHITE);
-					label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					label.setBounds(12, 99, 56, 16);
-					panel_1.add(label);
-				}
-				{
-					textField_1 = new JTextField();
-					textField_1.setForeground(Color.WHITE);
-					textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_1.setEditable(false);
-					textField_1.setColumns(10);
-					textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_1.setBackground(new Color(60, 60, 100));
-					textField_1.setBounds(12, 128, 263, 24);
-					panel_1.add(textField_1);
-				}
-				{
-					JLabel label = new JLabel("Telefono");
-					label.setForeground(Color.WHITE);
-					label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					label.setBounds(12, 163, 56, 16);
-					panel_1.add(label);
-				}
-				{
-					textField_2 = new JTextField();
-					textField_2.setForeground(Color.WHITE);
-					textField_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_2.setEditable(false);
-					textField_2.setColumns(10);
-					textField_2.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_2.setBackground(new Color(60, 60, 100));
-					textField_2.setBounds(12, 192, 263, 24);
-					panel_1.add(textField_2);
-				}
-				{
-					JLabel label = new JLabel("Correo");
-					label.setForeground(Color.WHITE);
-					label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					label.setBounds(287, 99, 56, 16);
-					panel_1.add(label);
-				}
-				{
-					textField_3 = new JTextField();
-					textField_3.setForeground(Color.WHITE);
-					textField_3.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_3.setEditable(false);
-					textField_3.setColumns(10);
-					textField_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_3.setBackground(new Color(60, 60, 100));
-					textField_3.setBounds(287, 128, 263, 24);
-					panel_1.add(textField_3);
-				}
-				{
-					JLabel label = new JLabel("Direccion");
-					label.setForeground(Color.WHITE);
-					label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					label.setBounds(287, 33, 56, 16);
-					panel_1.add(label);
-				}
-				{
-					textField_4 = new JTextField();
-					textField_4.setForeground(Color.WHITE);
-					textField_4.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_4.setEditable(false);
-					textField_4.setColumns(10);
-					textField_4.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_4.setBackground(new Color(60, 60, 100));
-					textField_4.setBounds(287, 62, 263, 24);
-					panel_1.add(textField_4);
-				}
-				{
-					textField = new JTextField();
-					textField.setForeground(Color.WHITE);
-					textField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField.setEditable(false);
-					textField.setColumns(10);
-					textField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField.setBackground(new Color(60, 60, 100));
-					textField.setBounds(12, 62, 263, 24);
-					panel_1.add(textField);
-				}
-			}
-			{
-				JPanel panel_1 = new JPanel();
-				panel_1.setLayout(null);
-				panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Contrato", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-				panel_1.setBackground(new Color(102, 102, 204));
-				panel_1.setBounds(12, 281, 574, 122);
-				panel.add(panel_1);
-				{
-					JLabel lblNewLabel_1 = new JLabel("C\u00F3digo");
-					lblNewLabel_1.setForeground(new Color(255, 255, 255));
-					lblNewLabel_1.setBounds(12, 30, 56, 16);
-					panel_1.add(lblNewLabel_1);
-				}
-				{
-					textField_5 = new JTextField();
-					textField_5.setForeground(Color.WHITE);
-					textField_5.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_5.setEditable(false);
-					textField_5.setColumns(10);
-					textField_5.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_5.setBackground(new Color(60, 60, 100));
-					textField_5.setBounds(12, 59, 102, 24);
-					panel_1.add(textField_5);
-				}
-				{
-					JLabel lblPlan = new JLabel("Plan");
-					lblPlan.setForeground(Color.WHITE);
-					lblPlan.setBounds(126, 30, 56, 16);
-					panel_1.add(lblPlan);
-				}
-				{
-					textField_6 = new JTextField();
-					textField_6.setForeground(Color.WHITE);
-					textField_6.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_6.setEditable(false);
-					textField_6.setColumns(10);
-					textField_6.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_6.setBackground(new Color(60, 60, 100));
-					textField_6.setBounds(126, 59, 424, 24);
-					panel_1.add(textField_6);
-				}
-			}
-			{
-				JPanel panel_1 = new JPanel();
-				panel_1.setLayout(null);
-				panel_1.setBorder(new LineBorder(new Color(255, 255, 255)));
-				panel_1.setBackground(new Color(102, 102, 204));
-				panel_1.setBounds(12, 416, 574, 108);
-				panel.add(panel_1);
-				{
-					JLabel lblMonto = new JLabel("Monto");
-					lblMonto.setFont(new Font("Tahoma", Font.BOLD, 15));
-					lblMonto.setForeground(Color.WHITE);
-					lblMonto.setBounds(259, 13, 56, 16);
-					panel_1.add(lblMonto);
-				}
-				{
-					textField_7 = new JTextField();
-					textField_7.setForeground(Color.WHITE);
-					textField_7.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-					textField_7.setEditable(false);
-					textField_7.setColumns(10);
-					textField_7.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-					textField_7.setBackground(new Color(60, 60, 100));
-					textField_7.setBounds(225, 42, 123, 39);
-					panel_1.add(textField_7);
-				}
-			}
-		}
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(153, 153, 255)));
-			buttonPane.setBackground(new Color(0, 0, 51));
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				okButton = new JButton("OK");
-				okButton.setForeground(Color.WHITE);
-				okButton.setBackground(new Color(0, 0, 51));
-				okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-				okButton.setFocusPainted(false);
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				cancelButton = new JButton("Cancel");
-				cancelButton.setForeground(Color.WHITE);
-				cancelButton.setBackground(new Color(102, 0, 0));
-				cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-				cancelButton.setFocusPainted(false);
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
-		}
-	}
+    private JButton btnRealizar;
+    private JButton btnCancelar;
+
+    public static void main(String[] args) {
+        try {
+            RegistrarPagoDirecto dialog = new RegistrarPagoDirecto(null);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public RegistrarPagoDirecto(Pago pago) {
+        miPago = pago;
+
+        setTitle("Realizar Pago");
+        setResizable(false);
+        setBounds(100, 100, 629, 647);
+        setLocationRelativeTo(null);
+
+        getContentPane().setBackground(new Color(0, 0, 51));
+        getContentPane().setLayout(new BorderLayout());
+
+        contentPanel.setBackground(new Color(0, 0, 51));
+        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        getContentPane().add(contentPanel, BorderLayout.CENTER);
+        contentPanel.setLayout(new BorderLayout(0, 0));
+
+        {
+            JPanel panel = new JPanel();
+            panel.setBackground(new Color(0, 0, 51));
+            panel.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            contentPanel.add(panel, BorderLayout.CENTER);
+            panel.setLayout(null);
+
+            // ====================== PANEL CLIENTE ======================
+            {
+                JPanel panelCliente = new JPanel();
+                panelCliente.setLayout(null);
+                panelCliente.setBackground(new Color(102, 102, 204));
+                panelCliente.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
+                        "Datos del Cliente", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+                panelCliente.setBounds(12, 13, 574, 255);
+                panel.add(panelCliente);
+
+                JLabel lblCedula = new JLabel("Cédula");
+                lblCedula.setForeground(Color.WHITE);
+                lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblCedula.setBounds(12, 33, 56, 16);
+                panelCliente.add(lblCedula);
+
+                txtCedula = new JTextField();
+                txtCedula.setEditable(false);
+                txtCedula.setBackground(new Color(0, 0, 51));
+                txtCedula.setForeground(Color.WHITE);
+                txtCedula.setCaretColor(Color.WHITE);
+                txtCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                txtCedula.setBounds(12, 62, 263, 24);
+                panelCliente.add(txtCedula);
+
+                JLabel lblNombre = new JLabel("Nombre");
+                lblNombre.setForeground(Color.WHITE);
+                lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblNombre.setBounds(12, 99, 56, 16);
+                panelCliente.add(lblNombre);
+
+                txtNombre = new JTextField();
+                txtNombre.setEditable(false);
+                txtNombre.setBackground(new Color(0, 0, 51));
+                txtNombre.setForeground(Color.WHITE);
+                txtNombre.setCaretColor(Color.WHITE);
+                txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                txtNombre.setBounds(12, 128, 263, 24);
+                panelCliente.add(txtNombre);
+
+                JLabel lblTelefono = new JLabel("Teléfono");
+                lblTelefono.setForeground(Color.WHITE);
+                lblTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblTelefono.setBounds(12, 163, 56, 16);
+                panelCliente.add(lblTelefono);
+
+                txtTelefono = new JTextField();
+                txtTelefono.setEditable(false);
+                txtTelefono.setBackground(new Color(0, 0, 51));
+                txtTelefono.setForeground(Color.WHITE);
+                txtTelefono.setCaretColor(Color.WHITE);
+                txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtTelefono.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                txtTelefono.setBounds(12, 192, 263, 24);
+                panelCliente.add(txtTelefono);
+
+                JLabel lblCorreo = new JLabel("Correo");
+                lblCorreo.setForeground(Color.WHITE);
+                lblCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblCorreo.setBounds(287, 99, 56, 16);
+                panelCliente.add(lblCorreo);
+
+                txtCorreo = new JTextField();
+                txtCorreo.setEditable(false);
+                txtCorreo.setBackground(new Color(0, 0, 51));
+                txtCorreo.setForeground(Color.WHITE);
+                txtCorreo.setCaretColor(Color.WHITE);
+                txtCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtCorreo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                txtCorreo.setBounds(287, 128, 263, 24);
+                panelCliente.add(txtCorreo);
+
+                JLabel lblDireccion = new JLabel("Dirección");
+                lblDireccion.setForeground(Color.WHITE);
+                lblDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblDireccion.setBounds(287, 33, 56, 16);
+                panelCliente.add(lblDireccion);
+
+                txtDireccion = new JTextField();
+                txtDireccion.setEditable(false);
+                txtDireccion.setBackground(new Color(0, 0, 51));
+                txtDireccion.setForeground(Color.WHITE);
+                txtDireccion.setCaretColor(Color.WHITE);
+                txtDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtDireccion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                txtDireccion.setBounds(287, 62, 263, 24);
+                panelCliente.add(txtDireccion);
+            }
+
+            // ====================== PANEL CONTRATO ======================
+            {
+                JPanel panelContrato = new JPanel();
+                panelContrato.setLayout(null);
+                panelContrato.setBackground(new Color(102, 102, 204));
+                panelContrato.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
+                        "Contrato", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+                panelContrato.setBounds(12, 281, 574, 122);
+                panel.add(panelContrato);
+
+                JLabel lblCodigoContrato = new JLabel("Código Contrato");
+                lblCodigoContrato.setForeground(Color.WHITE);
+                lblCodigoContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblCodigoContrato.setBounds(12, 30, 100, 16);
+                panelContrato.add(lblCodigoContrato);
+
+                txtCodigoContrato = new JTextField();
+                txtCodigoContrato.setEditable(false);
+                txtCodigoContrato.setBackground(new Color(0, 0, 51));
+                txtCodigoContrato.setForeground(Color.WHITE);
+                txtCodigoContrato.setCaretColor(Color.WHITE);
+                txtCodigoContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtCodigoContrato.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                txtCodigoContrato.setBounds(12, 59, 150, 24);
+                panelContrato.add(txtCodigoContrato);
+
+                JLabel lblPlan = new JLabel("Plan");
+                lblPlan.setForeground(Color.WHITE);
+                lblPlan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblPlan.setBounds(180, 30, 56, 16);
+                panelContrato.add(lblPlan);
+
+                txtPlan = new JTextField();
+                txtPlan.setEditable(false);
+                txtPlan.setBackground(new Color(0, 0, 51));
+                txtPlan.setForeground(Color.WHITE);
+                txtPlan.setCaretColor(Color.WHITE);
+                txtPlan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtPlan.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                txtPlan.setBounds(180, 59, 370, 24);
+                panelContrato.add(txtPlan);
+            }
+
+            // ====================== PANEL MONTO ======================
+            {
+                JPanel panelMonto = new JPanel();
+                panelMonto.setLayout(null);
+                panelMonto.setBackground(new Color(102, 102, 204));
+                panelMonto.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                panelMonto.setBounds(12, 416, 574, 108);
+                panel.add(panelMonto);
+
+                JLabel lblMonto = new JLabel("Monto a Pagar");
+                lblMonto.setFont(new Font("Segoe UI", Font.BOLD, 15));
+                lblMonto.setForeground(Color.WHITE);
+                lblMonto.setBounds(240, 13, 120, 16);
+                panelMonto.add(lblMonto);
+
+                txtMonto = new JTextField();
+                txtMonto.setEditable(false);
+                txtMonto.setHorizontalAlignment(JTextField.CENTER);
+                txtMonto.setBackground(new Color(0, 0, 51));
+                txtMonto.setForeground(Color.WHITE);
+                txtMonto.setCaretColor(Color.WHITE);
+                txtMonto.setFont(new Font("Segoe UI", Font.BOLD, 18));
+                txtMonto.setBorder(new LineBorder(new Color(150, 150, 220), 2, true));
+                txtMonto.setBounds(225, 42, 150, 45);
+                panelMonto.add(txtMonto);
+            }
+        }
+
+        // ====================== BOTONES INFERIORES ======================
+        {
+            JPanel buttonPane = new JPanel();
+            buttonPane.setBackground(new Color(0, 0, 51));
+            buttonPane.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "",
+                    TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+            buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+            getContentPane().add(buttonPane, BorderLayout.SOUTH);
+
+            btnRealizar = new JButton("Realizar Pago");
+            btnRealizar.setForeground(Color.WHITE);
+            btnRealizar.setBackground(new Color(0, 0, 51));
+            btnRealizar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btnRealizar.setFocusPainted(false);
+            btnRealizar.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    realizarPago();
+                }
+            });
+            buttonPane.add(btnRealizar);
+            getRootPane().setDefaultButton(btnRealizar);
+
+            btnCancelar = new JButton("Cancelar");
+            btnCancelar.setForeground(Color.WHITE);
+            btnCancelar.setBackground(new Color(102, 0, 0));
+            btnCancelar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btnCancelar.setFocusPainted(false);
+            btnCancelar.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                }
+            });
+            buttonPane.add(btnCancelar);
+        }
+
+        // Cargar datos si se pasó un pago
+        if (miPago != null) {
+            loadPago(miPago);
+        }
+    }
+
+    // ====================== MÉTODO LOAD PAGO ======================
+    private void loadPago(Pago pago) {
+        if (pago == null) return;
+
+        txtCedula.setText(pago.getCliente().getCedula());
+        txtNombre.setText(pago.getCliente().getNombre());
+        txtTelefono.setText(pago.getCliente().getTelefono());
+        txtCorreo.setText(pago.getCliente().getEmail());
+        txtDireccion.setText(pago.getCliente().getDireccion());
+
+        txtCodigoContrato.setText(pago.getContrato() != null ? pago.getContrato().getCodigo() : "N/A");
+        txtPlan.setText(pago.getContrato() != null && pago.getContrato().getPlan() != null 
+                        ? pago.getContrato().getPlan().getNombre() : "N/A");
+
+        txtMonto.setText(String.format("RD$ %.2f", pago.getMonto()));
+    }
+
+    // ====================== REALIZAR PAGO ======================
+    private void realizarPago() {
+        if (miPago == null) {
+            JOptionPane.showMessageDialog(this, "No hay pago seleccionado.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea realizar este pago por RD$ " + String.format("%.2f", miPago.getMonto()) + "?",
+                "Confirmar Pago",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) return;
+
+        if (Altice.getInstance().realizarPago(miPago.getCodigo())) {
+            JOptionPane.showMessageDialog(this, "Pago realizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo realizar el pago.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }

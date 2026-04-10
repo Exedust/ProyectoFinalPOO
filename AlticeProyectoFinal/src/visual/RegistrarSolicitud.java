@@ -78,8 +78,7 @@ public class RegistrarSolicitud extends JDialog {
             {
                 JPanel panelCliente = new JPanel();
                 panelCliente.setBackground(new Color(102, 102, 204));
-                panelCliente.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
-                        "Datos del Cliente", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+                panelCliente.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
                 panelCliente.setBounds(12, 13, 574, 222);
                 panel.add(panelCliente);
                 panelCliente.setLayout(null);
@@ -233,7 +232,7 @@ public class RegistrarSolicitud extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            okButton = new JButton("OK");
+            okButton = new JButton("Aceptar");
             okButton.setForeground(Color.WHITE);
             okButton.setBackground(new Color(0, 0, 51));
             okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -267,7 +266,7 @@ public class RegistrarSolicitud extends JDialog {
     private void loadSolicitud() {
         if (miSolicitud == null) return;
 
-        Cliente cliente = miSolicitud.getCliente();
+        Persona cliente = miSolicitud.getCliente();
 
         txtCedula.setText(cliente != null ? cliente.getCedula() : "");
         txtNombre.setText(cliente != null ? cliente.getNombre() : "");
@@ -275,9 +274,9 @@ public class RegistrarSolicitud extends JDialog {
         txtCorreo.setText(cliente != null ? cliente.getEmail() : "");
         txtDireccion.setText(cliente != null ? cliente.getDireccion() : "");
 
-        txtCedula.setEditable(false);           // No se puede cambiar el cliente
+        txtCedula.setEditable(false);           
         comboTipo.setSelectedItem(miSolicitud.getTipo());
-        comboTipo.setEnabled(false);            // No se puede cambiar el tipo
+        comboTipo.setEnabled(false);            
         txtDescripcion.setText(miSolicitud.getDescripcion());
     }
 
@@ -327,10 +326,7 @@ public class RegistrarSolicitud extends JDialog {
         String descripcion = txtDescripcion.getText().trim();
 
         if (miSolicitud != null) {
-            // ==================== MODO MODIFICAR ====================
             miSolicitud.setDescripcion(descripcion);
-            // Tipo y cliente no se cambian en modificar
-
             if (Altice.getInstance().modificarSolicitud(miSolicitud)) {
                 JOptionPane.showMessageDialog(this, "Solicitud modificada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
@@ -338,20 +334,20 @@ public class RegistrarSolicitud extends JDialog {
                 JOptionPane.showMessageDialog(this, "Error al modificar la solicitud", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            // ==================== MODO REGISTRAR ====================
             Cliente cliente = (Cliente) Altice.getInstance().buscarPersonaByCedula(txtCedula.getText().trim());
             if (cliente == null) {
                 JOptionPane.showMessageDialog(this, "Cliente no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            String codigo = "SOL-" + String.format("%04d", Altice.getInstance().getGenSolicitudid() + 1);
+            int nuevoId = Altice.getGenSolicitudid() + 1;
+            String codigo = "SOL-" + String.format("%05d", nuevoId);
 
             Solicitud nuevaSolicitud = new Solicitud(codigo, cliente, tipo, descripcion);
 
             if (Altice.getInstance().registrarSolicitud(nuevaSolicitud)) {
                 JOptionPane.showMessageDialog(this, "Solicitud registrada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                
+               
                 if (cerrarAlRegistrar) {
                     dispose();
                 } else {

@@ -183,6 +183,32 @@ public class PrincipalAdmin extends JFrame {
 		mnPagos.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		menuBar.add(mnPagos);
 		
+		JMenuItem menuItem_4 = new JMenuItem("Registrar");
+		menuItem_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RegistrarPago pago = new RegistrarPago();
+				pago.setModal(true);
+				pago.setVisible(true);
+			}
+		});
+		menuItem_4.setForeground(Color.WHITE);
+		menuItem_4.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuItem_4.setBackground(new Color(0, 0, 102));
+		mnPagos.add(menuItem_4);
+		
+		JMenuItem menuItem_5 = new JMenuItem("Listar");
+		menuItem_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GestionPagos gestion = new GestionPagos();
+				gestion.setModal(true);
+				gestion.setVisible(true);
+			}
+		});
+		menuItem_5.setForeground(Color.WHITE);
+		menuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		menuItem_5.setBackground(new Color(0, 0, 102));
+		mnPagos.add(menuItem_5);
+		
 		JMenu mnPlanes = new JMenu("Planes");
 		mnPlanes.setForeground(Color.WHITE);
 		mnPlanes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -469,6 +495,13 @@ public class PrincipalAdmin extends JFrame {
         iconPagos.setIcon(new ImageIcon(pagosImage));
         cardPagos.add(iconPagos, BorderLayout.CENTER);
         JButton btnGestionarPagos = new JButton("Gestionar");
+        btnGestionarPagos.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		GestionPagos gestion = new GestionPagos();
+        		gestion.setModal(true);
+        		gestion.setVisible(true);
+        	}
+        });
         btnGestionarPagos.setForeground(Color.WHITE);
         btnGestionarPagos.setBackground(new Color(0, 0, 51));
         btnGestionarPagos.setFont(new Font("Segoe UI", Font.PLAIN, 14));

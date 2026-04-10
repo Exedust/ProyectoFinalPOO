@@ -4,27 +4,48 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import logico.Altice;
+import logico.Pago;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Component;
 
 public class GestionPagos extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-    private JTextField textField;
-    private JTextField textField_1;
 
-    /**
-     * Launch the application.
-     */
+    private JTable table;
+    private DefaultTableModel model;
+    private Object[] row;
+    private Pago selected = null;
+
+    private JButton btnRealizarPago;
+    private JButton btnVerContrato;
+    private JButton btnCancelarPago;
+    private JButton btnSalir;
+
+    private JTextField txtCedula;
+    private JTextField txtIDContrato;
+    private JButton btnBuscar;
+
+    private JComboBox<String> comboFiltrar;
+
     public static void main(String[] args) {
         try {
             GestionPagos dialog = new GestionPagos();
@@ -35,17 +56,15 @@ public class GestionPagos extends JDialog {
         }
     }
 
-    /**
-     * Create the dialog.
-     */
     public GestionPagos() {
         setTitle("Gestionar Pagos");
         setResizable(false);
         setBounds(100, 100, 1280, 770);
-        
+        setLocationRelativeTo(null);
+
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
-        
+
         contentPanel.setBackground(new Color(0, 0, 51));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -58,141 +77,197 @@ public class GestionPagos extends JDialog {
             panel.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             panel.setBounds(12, 145, 1102, 496);
             contentPanel.add(panel);
-            // Aquí iría tu JTable más adelante
+            panel.setLayout(new BorderLayout(0, 0));
+
+            JScrollPane scrollPane = new JScrollPane();
+            panel.add(scrollPane, BorderLayout.CENTER);
+
+            table = new JTable();
+            table.setFillsViewportHeight(true);
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+
+            model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+
+            String[] headers = {"Código Pago", "Cliente", "Cédula", "Contrato", "Monto", "Fecha Registro", "Fecha Pago", "Estado"};
+            model.setColumnIdentifiers(headers);
+            table.setModel(model);
+            table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
+            scrollPane.setViewportView(table);
+
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int ind = table.getSelectedRow();
+                    if (ind != -1) {
+                        String codigo = table.getValueAt(ind, 0).toString();
+                        selected = Altice.getInstance().buscarPagoByCodigo(codigo);
+
+                        btnRealizarPago.setEnabled(selected != null && selected.isPendiente());
+                        btnCancelarPago.setEnabled(selected != null);
+                        btnVerContrato.setEnabled(selected != null);
+                    }
+                }
+            });
         }
 
         // ====================== CAMPOS DE BÚSQUEDA ======================
         {
-            textField = new JTextField();
-            textField.setBackground(new Color(0, 0, 51));
-            textField.setForeground(Color.WHITE);
-            textField.setCaretColor(Color.WHITE);
-            textField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            textField.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            textField.setBounds(12, 110, 232, 24);
-            contentPanel.add(textField);
-            textField.setColumns(10);
+            txtCedula = new JTextField();
+            txtCedula.setBackground(new Color(0, 0, 51));
+            txtCedula.setForeground(Color.WHITE);
+            txtCedula.setCaretColor(Color.WHITE);
+            txtCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            txtCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            txtCedula.setBounds(12, 110, 232, 24);
+            contentPanel.add(txtCedula);
         }
         {
-            textField_1 = new JTextField();
-            textField_1.setBackground(new Color(0, 0, 51));
-            textField_1.setForeground(Color.WHITE);
-            textField_1.setCaretColor(Color.WHITE);
-            textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            textField_1.setBounds(256, 110, 232, 24);
-            contentPanel.add(textField_1);
-            textField_1.setColumns(10);
+            txtIDContrato = new JTextField();
+            txtIDContrato.setBackground(new Color(0, 0, 51));
+            txtIDContrato.setForeground(Color.WHITE);
+            txtIDContrato.setCaretColor(Color.WHITE);
+            txtIDContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            txtIDContrato.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            txtIDContrato.setBounds(256, 110, 232, 24);
+            contentPanel.add(txtIDContrato);
         }
         {
-            JButton btnNewButton = new JButton("Buscar");
-            btnNewButton.setForeground(Color.WHITE);
-            btnNewButton.setBackground(new Color(0, 0, 51));
-            btnNewButton.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton.setFocusPainted(false);
-            btnNewButton.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton.setBounds(500, 109, 97, 25);
-            contentPanel.add(btnNewButton);
-        }
-        {
-            JComboBox comboBox = new JComboBox();
-            comboBox.setBackground(new Color(0, 0, 51));
-            comboBox.setForeground(Color.WHITE);
-            comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboBox.setBounds(797, 110, 208, 24);
-            contentPanel.add(comboBox);
-        }
-        {
-            JButton btnNewButton_1 = new JButton("Filtrar");
-            btnNewButton_1.setForeground(Color.WHITE);
-            btnNewButton_1.setBackground(new Color(0, 0, 51));
-            btnNewButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_1.setFocusPainted(false);
-            btnNewButton_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_1.setBounds(1017, 110, 97, 25);
-            contentPanel.add(btnNewButton_1);
+            btnBuscar = new JButton("Buscar");
+            btnBuscar.setForeground(Color.WHITE);
+            btnBuscar.setBackground(new Color(0, 0, 51));
+            btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnBuscar.setFocusPainted(false);
+            btnBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnBuscar.setBounds(500, 110, 97, 25);
+            contentPanel.add(btnBuscar);
         }
 
-        // ====================== ETIQUETAS ======================
+        // ====================== FILTRO ======================
         {
-            JLabel lblNewLabel = new JLabel("Cedula");
-            lblNewLabel.setForeground(Color.WHITE);
-            lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNewLabel.setBounds(12, 88, 56, 16);
-            contentPanel.add(lblNewLabel);
+            comboFiltrar = new JComboBox<>();
+            comboFiltrar.setBackground(new Color(0, 0, 51));
+            comboFiltrar.setForeground(Color.WHITE);
+            comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            comboFiltrar.setBounds(797, 110, 208, 24);
+            comboFiltrar.addItem("Todos");
+            comboFiltrar.addItem("Pendientes");
+            comboFiltrar.addItem("Realizados");
+            contentPanel.add(comboFiltrar);
         }
         {
-            JLabel lblNewLabel_1 = new JLabel("ID Contrato");
-            lblNewLabel_1.setForeground(Color.WHITE);
-            lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNewLabel_1.setBounds(256, 88, 97, 16);
-            contentPanel.add(lblNewLabel_1);
+            JButton btnFiltrar = new JButton("Filtrar");
+            btnFiltrar.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    loadPagos();
+                }
+            });
+            btnFiltrar.setForeground(Color.WHITE);
+            btnFiltrar.setBackground(new Color(0, 0, 51));
+            btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnFiltrar.setFocusPainted(false);
+            btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnFiltrar.setBounds(1017, 110, 97, 25);
+            contentPanel.add(btnFiltrar);
+        }
+
+        // ====================== CONTADORES ======================
+        {
+            JLabel lblPagosRegistrados = new JLabel("Pagos registrados: 00");
+            lblPagosRegistrados.setForeground(Color.WHITE);
+            lblPagosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblPagosRegistrados.setBounds(12, 32, 216, 16);
+            contentPanel.add(lblPagosRegistrados);
         }
         {
-            JLabel lblComercialesRegistrados = new JLabel("Pagos Pendientes: 00");
-            lblComercialesRegistrados.setForeground(Color.WHITE);
-            lblComercialesRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblComercialesRegistrados.setBounds(12, 59, 216, 16);
-            contentPanel.add(lblComercialesRegistrados);
+            JLabel lblPagosPendientes = new JLabel("Pagos pendientes: 00");
+            lblPagosPendientes.setForeground(Color.WHITE);
+            lblPagosPendientes.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblPagosPendientes.setBounds(12, 59, 216, 16);
+            contentPanel.add(lblPagosPendientes);
         }
         {
-            JLabel lblContratosRegistrados = new JLabel("Pagos Registrados: 00");
-            lblContratosRegistrados.setForeground(Color.WHITE);
-            lblContratosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblContratosRegistrados.setBounds(12, 32, 216, 16);
-            contentPanel.add(lblContratosRegistrados);
+            JLabel lblPagosRealizados = new JLabel("Pagos realizados: 00");
+            lblPagosRealizados.setForeground(Color.WHITE);
+            lblPagosRealizados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblPagosRealizados.setBounds(240, 59, 216, 16);
+            contentPanel.add(lblPagosRealizados);
+        }
+        {
+            JLabel lblMontoPendiente = new JLabel("Monto pendiente: RD$ 0.00");
+            lblMontoPendiente.setForeground(Color.WHITE);
+            lblMontoPendiente.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblMontoPendiente.setBounds(468, 59, 216, 16);
+            contentPanel.add(lblMontoPendiente);
         }
 
         // ====================== BOTONES LATERALES ======================
         {
-            JButton btnNewButton_2 = new JButton("Realizar Pago");
-            btnNewButton_2.addActionListener(new ActionListener() {
-            	public void actionPerformed(ActionEvent e) {
-            	}
+            btnRealizarPago = new JButton("Realizar Pago");
+            btnRealizarPago.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (selected != null && selected.isPendiente()) {
+                    	RegistrarPagoDirecto pagar = new RegistrarPagoDirecto(selected);
+                    	pagar.setModal(true);
+                    	pagar.setVisible(true);
+                    	loadPagos();
+                        }
+                    }
             });
-            btnNewButton_2.setForeground(Color.WHITE);
-            btnNewButton_2.setBackground(new Color(0, 0, 51));
-            btnNewButton_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnNewButton_2.setFocusPainted(false);
-            btnNewButton_2.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnNewButton_2.setBounds(1149, 578, 97, 25);
-            contentPanel.add(btnNewButton_2);
-        }
-        {
-            JButton btnModificar = new JButton("Ver Contrato");
-            btnModificar.setForeground(Color.WHITE);
-            btnModificar.setBackground(new Color(0, 0, 51));
-            btnModificar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnModificar.setFocusPainted(false);
-            btnModificar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnModificar.setBounds(1149, 540, 97, 25);
-            contentPanel.add(btnModificar);
-        }
-        {
-            JButton btnDesactivar = new JButton("Cancelar Pago");
-            btnDesactivar.setForeground(Color.WHITE);
-            btnDesactivar.setBackground(new Color(102, 0, 0));  // Rojo oscuro como en el ejemplo
-            btnDesactivar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnDesactivar.setFocusPainted(false);
-            btnDesactivar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnDesactivar.setBounds(1149, 616, 97, 25);
-            contentPanel.add(btnDesactivar);
-        }
-        
-        JLabel lblContratosCerrados = new JLabel("Pagos Realizados: 00");
-        lblContratosCerrados.setForeground(Color.WHITE);
-        lblContratosCerrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        lblContratosCerrados.setBounds(240, 59, 216, 16);
-        contentPanel.add(lblContratosCerrados);
-        {
-        	JLabel lblMontoPendiente = new JLabel("Monto Pendiente: 00");
-        	lblMontoPendiente.setForeground(Color.WHITE);
-        	lblMontoPendiente.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        	lblMontoPendiente.setBounds(468, 59, 216, 16);
-        	contentPanel.add(lblMontoPendiente);
+            btnRealizarPago.setForeground(Color.WHITE);
+            btnRealizarPago.setBackground(new Color(0, 0, 51));
+            btnRealizarPago.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnRealizarPago.setFocusPainted(false);
+            btnRealizarPago.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnRealizarPago.setBounds(1143, 145, 97, 25);
+            btnRealizarPago.setEnabled(false);
+            contentPanel.add(btnRealizarPago);
         }
 
-        // ====================== BOTONES INFERIORES (OK / CANCEL) ======================
+        {
+            btnVerContrato = new JButton("Ver Contrato");
+            btnVerContrato.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		if(selected != null)
+            		{
+            			DetallesContrato ver = new DetallesContrato(selected.getContrato());
+            			ver.setModal(true);
+            			ver.setVisible(true);
+            			btnRealizarPago.setEnabled(false);
+            			btnVerContrato.setEnabled(false);
+            			btnCancelarPago.setEnabled(false);
+            		}
+            		
+            	}
+            });
+            btnVerContrato.setForeground(Color.WHITE);
+            btnVerContrato.setBackground(new Color(0, 0, 51));
+            btnVerContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnVerContrato.setFocusPainted(false);
+            btnVerContrato.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnVerContrato.setBounds(1143, 183, 97, 25);
+            btnVerContrato.setEnabled(false);
+            contentPanel.add(btnVerContrato);
+        }
+
+        {
+            btnCancelarPago = new JButton("Cancelar Pago");
+            btnCancelarPago.setForeground(Color.WHITE);
+            btnCancelarPago.setBackground(new Color(102, 0, 0));
+            btnCancelarPago.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnCancelarPago.setFocusPainted(false);
+            btnCancelarPago.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnCancelarPago.setBounds(1143, 221, 97, 25);
+            btnCancelarPago.setEnabled(false);
+            contentPanel.add(btnCancelarPago);
+        }
+
+        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -201,22 +276,83 @@ public class GestionPagos extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            okButton.setActionCommand("OK");
-            buttonPane.add(okButton);
-            getRootPane().setDefaultButton(okButton);
+            btnSalir = new JButton("Salir");
+            btnSalir.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                }
+            });
+            btnSalir.setForeground(Color.WHITE);
+            btnSalir.setBackground(new Color(102, 0, 0));
+            btnSalir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btnSalir.setFocusPainted(false);
+            buttonPane.add(btnSalir);
+        }
 
-            JButton cancelButton = new JButton("Cancel");
-            cancelButton.setForeground(Color.WHITE);
-            cancelButton.setBackground(new Color(102, 0, 0));
-            cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            cancelButton.setFocusPainted(false);
-            cancelButton.setActionCommand("Cancel");
-            buttonPane.add(cancelButton);
+        loadPagos();
+    }
+
+    // ====================== MÉTODO DE CARGA ======================
+    public void loadPagos() {
+        if (model == null) return;
+        model.setRowCount(0);
+        row = new Object[table.getColumnCount()];
+
+        String filtro = comboFiltrar.getSelectedItem().toString();
+        int count = 0;
+        double montoPendienteTotal = 0.0;
+
+        for (Pago p : Altice.getInstance().getMisPagos()) {
+            boolean incluir = false;
+
+            switch (filtro) {
+                case "Todos":
+                    incluir = true;
+                    break;
+                case "Pendientes":
+                    incluir = p.isPendiente();
+                    break;
+                case "Realizados":
+                    incluir = !p.isPendiente();
+                    break;
+            }
+
+            if (incluir) {
+                if (p.isPendiente()) {
+                    montoPendienteTotal += p.getMonto();
+                }
+
+                row[0] = p.getCodigo();
+                row[1] = p.getCliente().getNombre();
+                row[2] = p.getCliente().getCedula();
+                row[3] = p.getContrato() != null ? p.getContrato().getCodigo() : "N/A";
+                row[4] = String.format("RD$ %.2f", p.getMonto());
+                row[5] = p.getFechaRegistro() != null ? p.getFechaRegistro().toString() : "";
+                row[6] = p.getFechaPago() != null ? p.getFechaPago().toString() : "";
+                row[7] = p.isPendiente() ? "Pendiente" : "Realizado";
+
+                model.addRow(row);
+                count++;
+            }
+        }
+
+        // Actualizar contadores
+        for (Component c : contentPanel.getComponents()) {
+            if (c instanceof JLabel) {
+                JLabel label = (JLabel) c;
+                String text = label.getText();
+                if (text.startsWith("Pagos registrados")) {
+                    label.setText("Pagos registrados: " + String.format("%02d", count));
+                } else if (text.startsWith("Pagos pendientes")) {
+                    label.setText("Pagos pendientes: " + String.format("%02d", 
+                        (int) Altice.getInstance().getMisPagos().stream().filter(Pago::isPendiente).count()));
+                } else if (text.startsWith("Pagos realizados")) {
+                    label.setText("Pagos realizados: " + String.format("%02d", 
+                        (int) Altice.getInstance().getMisPagos().stream().filter(p -> !p.isPendiente()).count()));
+                } else if (text.startsWith("Monto pendiente")) {
+                    label.setText("Monto pendiente: RD$ " + String.format("%.2f", montoPendienteTotal));
+                }
+            }
         }
     }
 }

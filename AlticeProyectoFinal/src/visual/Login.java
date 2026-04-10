@@ -142,9 +142,8 @@ public class Login extends JFrame {
             JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso", 
                 "Bienvenido", JOptionPane.INFORMATION_MESSAGE);
 
-            dispose(); // Cerrar login
-
-            // Abrir pantalla de Administrador
+            dispose();
+            Altice.getInstance().producirPagos();
             PrincipalAdmin principal = new PrincipalAdmin();
             principal.setVisible(true);
         } else {

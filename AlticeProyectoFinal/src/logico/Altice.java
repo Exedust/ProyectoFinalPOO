@@ -167,6 +167,39 @@ public class Altice implements Serializable{
             misUsuarios.add(usuario);
         }
     }
+	
+    public float calcularDeudaContrato(Contrato contrato) {
+        if (contrato == null || contrato.getPagos() == null) {
+            return 0.0f;
+        }
+
+        float deuda = 0.0f;
+        for (Pago p : contrato.getPagos()) {
+            if (p.isPendiente()) {
+                deuda += p.getMonto();
+            }
+        }
+        return deuda;
+    }
+    
+    public ArrayList<Pago> getPagosPendientesByCedula(String cedula) {
+        if (cedula == null || cedula.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<Pago> pendientes = new ArrayList<>();
+
+        for (Pago p : misPagos) {
+            if (p.getCliente() != null && 
+                p.getCliente().getCedula() != null &&
+                p.getCliente().getCedula().equalsIgnoreCase(cedula) &&
+                p.isPendiente()) {
+                
+                pendientes.add(p);
+            }
+        }
+        return pendientes;
+    }
 
 	public boolean registrarEmpleado(Empleado empleado) {
 	    if (empleado == null || empleado.getCodigo() == null) {
@@ -396,7 +429,7 @@ public boolean registrarSolicitud(Solicitud solicitud) {
     if (buscarSolicitudByCodigo(solicitud.getCodigo()) != null) 
         return false;
     
-    getMisSolicitudes().add(solicitud);
+    misSolicitudes.add(solicitud);
     genSolicitudid++;
     return true;
 }
@@ -408,7 +441,7 @@ public boolean modificarSolicitud(Solicitud solicitudActualizada) {
     if (indice == -1) 
         return false;
     
-    getMisSolicitudes().set(indice, solicitudActualizada);
+    misSolicitudes.set(indice, solicitudActualizada);
     return true;
 }
 //
@@ -418,7 +451,7 @@ public boolean cancelarSolicitud(String codigo) {
     int indice = buscarIndexSolicitudByCodigo(codigo);
     if (indice == -1) 
         return false;
-    Solicitud solicitud = getMisSolicitudes().get(indice);
+    Solicitud solicitud = misSolicitudes.get(indice);
     solicitud.cancelar();       
     return true;
 }
@@ -650,6 +683,7 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
         return false;
     }
     
+    
 	public static int getGenClienteid() {
 		return genClienteid;
 	}
@@ -706,10 +740,23 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
 		Altice.genServicioid = genServicioid;
 	}
 
-	public Object tieneDeuda(String codigo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public boolean tieneDeuda(String cedula) {
+        if (cedula == null || cedula.trim().isEmpty()) {
+            return false;
+        }
+
+        for (Pago pago : misPagos) {
+            if (pago.getCliente() != null && 
+                pago.getCliente().getCedula() != null &&
+                pago.getCliente().getCedula().equalsIgnoreCase(cedula) &&
+                pago.isPendiente()) {
+                
+                return true;
+            }
+        }
+
+        return false;
+    }
 	
 //	
 //PAGOS
@@ -798,19 +845,30 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
 //	
 //CONTRATO
 //
-	public boolean registrarContrato(Contrato contrato) {
-	    if (contrato == null || contrato.getCodigo() == null) {
-	        return false;
-	    }
+    public boolean registrarContrato(Contrato contrato) {
+        if (contrato == null || contrato.getCodigo() == null) {
+            return false;
+        }
+        if (buscarContratoByCodigo(contrato.getCodigo()) != null) {
+            return false;
+        }
 
-	    if (buscarContratoByCodigo(contrato.getCodigo()) != null) {
-	        return false;
-	    }
+        misContratos.add(contrato);
+        genContratoid++;
 
-	    misContratos.add(contrato);
-	    genContratoid++;                  
-	    return true;
-	}
+        Persona persona = contrato.getCliente();
+        if (persona instanceof Cliente) {
+            Cliente cliente = (Cliente) persona;
+
+            if (cliente.getContratos() == null) {
+                cliente.setContratos(new ArrayList<Contrato>());
+            }
+            
+            cliente.getContratos().add(contrato);
+        }
+
+        return true;
+    }
 
 	public boolean cerrarContrato(String codigo) {
 	    if (codigo == null) return false;
