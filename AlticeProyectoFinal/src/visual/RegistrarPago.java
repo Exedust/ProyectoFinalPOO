@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -13,27 +14,21 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import logico.Altice;
+import logico.Cliente;
+import logico.Contrato;
 import logico.Pago;
 import logico.Persona;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
-import java.util.ArrayList;
 
 public class RegistrarPago extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
-
     private JTextField txtCedula;
-    private JTextField txtNombre;
-    private JTextField txtTelefono;
-    private JTextField txtCorreo;
-    private JTextField txtDireccion;
-
+    private JComboBox<String> comboClientes;
     private JComboBox<String> comboPagos;
-
     private JButton btnBuscar;
     private JButton btnRealizar;
     private JButton btnCancelar;
@@ -49,153 +44,88 @@ public class RegistrarPago extends JDialog {
     }
 
     public RegistrarPago() {
-        setBackground(new Color(0, 0, 51));
         setTitle("Registrar Pago");
         setResizable(false);
-        setBounds(100, 100, 629, 489);
+        setBounds(100, 100, 629, 480);
         setLocationRelativeTo(null);
 
+        getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
+
         contentPanel.setBackground(new Color(0, 0, 51));
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
-        contentPanel.setLayout(new BorderLayout(0, 0));
+        contentPanel.setLayout(null);
 
+        // ====================== PANEL CLIENTE ======================
         {
-            JPanel panel = new JPanel();
-            panel.setBackground(new Color(0, 0, 51));
-            panel.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            contentPanel.add(panel, BorderLayout.CENTER);
-            panel.setLayout(null);
+            JPanel panelCliente = new JPanel();
+            panelCliente.setBackground(new Color(102, 102, 204));
+            panelCliente.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
+            panelCliente.setBounds(12, 13, 574, 200);
+            panelCliente.setLayout(null);
+            contentPanel.add(panelCliente);
 
-            // ====================== PANEL CLIENTE ======================
-            {
-                JPanel panelCliente = new JPanel();
-                panelCliente.setBackground(new Color(102, 102, 204));
-                panelCliente.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-                panelCliente.setBounds(12, 13, 574, 222);
-                panel.add(panelCliente);
-                panelCliente.setLayout(null);
+            JLabel lblCedula = new JLabel("Cédula");
+            lblCedula.setForeground(Color.WHITE);
+            lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+            lblCedula.setBounds(12, 13, 56, 16);
+            panelCliente.add(lblCedula);
 
-                JLabel lblCedula = new JLabel("Cédula");
-                lblCedula.setForeground(Color.WHITE);
-                lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                lblCedula.setBounds(12, 13, 56, 16);
-                panelCliente.add(lblCedula);
+            txtCedula = new JTextField();
+            txtCedula.setBackground(new Color(0, 0, 51));
+            txtCedula.setForeground(Color.WHITE);
+            txtCedula.setCaretColor(Color.WHITE);
+            txtCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            txtCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            txtCedula.setBounds(12, 42, 263, 24);
+            panelCliente.add(txtCedula);
 
-                txtCedula = new JTextField();
-                txtCedula.setBackground(new Color(0, 0, 51));
-                txtCedula.setForeground(Color.WHITE);
-                txtCedula.setCaretColor(Color.WHITE);
-                txtCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                txtCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                txtCedula.setBounds(12, 42, 263, 24);
-                panelCliente.add(txtCedula);
+            btnBuscar = new JButton("Buscar");
+            btnBuscar.setForeground(Color.WHITE);
+            btnBuscar.setBackground(new Color(0, 0, 51));
+            btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnBuscar.setFocusPainted(false);
+            btnBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnBuscar.setBounds(287, 42, 97, 25);
+            panelCliente.add(btnBuscar);
 
-                btnBuscar = new JButton("Buscar");
-                btnBuscar.setForeground(Color.WHITE);
-                btnBuscar.setBackground(new Color(0, 0, 51));
-                btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                btnBuscar.setFocusPainted(false);
-                btnBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                btnBuscar.setBounds(287, 42, 97, 25);
-                btnBuscar.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        buscarCliente();
-                    }
-                });
-                panelCliente.add(btnBuscar);
+            JLabel lblCliente = new JLabel("Cliente");
+            lblCliente.setForeground(Color.WHITE);
+            lblCliente.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+            lblCliente.setBounds(12, 80, 56, 16);
+            panelCliente.add(lblCliente);
 
-                JLabel lblNombre = new JLabel("Nombre");
-                lblNombre.setForeground(Color.WHITE);
-                lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                lblNombre.setBounds(12, 79, 56, 16);
-                panelCliente.add(lblNombre);
-
-                txtNombre = new JTextField();
-                txtNombre.setEditable(false);
-                txtNombre.setBackground(new Color(0, 0, 51));
-                txtNombre.setForeground(Color.WHITE);
-                txtNombre.setCaretColor(Color.WHITE);
-                txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                txtNombre.setBounds(12, 108, 263, 24);
-                panelCliente.add(txtNombre);
-
-                JLabel lblTelefono = new JLabel("Teléfono");
-                lblTelefono.setForeground(Color.WHITE);
-                lblTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                lblTelefono.setBounds(12, 143, 56, 16);
-                panelCliente.add(lblTelefono);
-
-                txtTelefono = new JTextField();
-                txtTelefono.setEditable(false);
-                txtTelefono.setBackground(new Color(0, 0, 51));
-                txtTelefono.setForeground(Color.WHITE);
-                txtTelefono.setCaretColor(Color.WHITE);
-                txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                txtTelefono.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                txtTelefono.setBounds(12, 172, 263, 24);
-                panelCliente.add(txtTelefono);
-
-                JLabel lblCorreo = new JLabel("Correo");
-                lblCorreo.setForeground(Color.WHITE);
-                lblCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                lblCorreo.setBounds(287, 79, 56, 16);
-                panelCliente.add(lblCorreo);
-
-                txtCorreo = new JTextField();
-                txtCorreo.setEditable(false);
-                txtCorreo.setBackground(new Color(0, 0, 51));
-                txtCorreo.setForeground(Color.WHITE);
-                txtCorreo.setCaretColor(Color.WHITE);
-                txtCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                txtCorreo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                txtCorreo.setBounds(287, 108, 263, 24);
-                panelCliente.add(txtCorreo);
-
-                JLabel lblDireccion = new JLabel("Dirección");
-                lblDireccion.setForeground(Color.WHITE);
-                lblDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                lblDireccion.setBounds(287, 143, 56, 16);
-                panelCliente.add(lblDireccion);
-
-                txtDireccion = new JTextField();
-                txtDireccion.setEditable(false);
-                txtDireccion.setBackground(new Color(0, 0, 51));
-                txtDireccion.setForeground(Color.WHITE);
-                txtDireccion.setCaretColor(Color.WHITE);
-                txtDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                txtDireccion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                txtDireccion.setBounds(287, 172, 263, 24);
-                panelCliente.add(txtDireccion);
-            }
-
-            // ====================== PANEL SELECCIÓN DE PAGO ======================
-            {
-                JPanel panelPago = new JPanel();
-                panelPago.setLayout(null);
-                panelPago.setBackground(new Color(102, 102, 204));
-                panelPago.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-                panelPago.setBounds(12, 248, 574, 122);
-                panel.add(panelPago);
-
-                JLabel lblSeleccionar = new JLabel("Seleccionar Pago Pendiente");
-                lblSeleccionar.setForeground(Color.WHITE);
-                lblSeleccionar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                lblSeleccionar.setBounds(200, 13, 180, 16);
-                panelPago.add(lblSeleccionar);
-
-                comboPagos = new JComboBox<>();
-                comboPagos.setBackground(new Color(0, 0, 51));
-                comboPagos.setForeground(Color.WHITE);
-                comboPagos.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                comboPagos.setBounds(19, 44, 536, 33);
-                panelPago.add(comboPagos);
-            }
+            comboClientes = new JComboBox<>();
+            comboClientes.setForeground(Color.WHITE);
+            comboClientes.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            comboClientes.setBackground(new Color(0, 0, 51));
+            comboClientes.setBounds(12, 109, 550, 40);
+            panelCliente.add(comboClientes);
         }
 
-        // ====================== BOTONES INFERIORES ======================
+        {
+            JPanel panelPago = new JPanel();
+            panelPago.setLayout(null);
+            panelPago.setBackground(new Color(102, 102, 204));
+            panelPago.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
+            panelPago.setBounds(12, 225, 574, 125);
+            contentPanel.add(panelPago);
+
+            JLabel lblSeleccionar = new JLabel("Seleccionar Pago Pendiente");
+            lblSeleccionar.setForeground(Color.WHITE);
+            lblSeleccionar.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+            lblSeleccionar.setBounds(180, 13, 200, 16);
+            panelPago.add(lblSeleccionar);
+
+            comboPagos = new JComboBox<>();
+            comboPagos.setBackground(new Color(0, 0, 51));
+            comboPagos.setForeground(Color.WHITE);
+            comboPagos.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            comboPagos.setBounds(19, 44, 536, 40);
+            panelPago.add(comboPagos);
+        }
+
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -209,29 +139,52 @@ public class RegistrarPago extends JDialog {
             btnRealizar.setBackground(new Color(0, 0, 51));
             btnRealizar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             btnRealizar.setFocusPainted(false);
-            btnRealizar.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    realizarPagoSeleccionado();
-                }
-            });
+            btnRealizar.addActionListener(e -> realizarPagoSeleccionado());
             buttonPane.add(btnRealizar);
-            getRootPane().setDefaultButton(btnRealizar);
 
             btnCancelar = new JButton("Cancelar");
             btnCancelar.setForeground(Color.WHITE);
             btnCancelar.setBackground(new Color(102, 0, 0));
             btnCancelar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             btnCancelar.setFocusPainted(false);
-            btnCancelar.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    dispose();
-                }
-            });
+            btnCancelar.addActionListener(e -> dispose());
             buttonPane.add(btnCancelar);
+        }
+
+        btnBuscar.addActionListener(e -> buscarCliente());
+        comboClientes.addActionListener(e -> cargarPagosPendientesDelClienteSeleccionado());
+
+        cargarClientesConContratoActivo();
+    }
+
+    private void cargarClientesConContratoActivo() {
+        comboClientes.removeAllItems();
+
+        for (Contrato contrato : Altice.getInstance().getMisContratos()) {
+            if (contrato.isActivo() && contrato.getCliente() != null) {
+                Persona cli = contrato.getCliente();
+                String item = cli.getCedula() + " - " + cli.getNombre();
+
+                if (!existeEnCombo(item)) {
+                    comboClientes.addItem(item);
+                }
+            }
+        }
+
+        if (comboClientes.getItemCount() == 0) {
+            comboClientes.addItem("No hay clientes con contratos activos");
         }
     }
 
-    // ====================== BUSCAR CLIENTE ======================
+    private boolean existeEnCombo(String item) {
+        for (int i = 0; i < comboClientes.getItemCount(); i++) {
+            if (comboClientes.getItemAt(i).equals(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void buscarCliente() {
         String cedula = txtCedula.getText().trim();
         if (cedula.isEmpty()) {
@@ -239,51 +192,76 @@ public class RegistrarPago extends JDialog {
             return;
         }
 
-        Persona cliente = Altice.getInstance().buscarPersonaByCedula(cedula);
+        comboClientes.removeAllItems();
+        boolean encontrado = false;
 
-        if (cliente == null) {
-            JOptionPane.showMessageDialog(this, "Cliente no encontrado con esa cédula", "Error", JOptionPane.ERROR_MESSAGE);
-            limpiarCampos();
-            return;
+        for (Contrato contrato : Altice.getInstance().getMisContratos()) {
+            if (contrato.isActivo() && contrato.getCliente() != null) {
+                Persona cli = contrato.getCliente();
+
+                if (cli.getCedula() != null && 
+                    cli.getCedula().toLowerCase().contains(cedula.toLowerCase())) {
+                    
+                    String item = cli.getCedula() + " - " + cli.getNombre();
+                    if (!existeEnCombo(item)) {
+                        comboClientes.addItem(item);
+                        encontrado = true;
+                    }
+                }
+            }
         }
 
-        txtNombre.setText(cliente.getNombre());
-        txtTelefono.setText(cliente.getTelefono());
-        txtCorreo.setText(cliente.getEmail());
-        txtDireccion.setText(cliente.getDireccion());
+        if (!encontrado) {
+            JOptionPane.showMessageDialog(this,
+                "No se encontró ningún cliente con contrato activo que coincida con esa cédula.",
+                "No encontrado", JOptionPane.WARNING_MESSAGE);
+            
+            cargarClientesConContratoActivo();
+        } 
+        else if (comboClientes.getItemCount() == 1) {
+            comboClientes.setSelectedIndex(0);
+        }
+    }
+
+    private void cargarPagosPendientesDelClienteSeleccionado() {
+        comboPagos.removeAllItems();
+
+        String itemSeleccionado = (String) comboClientes.getSelectedItem();
+        if (itemSeleccionado == null || itemSeleccionado.contains("No hay")) return;
+
+        String cedula = itemSeleccionado.substring(0, itemSeleccionado.indexOf(" - ")).trim();
 
         ArrayList<Pago> pagosPendientes = Altice.getInstance().getPagosPendientesByCedula(cedula);
 
         if (pagosPendientes.isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                "El cliente está al día.\nNo tiene pagos pendientes.", 
-                "Información", JOptionPane.INFORMATION_MESSAGE);
-            
-            comboPagos.removeAllItems();
             comboPagos.addItem("No hay pagos pendientes");
             return;
         }
 
-        comboPagos.removeAllItems();
         for (Pago p : pagosPendientes) {
-            String item = p.getCodigo() + " - RD$ " + String.format("%.2f", p.getMonto()) 
-                        + " - " + p.getFechaRegistro();
+            String item = p.getCodigo() + " - Monto: RD$ " + String.format("%.2f", p.getMonto())
+                        + " - Fecha: " + p.getFechaRegistro();
             comboPagos.addItem(item);
         }
     }
 
-    // ====================== REALIZAR PAGO SELECCIONADO ======================
     private void realizarPagoSeleccionado() {
+        if (comboClientes.getSelectedItem() == null || 
+            comboClientes.getSelectedItem().toString().contains("No hay")) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un cliente con contrato activo", 
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         if (comboPagos.getSelectedItem() == null || 
             comboPagos.getSelectedItem().toString().contains("No hay")) {
-            
             JOptionPane.showMessageDialog(this, "No hay pagos pendientes para realizar", 
                                         "Información", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        String item = comboPagos.getSelectedItem().toString();
-        String codigoPago = item.substring(0, item.indexOf(" - "));
+        String itemPago = (String) comboPagos.getSelectedItem();
+        String codigoPago = itemPago.substring(0, itemPago.indexOf(" - "));
 
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Desea realizar este pago?",
@@ -295,17 +273,9 @@ public class RegistrarPago extends JDialog {
 
         if (Altice.getInstance().realizarPago(codigoPago)) {
             JOptionPane.showMessageDialog(this, "Pago realizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            buscarCliente(); // Recargar la información
+            cargarPagosPendientesDelClienteSeleccionado();
         } else {
             JOptionPane.showMessageDialog(this, "No se pudo realizar el pago", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private void limpiarCampos() {
-        txtNombre.setText("");
-        txtTelefono.setText("");
-        txtCorreo.setText("");
-        txtDireccion.setText("");
-        comboPagos.removeAllItems();
     }
 }

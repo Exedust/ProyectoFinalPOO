@@ -58,6 +58,9 @@ public class GestionSolicitudes extends JDialog {
     private JLabel lblEnProceso;
     private JLabel lblCompletadas;
     private JLabel lblCanceladas;
+    private JLabel lblCedula;
+    private JLabel lblNombre;
+    private JButton btnAsignar;
 
     public static void main(String[] args) {
         try {
@@ -129,6 +132,7 @@ public class GestionSolicitudes extends JDialog {
                         btnVerDetalles.setEnabled(true);
                         btnCancelar.setEnabled(selected != null && 
                             !selected.isResuelto() && !selected.isCancelada());
+                        btnAsignar.setEnabled(true);
                     }
                 }
             });
@@ -152,29 +156,37 @@ public class GestionSolicitudes extends JDialog {
             txtNombre.setCaretColor(Color.WHITE);
             txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            txtNombre.setBounds(256, 110, 232, 24);
+            txtNombre.setBounds(365, 108, 232, 24);
             contentPanel.add(txtNombre);
         }
         {
-            btnBuscarCedula = new JButton("Buscar Cédula");
+            btnBuscarCedula = new JButton("Buscar");
+            btnBuscarCedula.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		loadSolicitudes();
+            	}
+            });
             btnBuscarCedula.setForeground(Color.WHITE);
             btnBuscarCedula.setBackground(new Color(0, 0, 51));
             btnBuscarCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnBuscarCedula.setFocusPainted(false);
             btnBuscarCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnBuscarCedula.setBounds(500, 109, 120, 25);
-            btnBuscarCedula.addActionListener(e -> loadSolicitudes());
+            btnBuscarCedula.setBounds(256, 107, 97, 25);
             contentPanel.add(btnBuscarCedula);
         }
         {
-            btnBuscarNombre = new JButton("Buscar Nombre");
+            btnBuscarNombre = new JButton("Buscar");
+            btnBuscarNombre.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		loadSolicitudes();
+            	}
+            });
             btnBuscarNombre.setForeground(Color.WHITE);
             btnBuscarNombre.setBackground(new Color(0, 0, 51));
             btnBuscarNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnBuscarNombre.setFocusPainted(false);
             btnBuscarNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnBuscarNombre.setBounds(632, 109, 130, 25);
-            btnBuscarNombre.addActionListener(e -> loadSolicitudes());
+            btnBuscarNombre.setBounds(609, 107, 97, 25);
             contentPanel.add(btnBuscarNombre);
         }
 
@@ -182,12 +194,12 @@ public class GestionSolicitudes extends JDialog {
         {
             comboFiltrar = new JComboBox<>();
             comboFiltrar.setModel(new DefaultComboBoxModel<>(new String[] {
-                "Todos", "Pendientes", "En Proceso", "Completadas", "Canceladas"
+                 "Pendientes", "En Proceso", "Completadas", "Canceladas", "Todos"
             }));
             comboFiltrar.setBackground(new Color(0, 0, 51));
             comboFiltrar.setForeground(Color.WHITE);
             comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboFiltrar.setBounds(780, 110, 200, 24);
+            comboFiltrar.setBounds(807, 107, 200, 24);
             contentPanel.add(comboFiltrar);
         }
         {
@@ -197,7 +209,7 @@ public class GestionSolicitudes extends JDialog {
             btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnFiltrar.setFocusPainted(false);
             btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnFiltrar.setBounds(990, 110, 97, 25);
+            btnFiltrar.setBounds(1017, 107, 97, 25);
             btnFiltrar.addActionListener(e -> loadSolicitudes());
             contentPanel.add(btnFiltrar);
         }
@@ -206,35 +218,35 @@ public class GestionSolicitudes extends JDialog {
         {
             lblTotal = new JLabel("Solicitudes Registradas: 00");
             lblTotal.setForeground(Color.WHITE);
-            lblTotal.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblTotal.setFont(new Font("Segoe UI", Font.BOLD, 13));
             lblTotal.setBounds(12, 23, 230, 16);
             contentPanel.add(lblTotal);
         }
         {
             lblPendientes = new JLabel("Solicitudes Pendientes: 00");
             lblPendientes.setForeground(Color.WHITE);
-            lblPendientes.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblPendientes.setFont(new Font("Segoe UI", Font.BOLD, 13));
             lblPendientes.setBounds(12, 59, 230, 16);
             contentPanel.add(lblPendientes);
         }
         {
             lblEnProceso = new JLabel("Solicitudes En Proceso: 00");
             lblEnProceso.setForeground(Color.WHITE);
-            lblEnProceso.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblEnProceso.setFont(new Font("Segoe UI", Font.BOLD, 13));
             lblEnProceso.setBounds(250, 59, 230, 16);
             contentPanel.add(lblEnProceso);
         }
         {
             lblCompletadas = new JLabel("Solicitudes Completadas: 00");
             lblCompletadas.setForeground(Color.WHITE);
-            lblCompletadas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblCompletadas.setFont(new Font("Segoe UI", Font.BOLD, 13));
             lblCompletadas.setBounds(488, 59, 230, 16);
             contentPanel.add(lblCompletadas);
         }
         {
             lblCanceladas = new JLabel("Solicitudes Canceladas: 00");
             lblCanceladas.setForeground(Color.WHITE);
-            lblCanceladas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblCanceladas.setFont(new Font("Segoe UI", Font.BOLD, 13));
             lblCanceladas.setBounds(726, 59, 230, 16);
             contentPanel.add(lblCanceladas);
         }
@@ -271,12 +283,19 @@ public class GestionSolicitudes extends JDialog {
                     reg.setModal(true);
                     reg.setVisible(true);
                     loadSolicitudes();
+                    desactivarBotones();
                 }
             });
             contentPanel.add(btnModificar);
         }
         {
             btnCancelar = new JButton("Cancelar");
+            btnCancelar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		cancelarSolicitud();
+            		desactivarBotones();
+            	}
+            });
             btnCancelar.setForeground(Color.WHITE);
             btnCancelar.setBackground(new Color(102, 0, 0));
             btnCancelar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -284,7 +303,6 @@ public class GestionSolicitudes extends JDialog {
             btnCancelar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             btnCancelar.setBounds(1143, 221, 97, 25);
             btnCancelar.setEnabled(false);
-            btnCancelar.addActionListener(e -> cancelarSolicitud());
             contentPanel.add(btnCancelar);
         }
         {
@@ -294,7 +312,7 @@ public class GestionSolicitudes extends JDialog {
             btnVerDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnVerDetalles.setFocusPainted(false);
             btnVerDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnVerDetalles.setBounds(1143, 259, 97, 25);
+            btnVerDetalles.setBounds(1143, 326, 97, 25);
             btnVerDetalles.setEnabled(false);
             
             btnVerDetalles.addActionListener(new ActionListener() {
@@ -304,6 +322,7 @@ public class GestionSolicitudes extends JDialog {
                             DetallesSolicitud detalles = new DetallesSolicitud(selected);
                             detalles.setModal(true);
                             detalles.setVisible(true);
+                            desactivarBotones();
                         } catch (Exception ex) {
                             JOptionPane.showMessageDialog(GestionSolicitudes.this, 
                                 "Error al abrir los detalles: " + ex.getMessage(), 
@@ -314,10 +333,42 @@ public class GestionSolicitudes extends JDialog {
                         JOptionPane.showMessageDialog(GestionSolicitudes.this, 
                             "Debe seleccionar una solicitud primero.", 
                             "Aviso", JOptionPane.WARNING_MESSAGE);
+                        desactivarBotones();
                     }
                 }
             });
             contentPanel.add(btnVerDetalles);
+        }
+        {
+        	lblCedula = new JLabel("Cedula");
+        	lblCedula.setForeground(Color.WHITE);
+        	lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	lblCedula.setBounds(12, 88, 230, 16);
+        	contentPanel.add(lblCedula);
+        }
+        {
+        	lblNombre = new JLabel("Nombre");
+        	lblNombre.setForeground(Color.WHITE);
+        	lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	lblNombre.setBounds(365, 88, 230, 16);
+        	contentPanel.add(lblNombre);
+        }
+        {
+        	btnAsignar = new JButton("Asignar");
+        	btnAsignar.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			desactivarBotones();
+        		}
+        	});
+        	btnAsignar.setForeground(Color.WHITE);
+        	btnAsignar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	btnAsignar.setFocusPainted(false);
+        	btnAsignar.setEnabled(false);
+        	btnAsignar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        	btnAsignar.setBackground(new Color(0, 0, 51));
+        	btnAsignar.setBounds(1143, 288, 97, 25);
+        	btnAsignar.setEnabled(false);
+        	contentPanel.add(btnAsignar);
         }
 
         // ====================== BOTÓN SALIR ======================
@@ -341,11 +392,13 @@ public class GestionSolicitudes extends JDialog {
         loadSolicitudes();
     }
 
-    private void loadSolicitudes() {
+    public void loadSolicitudes() {
         model.setRowCount(0);
         row = new Object[8];
 
         String filtro = (String) comboFiltrar.getSelectedItem();
+        String textoCedula = txtCedula.getText().trim();
+        String textoNombre = txtNombre.getText().trim();
 
         for (Solicitud s : Altice.getInstance().getMisSolicitudes()) {
             boolean incluir = false;
@@ -368,21 +421,35 @@ public class GestionSolicitudes extends JDialog {
                     break;
             }
 
-            if (incluir) {
+            if (!incluir) continue;
+
+            if (!textoCedula.isEmpty()) {
                 Persona cli = s.getCliente();
-                Empleado emp = s.getEmpleado();
-
-                row[0] = s.getCodigo();
-                row[1] = s.getTipo().name();
-                row[2] = (cli != null) ? cli.getNombre() : "N/A";
-                row[3] = (cli != null) ? cli.getCedula() : "N/A";
-                row[4] = (emp != null) ? emp.getNombre() : "No asignado";
-                row[5] = s.getEstado().name();
-                row[6] = s.getFechaRegistro() != null ? s.getFechaRegistro().toString() : "";
-                row[7] = s.getFechaAtencion() != null ? s.getFechaAtencion().toString() : "";
-
-                model.addRow(row);
+                if (cli == null || cli.getCedula() == null ||
+                    !cli.getCedula().toLowerCase().contains(textoCedula.toLowerCase())) {
+                    continue;
+                }
             }
+            if (!textoNombre.isEmpty()) {
+                Persona cli = s.getCliente();
+                if (cli == null || cli.getNombre() == null ||
+                    !cli.getNombre().toLowerCase().contains(textoNombre.toLowerCase())) {
+                    continue;
+                }
+            }
+            Persona cli = s.getCliente();
+            Empleado emp = s.getEmpleado();
+
+            row[0] = s.getCodigo();
+            row[1] = s.getTipo() != null ? s.getTipo().name() : "N/A";
+            row[2] = (cli != null) ? cli.getNombre() : "N/A";
+            row[3] = (cli != null) ? cli.getCedula() : "N/A";
+            row[4] = (emp != null) ? emp.getNombre() : "No asignado";
+            row[5] = s.getEstado() != null ? s.getEstado().name() : "N/A";
+            row[6] = s.getFechaRegistro() != null ? s.getFechaRegistro().toString() : "";
+            row[7] = s.getFechaAtencion() != null ? s.getFechaAtencion().toString() : "";
+
+            model.addRow(row);
         }
 
         actualizarContadores();
@@ -428,5 +495,12 @@ public class GestionSolicitudes extends JDialog {
                 selected = null;
             }
         }
+    }
+    private void desactivarBotones() {
+        btnModificar.setEnabled(false);
+        btnCancelar.setEnabled(false);
+        btnVerDetalles.setEnabled(false);
+        btnAsignar.setEnabled(false);
+        selected = null;
     }
 }

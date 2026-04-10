@@ -463,6 +463,9 @@ public class RegistrarEmpleado extends JDialog {
 		
 		if (miEmpleado != null) {
             loadEmpleado();
+            txtCedula.setEnabled(false);
+            txtCorreo.setEnabled(false);
+            txtNombre.setEnabled(false);
         } else {
             clean();
             checkActivo.setVisible(false);
@@ -551,39 +554,57 @@ public class RegistrarEmpleado extends JDialog {
     }
     
     private boolean validar() {
-        if (txtNombre.getText().trim().isEmpty()) {
+        String nombre = txtNombre.getText().trim();
+        String cedula = txtCedula.getText().trim();
+        String telefono = txtTelefono.getText().trim();
+        String direccion = txtDireccion.getText().trim();
+        String correo = txtCorreo.getText().trim();
+        String contra = new String(txtContra.getPassword());
+        String confirmar = new String(txtConfirmContra.getPassword());
+
+        if (nombre.isEmpty() || cedula.isEmpty() || telefono.isEmpty() || 
+            direccion.isEmpty() || correo.isEmpty() || contra.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
-            txtNombre.requestFocus();
+            
+            if (nombre.isEmpty()) txtNombre.requestFocus();
+            else if (cedula.isEmpty()) txtCedula.requestFocus();
+            else if (telefono.isEmpty()) txtTelefono.requestFocus();
+            else if (direccion.isEmpty()) txtDireccion.requestFocus();
+            else if (correo.isEmpty()) txtCorreo.requestFocus();
+            else txtContra.requestFocus();
+            
             return false;
         }
-        if (txtCedula.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!contra.equals(confirmar)) {
+            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden", "Error", JOptionPane.ERROR_MESSAGE);
+            txtConfirmContra.requestFocus();
+            return false;
+        }
+        if (cedula.length() != 11) {
+            JOptionPane.showMessageDialog(this, "La cédula debe tener exactamente 11 dígitos", "Error", JOptionPane.ERROR_MESSAGE);
             txtCedula.requestFocus();
             return false;
         }
-        if (txtTelefono.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!cedula.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "La cédula solo debe contener números", "Error", JOptionPane.ERROR_MESSAGE);
+            txtCedula.requestFocus();
+            return false;
+        }
+        if (telefono.length() != 10) {
+            JOptionPane.showMessageDialog(this, "El teléfono debe tener exactamente 10 dígitos", "Error", JOptionPane.ERROR_MESSAGE);
             txtTelefono.requestFocus();
             return false;
         }
-        if (txtDireccion.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
-            txtDireccion.requestFocus();
+        if (!telefono.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "El teléfono solo debe contener números", "Error", JOptionPane.ERROR_MESSAGE);
+            txtTelefono.requestFocus();
             return false;
         }
-        if (txtCorreo.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!correo.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]{2,}$")) {
+            JOptionPane.showMessageDialog(this, 
+                "El formato del correo no es válido.\nEjemplos: usuario@gmail.com o caca@gmail.x",
+                "Error", JOptionPane.ERROR_MESSAGE);
             txtCorreo.requestFocus();
-            return false;
-        }
-        if (txtContra.getPassword().length == 0) {
-            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
-            txtContra.requestFocus();
-            return false;
-        }
-        if (!txtContra.getText().equals(txtConfirmContra.getText())) {
-            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden", "Error", JOptionPane.ERROR_MESSAGE);
-            txtConfirmContra.requestFocus();
             return false;
         }
         if (((Number) spinnerSalario.getValue()).floatValue() <= 0) {
@@ -591,18 +612,22 @@ public class RegistrarEmpleado extends JDialog {
             spinnerSalario.requestFocus();
             return false;
         }
-
         if (miEmpleado == null) {
-            if (Altice.getInstance().buscarEmpleadoByCedula(txtCedula.getText().trim()) != null) {
-                JOptionPane.showMessageDialog(this, "Ya existe un empleado con esta cédula", "Error", JOptionPane.ERROR_MESSAGE);
+            if (Altice.getInstance().buscarPersonaByCedula(cedula) != null) {
+                JOptionPane.showMessageDialog(this, "Esta cédula ya ha sido registrada.", "Error", JOptionPane.ERROR_MESSAGE);
                 txtCedula.requestFocus();
+                return false;
+            }
+
+            if (Altice.getInstance().existeCorreo(correo)) {
+                JOptionPane.showMessageDialog(this, "Este correo ya ha sido registrado.", "Error", JOptionPane.ERROR_MESSAGE);
+                txtCorreo.requestFocus();
                 return false;
             }
         }
 
         return true;
     }
-
     private void loadEmpleado() {
         if (miEmpleado == null) return;
 

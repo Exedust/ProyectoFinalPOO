@@ -694,7 +694,6 @@ public class DetallesCliente extends JDialog {
                 boolean esRealizado = estadoPago.equals("REALIZADO");
                 boolean esCancelado = estadoPago.equals("CANCELADO");
 
-                // Reglas solicitadas:
                 btnRealizarPago.setEnabled(esPendiente);       
                 btnCancelarPago.setEnabled(esPendiente || esRealizado); 
 

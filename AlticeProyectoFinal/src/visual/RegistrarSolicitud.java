@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import logico.Altice;
 import logico.Cliente;
+import logico.Empleado;
 import logico.Persona;
 import logico.Solicitud;
 import logico.TipoSolicitud;
@@ -30,15 +31,15 @@ public class RegistrarSolicitud extends JDialog {
     private boolean cerrarAlRegistrar;
 
     private JTextField txtCedula;
-    private JTextField txtNombre;
-    private JTextField txtTelefono;
-    private JTextField txtCorreo;
-    private JTextField txtDireccion;
     private JComboBox<TipoSolicitud> comboTipo;
     private JTextPane txtDescripcion;
 
     private JButton okButton;
     private JButton cancelButton;
+    private JTextField txtCodigo;
+    private JComboBox<String> comboClientes;
+    private JButton btnBuscar;
+    private JButton Limpiar;
 
     public static void main(String[] args) {
         try {
@@ -56,7 +57,7 @@ public class RegistrarSolicitud extends JDialog {
 
         setTitle(miSolicitud == null ? "Registrar Solicitud" : "Modificar Solicitud");
         setResizable(false);
-        setBounds(100, 100, 629, 597);
+        setBounds(100, 100, 629, 645);
         setLocationRelativeTo(null);
 
         getContentPane().setBackground(new Color(0, 0, 51));
@@ -79,14 +80,14 @@ public class RegistrarSolicitud extends JDialog {
                 JPanel panelCliente = new JPanel();
                 panelCliente.setBackground(new Color(102, 102, 204));
                 panelCliente.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-                panelCliente.setBounds(12, 13, 574, 222);
+                panelCliente.setBounds(12, 46, 574, 222);
                 panel.add(panelCliente);
                 panelCliente.setLayout(null);
 
                 {
                     JLabel lblCedula = new JLabel("Cédula / RNC");
                     lblCedula.setForeground(Color.WHITE);
-                    lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 15));
                     lblCedula.setBounds(12, 13, 90, 16);
                     panelCliente.add(lblCedula);
                 }
@@ -101,7 +102,7 @@ public class RegistrarSolicitud extends JDialog {
                     panelCliente.add(txtCedula);
                 }
                 {
-                    JButton btnBuscar = new JButton("Buscar");
+                    btnBuscar = new JButton("Buscar");
                     btnBuscar.setForeground(Color.WHITE);
                     btnBuscar.setBackground(new Color(0, 0, 51));
                     btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -112,72 +113,36 @@ public class RegistrarSolicitud extends JDialog {
                     panelCliente.add(btnBuscar);
                 }
                 {
-                    JLabel lblNombre = new JLabel("Nombre");
-                    lblNombre.setForeground(Color.WHITE);
-                    lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblNombre.setBounds(12, 79, 56, 16);
-                    panelCliente.add(lblNombre);
+                	JLabel lblCliente = new JLabel("Cliente");
+                	lblCliente.setForeground(Color.WHITE);
+                	lblCliente.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+                	lblCliente.setBounds(259, 93, 55, 16);
+                	panelCliente.add(lblCliente);
                 }
                 {
-                    txtNombre = new JTextField();
-                    txtNombre.setEditable(false);
-                    txtNombre.setBackground(new Color(60, 60, 100));
-                    txtNombre.setForeground(Color.WHITE);
-                    txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    txtNombre.setBounds(12, 108, 263, 24);
-                    panelCliente.add(txtNombre);
+                	comboClientes = new JComboBox<String>();
+                	comboClientes.setForeground(Color.WHITE);
+                	comboClientes.setFont(new Font("Segoe UI", Font.BOLD, 16));
+                	comboClientes.setBackground(new Color(0, 0, 51));
+                	comboClientes.setBounds(12, 122, 550, 40);
+                	panelCliente.add(comboClientes);
                 }
                 {
-                    JLabel lblTelefono = new JLabel("Teléfono");
-                    lblTelefono.setForeground(Color.WHITE);
-                    lblTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblTelefono.setBounds(12, 143, 56, 16);
-                    panelCliente.add(lblTelefono);
-                }
-                {
-                    txtTelefono = new JTextField();
-                    txtTelefono.setEditable(false);
-                    txtTelefono.setBackground(new Color(60, 60, 100));
-                    txtTelefono.setForeground(Color.WHITE);
-                    txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    txtTelefono.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    txtTelefono.setBounds(12, 172, 263, 24);
-                    panelCliente.add(txtTelefono);
-                }
-                {
-                    JLabel lblCorreo = new JLabel("Correo");
-                    lblCorreo.setForeground(Color.WHITE);
-                    lblCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblCorreo.setBounds(287, 79, 56, 16);
-                    panelCliente.add(lblCorreo);
-                }
-                {
-                    txtCorreo = new JTextField();
-                    txtCorreo.setEditable(false);
-                    txtCorreo.setBackground(new Color(60, 60, 100));
-                    txtCorreo.setForeground(Color.WHITE);
-                    txtCorreo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    txtCorreo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    txtCorreo.setBounds(287, 108, 263, 24);
-                    panelCliente.add(txtCorreo);
-                }
-                {
-                    JLabel lblDireccion = new JLabel("Dirección");
-                    lblDireccion.setForeground(Color.WHITE);
-                    lblDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblDireccion.setBounds(287, 143, 56, 16);
-                    panelCliente.add(lblDireccion);
-                }
-                {
-                    txtDireccion = new JTextField();
-                    txtDireccion.setEditable(false);
-                    txtDireccion.setBackground(new Color(60, 60, 100));
-                    txtDireccion.setForeground(Color.WHITE);
-                    txtDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    txtDireccion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    txtDireccion.setBounds(287, 172, 263, 24);
-                    panelCliente.add(txtDireccion);
+                	Limpiar = new JButton("Limpiar");
+                	Limpiar.addActionListener(new ActionListener() {
+                		public void actionPerformed(ActionEvent e) {
+                			txtCedula.setText("");
+                			buscarCliente();
+                			
+                		}
+                	});
+                	Limpiar.setForeground(Color.WHITE);
+                	Limpiar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                	Limpiar.setFocusPainted(false);
+                	Limpiar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                	Limpiar.setBackground(new Color(0, 0, 51));
+                	Limpiar.setBounds(465, 42, 97, 25);
+                	panelCliente.add(Limpiar);
                 }
             }
 
@@ -185,17 +150,16 @@ public class RegistrarSolicitud extends JDialog {
             {
                 JPanel panelSolicitud = new JPanel();
                 panelSolicitud.setLayout(null);
-                panelSolicitud.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
-                        "Datos de la Solicitud", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+                panelSolicitud.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
                 panelSolicitud.setBackground(new Color(102, 102, 204));
-                panelSolicitud.setBounds(12, 248, 574, 223);
+                panelSolicitud.setBounds(12, 281, 574, 223);
                 panel.add(panelSolicitud);
 
                 {
                     JLabel lblTipo = new JLabel("Tipo de Solicitud");
                     lblTipo.setForeground(Color.WHITE);
-                    lblTipo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblTipo.setBounds(248, 13, 120, 16);
+                    lblTipo.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+                    lblTipo.setBounds(229, 15, 120, 16);
                     panelSolicitud.add(lblTipo);
                 }
                 {
@@ -209,8 +173,8 @@ public class RegistrarSolicitud extends JDialog {
                 {
                     JLabel lblDescripcion = new JLabel("Descripción");
                     lblDescripcion.setForeground(Color.WHITE);
-                    lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblDescripcion.setBounds(248, 79, 77, 16);
+                    lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+                    lblDescripcion.setBounds(240, 79, 93, 16);
                     panelSolicitud.add(lblDescripcion);
                 }
                 {
@@ -221,6 +185,26 @@ public class RegistrarSolicitud extends JDialog {
                     txtDescripcion.setBounds(82, 108, 410, 91);
                     panelSolicitud.add(txtDescripcion);
                 }
+            }
+            {
+            	JLabel label = new JLabel("C\u00F3digo");
+            	label.setForeground(Color.WHITE);
+            	label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            	label.setBounds(12, 17, 56, 16);
+            	panel.add(label);
+            }
+            {
+            	txtCodigo = new JTextField();
+            	txtCodigo.setText("SOL-00000");
+            	txtCodigo.setForeground(Color.WHITE);
+            	txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            	txtCodigo.setEditable(false);
+            	txtCodigo.setColumns(10);
+            	txtCodigo.setCaretColor(Color.WHITE);
+            	txtCodigo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            	txtCodigo.setBackground(new Color(0, 0, 51));
+            	txtCodigo.setBounds(67, 13, 112, 24);
+            	panel.add(txtCodigo);
             }
         }
 
@@ -248,11 +232,12 @@ public class RegistrarSolicitud extends JDialog {
             cancelButton.addActionListener(e -> dispose());
             buttonPane.add(cancelButton);
         }
-
+        txtCodigo.setText("SOL-" + String.format("%05d", Altice.getGenSolicitudid()+1));
         cargarTiposSolicitud();
+        cargarClientesActivos();
 
         if (miSolicitud != null) {
-            loadSolicitud();   // Cargar datos en modo Modificar
+            loadSolicitud();  
         }
     }
 
@@ -269,10 +254,6 @@ public class RegistrarSolicitud extends JDialog {
         Persona cliente = miSolicitud.getCliente();
 
         txtCedula.setText(cliente != null ? cliente.getCedula() : "");
-        txtNombre.setText(cliente != null ? cliente.getNombre() : "");
-        txtTelefono.setText(cliente != null ? cliente.getTelefono() : "");
-        txtCorreo.setText(cliente != null ? cliente.getEmail() : "");
-        txtDireccion.setText(cliente != null ? cliente.getDireccion() : "");
 
         txtCedula.setEditable(false);           
         comboTipo.setSelectedItem(miSolicitud.getTipo());
@@ -282,49 +263,62 @@ public class RegistrarSolicitud extends JDialog {
 
     private void buscarCliente() {
         String cedula = txtCedula.getText().trim();
-        if (cedula.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese una cédula o RNC", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+
+        comboClientes.removeAllItems();
+        boolean encontrado = false;
+        for (Cliente cli : Altice.getInstance().getMisClientes()) {
+            if (cli.getUsuario() != null && cli.getUsuario().isActivo() &&
+                cli.getCedula() != null && 
+                cli.getCedula().toLowerCase().contains(cedula.toLowerCase())) {
+                
+                String item = cli.getCedula() + " - " + cli.getNombre();
+                comboClientes.addItem(item);
+                encontrado = true;
+            }
         }
 
-        Persona persona = Altice.getInstance().buscarPersonaByCedula(cedula);
-
-        if (persona == null) {
-            JOptionPane.showMessageDialog(this, "No se encontró ningún cliente con esa cédula.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!encontrado) {
+            Empleado emp = Altice.getInstance().buscarEmpleadoByCedula(cedula);
+            if (emp != null) {
+                JOptionPane.showMessageDialog(this,
+                    "Los empleados no pueden realizar solicitudes.",
+                    "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "No se encontró ningún cliente activo con esa cédula.",
+                    "No encontrado", JOptionPane.WARNING_MESSAGE);
+            }
+            
+            cargarClientesActivos();
             return;
         }
-
-        if (!(persona instanceof Cliente)) {
-            JOptionPane.showMessageDialog(this, "Solo se pueden crear solicitudes para clientes.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return;
+        if (comboClientes.getItemCount() == 1) {
+            comboClientes.setSelectedIndex(0);
         }
-
-        Cliente cliente = (Cliente) persona;
-
-        txtNombre.setText(cliente.getNombre());
-        txtTelefono.setText(cliente.getTelefono());
-        txtCorreo.setText(cliente.getEmail() != null ? cliente.getEmail() : "");
-        txtDireccion.setText(cliente.getDireccion() != null ? cliente.getDireccion() : "");
     }
 
     private void registrarSolicitud() {
-        if (txtNombre.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe buscar y seleccionar un cliente primero", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
         if (comboTipo.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un tipo de solicitud", "Error", JOptionPane.ERROR_MESSAGE);
+            comboTipo.requestFocus();
             return;
         }
+
         if (txtDescripcion.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe ingresar una descripción", "Error", JOptionPane.ERROR_MESSAGE);
             txtDescripcion.requestFocus();
             return;
         }
+        if (comboClientes.getSelectedItem() == null || 
+            comboClientes.getSelectedItem().toString().contains("No hay")) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un cliente válido", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+            comboClientes.requestFocus();
+            return;
+        }
 
         TipoSolicitud tipo = (TipoSolicitud) comboTipo.getSelectedItem();
         String descripcion = txtDescripcion.getText().trim();
-
         if (miSolicitud != null) {
             miSolicitud.setDescripcion(descripcion);
             if (Altice.getInstance().modificarSolicitud(miSolicitud)) {
@@ -333,36 +327,56 @@ public class RegistrarSolicitud extends JDialog {
             } else {
                 JOptionPane.showMessageDialog(this, "Error al modificar la solicitud", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            Cliente cliente = (Cliente) Altice.getInstance().buscarPersonaByCedula(txtCedula.getText().trim());
-            if (cliente == null) {
-                JOptionPane.showMessageDialog(this, "Cliente no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            return;
+        }
 
-            int nuevoId = Altice.getGenSolicitudid() + 1;
-            String codigo = "SOL-" + String.format("%05d", nuevoId);
+        String itemCliente = (String) comboClientes.getSelectedItem();
+        String cedula = itemCliente.substring(0, itemCliente.indexOf(" - ")).trim();
 
-            Solicitud nuevaSolicitud = new Solicitud(codigo, cliente, tipo, descripcion);
+        Persona persona = Altice.getInstance().buscarPersonaByCedula(cedula);
 
-            if (Altice.getInstance().registrarSolicitud(nuevaSolicitud)) {
-                JOptionPane.showMessageDialog(this, "Solicitud registrada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-               
-                if (cerrarAlRegistrar) {
-                    dispose();
-                } else {
-                    txtCedula.setText("");
-                    txtNombre.setText("");
-                    txtTelefono.setText("");
-                    txtCorreo.setText("");
-                    txtDireccion.setText("");
-                    txtDescripcion.setText("");
-                    comboTipo.setSelectedIndex(0);
-                    txtCedula.requestFocus();
-                }
+        if (!(persona instanceof Cliente)) {
+            JOptionPane.showMessageDialog(this, "Solo los clientes pueden crear solicitudes.", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Cliente cliente = (Cliente) persona;
+
+        int nuevoId = Altice.getGenSolicitudid() + 1;
+        String codigo = "SOL-" + String.format("%05d", nuevoId);
+
+        Solicitud nuevaSolicitud = new Solicitud(codigo, cliente, tipo, descripcion);
+
+        if (Altice.getInstance().registrarSolicitud(nuevaSolicitud)) {
+            JOptionPane.showMessageDialog(this, "Solicitud registrada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            if (cerrarAlRegistrar) {
+                dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Error al registrar la solicitud", "Error", JOptionPane.ERROR_MESSAGE);
+                txtCedula.setText("");
+                txtDescripcion.setText("");
+                txtCodigo.setText("SOL-" + String.format("%05d", Altice.getGenSolicitudid()+1));
+                comboTipo.setSelectedIndex(0);
+                comboClientes.setSelectedIndex(0);
+                txtCedula.requestFocus();
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al registrar la solicitud", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private void cargarClientesActivos() {
+        comboClientes.removeAllItems();
+
+        for (Cliente cli : Altice.getInstance().getMisClientes()) {
+            if (cli.getUsuario() != null && cli.getUsuario().isActivo()) {
+                String item = cli.getCedula() + " - " + cli.getNombre();
+                comboClientes.addItem(item);
+            }
+        }
+
+        if (comboClientes.getItemCount() == 0) {
+            comboClientes.addItem("No hay clientes activos registrados");
         }
     }
 }

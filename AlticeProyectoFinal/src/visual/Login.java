@@ -34,10 +34,8 @@ public class Login extends JFrame {
 
     public static void main(String[] args) {
         try {
-            // Intentar cargar datos existentes
             Altice.getInstance().cargarDatos();
 
-            // Si no hay usuarios registrados, crear el admin por defecto
             if (Altice.getInstance().getMisUsuarios().isEmpty()) {
                 crearUsuarioAdminPorDefecto();
             }
@@ -68,7 +66,6 @@ public class Login extends JFrame {
         contentPane.add(panel, BorderLayout.CENTER);
         panel.setLayout(null);
 
-        // Logo
         JLabel lblLogo = new JLabel("");
         lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
         lblLogo.setBounds(369, 13, 228, 249);
@@ -78,7 +75,6 @@ public class Login extends JFrame {
         Image image = icon.getImage().getScaledInstance(228, 249, Image.SCALE_SMOOTH);
         lblLogo.setIcon(new ImageIcon(image));
 
-        // Panel de Login
         JPanel panelLogin = new JPanel();
         panelLogin.setBackground(new Color(0, 0, 51));
         panelLogin.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(255, 255, 255)));

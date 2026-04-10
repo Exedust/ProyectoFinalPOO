@@ -42,6 +42,14 @@ public class GestionPlanes extends JDialog {
     private JButton btnSalir;
 
     private static JComboBox<String> comboFiltrar;
+    private JLabel lblPlanesRegistrados;
+    private JLabel lblPlanesActivos;
+    private JTextField txtCodigoPlan;
+    private JButton btnBuscarCodigo;
+    private JTextField txtNombrePlan;
+    private JButton btnBuscarNombre;
+    private JLabel lblCodigo;
+    private JLabel lblNombre;
 
     public static void main(String[] args) {
         try {
@@ -56,7 +64,7 @@ public class GestionPlanes extends JDialog {
     public GestionPlanes() {
         setTitle("Gestionar Planes");
         setResizable(false);
-        setBounds(100, 100, 1280, 670);
+        setBounds(100, 100, 1280, 694);
         setLocationRelativeTo(null);
 
         getContentPane().setBackground(new Color(0, 0, 51));
@@ -72,7 +80,7 @@ public class GestionPlanes extends JDialog {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
             panel.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            panel.setBounds(12, 94, 1102, 449);
+            panel.setBounds(12, 119, 1102, 449);
             contentPanel.add(panel);
             panel.setLayout(new BorderLayout(0, 0));
 
@@ -116,24 +124,29 @@ public class GestionPlanes extends JDialog {
 
         // ====================== CAMPO DE BÚSQUEDA ======================
         {
-            JTextField txtBuscar = new JTextField();
-            txtBuscar.setBackground(new Color(0, 0, 51));
-            txtBuscar.setForeground(Color.WHITE);
-            txtBuscar.setCaretColor(Color.WHITE);
-            txtBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            txtBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            txtBuscar.setBounds(12, 57, 232, 24);
-            contentPanel.add(txtBuscar);
+            txtCodigoPlan = new JTextField();
+            txtCodigoPlan.setBackground(new Color(0, 0, 51));
+            txtCodigoPlan.setForeground(Color.WHITE);
+            txtCodigoPlan.setCaretColor(Color.WHITE);
+            txtCodigoPlan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            txtCodigoPlan.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            txtCodigoPlan.setBounds(12, 82, 232, 24);
+            contentPanel.add(txtCodigoPlan);
         }
         {
-            JButton btnBuscar = new JButton("Buscar");
-            btnBuscar.setForeground(Color.WHITE);
-            btnBuscar.setBackground(new Color(0, 0, 51));
-            btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnBuscar.setFocusPainted(false);
-            btnBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnBuscar.setBounds(256, 57, 97, 25);
-            contentPanel.add(btnBuscar);
+            btnBuscarCodigo = new JButton("Buscar");
+            btnBuscarCodigo.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		loadPlanes();
+            	}
+            });
+            btnBuscarCodigo.setForeground(Color.WHITE);
+            btnBuscarCodigo.setBackground(new Color(0, 0, 51));
+            btnBuscarCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            btnBuscarCodigo.setFocusPainted(false);
+            btnBuscarCodigo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            btnBuscarCodigo.setBounds(256, 82, 97, 25);
+            contentPanel.add(btnBuscarCodigo);
         }
 
         // ====================== FILTRO ======================
@@ -142,10 +155,10 @@ public class GestionPlanes extends JDialog {
             comboFiltrar.setBackground(new Color(0, 0, 51));
             comboFiltrar.setForeground(Color.WHITE);
             comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboFiltrar.setBounds(797, 57, 208, 24);
-            comboFiltrar.addItem("Todos");
+            comboFiltrar.setBounds(797, 82, 208, 24);
             comboFiltrar.addItem("Activos");
             comboFiltrar.addItem("Inactivos");
+            comboFiltrar.addItem("Todos");
             contentPanel.add(comboFiltrar);
         }
         {
@@ -156,16 +169,16 @@ public class GestionPlanes extends JDialog {
             btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnFiltrar.setFocusPainted(false);
             btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnFiltrar.setBounds(1017, 57, 97, 25);
+            btnFiltrar.setBounds(1017, 82, 97, 25);
             contentPanel.add(btnFiltrar);
         }
 
         // ====================== CONTADOR ======================
         {
-            JLabel lblPlanesRegistrados = new JLabel("Planes registrados: 00");
+            lblPlanesRegistrados = new JLabel("Planes registrados: 00");
             lblPlanesRegistrados.setForeground(Color.WHITE);
-            lblPlanesRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblPlanesRegistrados.setBounds(12, 32, 216, 16);
+            lblPlanesRegistrados.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblPlanesRegistrados.setBounds(12, 13, 216, 16);
             contentPanel.add(lblPlanesRegistrados);
         }
 
@@ -185,7 +198,7 @@ public class GestionPlanes extends JDialog {
             btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnAgregar.setFocusPainted(false);
             btnAgregar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnAgregar.setBounds(1143, 94, 97, 25);
+            btnAgregar.setBounds(1143, 119, 97, 25);
             contentPanel.add(btnAgregar);
         }
         {
@@ -208,7 +221,7 @@ public class GestionPlanes extends JDialog {
             btnModificar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnModificar.setFocusPainted(false);
             btnModificar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnModificar.setBounds(1143, 132, 97, 25);
+            btnModificar.setBounds(1143, 157, 97, 25);
             btnModificar.setEnabled(false);
             contentPanel.add(btnModificar);
         }
@@ -227,7 +240,7 @@ public class GestionPlanes extends JDialog {
             btnDesactivar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnDesactivar.setFocusPainted(false);
             btnDesactivar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnDesactivar.setBounds(1143, 170, 97, 25);
+            btnDesactivar.setBounds(1143, 195, 97, 25);
             btnDesactivar.setEnabled(false);
             contentPanel.add(btnDesactivar);
         }
@@ -251,9 +264,55 @@ public class GestionPlanes extends JDialog {
             btnDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnDetalles.setFocusPainted(false);
             btnDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnDetalles.setBounds(1143, 251, 97, 25);
+            btnDetalles.setBounds(1143, 276, 97, 25);
             btnDetalles.setEnabled(false);
             contentPanel.add(btnDetalles);
+        }
+        {
+        	lblPlanesActivos = new JLabel("Planes Activos: 00");
+        	lblPlanesActivos.setForeground(Color.WHITE);
+        	lblPlanesActivos.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        	lblPlanesActivos.setBounds(240, 13, 216, 16);
+        	contentPanel.add(lblPlanesActivos);
+        }
+        {
+        	btnBuscarNombre = new JButton("Buscar");
+        	btnBuscarNombre.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			loadPlanes();
+        		}
+        	});
+        	btnBuscarNombre.setForeground(Color.WHITE);
+        	btnBuscarNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	btnBuscarNombre.setFocusPainted(false);
+        	btnBuscarNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        	btnBuscarNombre.setBackground(new Color(0, 0, 51));
+        	btnBuscarNombre.setBounds(609, 82, 97, 25);
+        	contentPanel.add(btnBuscarNombre);
+        }
+        {
+        	txtNombrePlan = new JTextField();
+        	txtNombrePlan.setForeground(Color.WHITE);
+        	txtNombrePlan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	txtNombrePlan.setCaretColor(Color.WHITE);
+        	txtNombrePlan.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        	txtNombrePlan.setBackground(new Color(0, 0, 51));
+        	txtNombrePlan.setBounds(365, 82, 232, 24);
+        	contentPanel.add(txtNombrePlan);
+        }
+        {
+        	lblCodigo = new JLabel("Codigo");
+        	lblCodigo.setForeground(Color.WHITE);
+        	lblCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	lblCodigo.setBounds(12, 53, 216, 16);
+        	contentPanel.add(lblCodigo);
+        }
+        {
+        	lblNombre = new JLabel("Nombre");
+        	lblNombre.setForeground(Color.WHITE);
+        	lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	lblNombre.setBounds(365, 53, 216, 16);
+        	contentPanel.add(lblNombre);
         }
 
         // ====================== BOTONES INFERIORES ======================
@@ -281,19 +340,19 @@ public class GestionPlanes extends JDialog {
         loadPlanes();
     }
 
-    public static void loadPlanes() {
+    public void loadPlanes() {
         if (model == null) return;
-
         model.setRowCount(0);
-        
         row = new Object[table.getColumnCount()];
 
-        String filtro = comboFiltrar.getSelectedItem().toString();
-        int count = 0;
+        String filtro = comboFiltrar.getSelectedItem() != null ? 
+                        comboFiltrar.getSelectedItem().toString() : "Todos";
 
+        String textoCodigo = txtCodigoPlan.getText().trim();
+        String textoNombre = txtNombrePlan.getText().trim();
+        
         for (Plan p : Altice.getInstance().getMisPlanes()) {
             boolean incluir = false;
-
             switch (filtro) {
                 case "Todos":
                     incluir = true;
@@ -306,27 +365,43 @@ public class GestionPlanes extends JDialog {
                     break;
             }
 
-            if (incluir) {
-                row[0] = p.getCodigo();
-                row[1] = p.getNombre();
-                row[2] = p.getDescripcion() != null ? p.getDescripcion() : "";
-                row[3] = p.isActivo() ? "Activo" : "Inactivo";
-
-                model.addRow(row);
-                count++;
-            }
-        }
-
-        // Actualizar contador
-        for (Component c : contentPanel.getComponents()) {
-            if (c instanceof JLabel) {
-                JLabel label = (JLabel) c;
-                if (label.getText().startsWith("Planes registrados")) {
-                    label.setText("Planes registrados: " + String.format("%02d", count));
-                    break;
+            if (!incluir) continue;
+            
+            if (!textoCodigo.isEmpty()) {
+                if (p.getCodigo() == null || 
+                    !p.getCodigo().toLowerCase().contains(textoCodigo.toLowerCase())) {
+                    continue;
                 }
             }
+            if (!textoNombre.isEmpty()) {
+                if (p.getNombre() == null || 
+                    !p.getNombre().toLowerCase().contains(textoNombre.toLowerCase())) {
+                    continue;
+                }
+            }
+            row[0] = p.getCodigo();
+            row[1] = p.getNombre();
+            row[2] = p.getDescripcion() != null ? p.getDescripcion() : "";
+            row[3] = p.isActivo() ? "Activo" : "Inactivo";
+
+            model.addRow(row);
         }
+        actualizarContadores();
+    }
+    
+    private void actualizarContadores() {
+        int registrados = 0;
+        int activos = 0;
+
+        for (Plan p : Altice.getInstance().getMisPlanes()) {
+            registrados++;
+            if (p.isActivo()) {
+                activos++;
+            }
+        }
+
+        lblPlanesRegistrados.setText("Planes registrados: " + String.format("%02d", registrados));
+        lblPlanesActivos.setText("Planes Activos: " + String.format("%02d", activos));
     }
 
     private void desactivarPlan() {

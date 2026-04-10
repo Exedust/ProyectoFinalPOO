@@ -42,7 +42,6 @@ public class GestionClientes extends JDialog {
     private JButton btnAgregar;
     private JButton btnModificar;
     private JButton btnDesactivar;
-    private JButton btnPagar;
     private JButton btnDetalles;
     private JButton btnSalir;
     private JScrollPane scrollPane;
@@ -50,6 +49,12 @@ public class GestionClientes extends JDialog {
    
     private static DefaultTableModel model;
     private static Object[] row;
+    private JLabel lblCedula;
+    private JLabel lblNombre;
+    private JLabel lblClientesPendientes;
+    private JLabel lblClientesAldia;
+    private JLabel lblClientesActivos;
+    private JLabel lblClientesRegistrados;
 
     public static void main(String[] args) {
         try {
@@ -118,9 +123,8 @@ public class GestionClientes extends JDialog {
                         selected = Altice.getInstance().buscarClienteById(codigo);
 
                         btnModificar.setEnabled(true);
-                        btnDesactivar.setEnabled(true);
+                        btnDesactivar.setEnabled(selected.isActivo());
                         btnDetalles.setEnabled(true);
-                        btnPagar.setEnabled(true);
                     }
                 }
             });
@@ -149,6 +153,11 @@ public class GestionClientes extends JDialog {
         }
         {
             btnNombre = new JButton("Buscar");
+            btnNombre.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		loadClientes();
+            	}
+            });
             btnNombre.setForeground(Color.WHITE);
             btnNombre.setBackground(new Color(0, 0, 51));
             btnNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -159,7 +168,7 @@ public class GestionClientes extends JDialog {
         }
         {
             comboFiltrar = new JComboBox<>();
-            comboFiltrar.setModel(new DefaultComboBoxModel<>(new String[] {"Todos", "Personas", "Empresas", "Inactivos"}));
+            comboFiltrar.setModel(new DefaultComboBoxModel<>(new String[] {"Activos", "Personas", "Empresas", "Inactivos", "Todos"}));
             comboFiltrar.setBackground(new Color(0, 0, 51));
             comboFiltrar.setForeground(Color.WHITE);
             comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -184,46 +193,46 @@ public class GestionClientes extends JDialog {
 
         // ====================== ETIQUETAS ======================
         {
-            JLabel lblNewLabel = new JLabel("Cedula");
-            lblNewLabel.setForeground(Color.WHITE);
-            lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNewLabel.setBounds(12, 88, 56, 16);
-            contentPanel.add(lblNewLabel);
+            lblCedula = new JLabel("Cedula/RNC");
+            lblCedula.setForeground(Color.WHITE);
+            lblCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblCedula.setBounds(12, 88, 97, 16);
+            contentPanel.add(lblCedula);
         }
         {
-            JLabel lblNewLabel_1 = new JLabel("Nombre");
-            lblNewLabel_1.setForeground(Color.WHITE);
-            lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNewLabel_1.setBounds(365, 88, 56, 16);
-            contentPanel.add(lblNewLabel_1);
+            lblNombre = new JLabel("Nombre");
+            lblNombre.setForeground(Color.WHITE);
+            lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblNombre.setBounds(365, 88, 56, 16);
+            contentPanel.add(lblNombre);
         }
         {
-            JLabel lblNewLabel_2 = new JLabel("Clientes registrados: 00");
-            lblNewLabel_2.setForeground(Color.WHITE);
-            lblNewLabel_2.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblNewLabel_2.setBounds(12, 23, 216, 16);
-            contentPanel.add(lblNewLabel_2);
+            lblClientesRegistrados = new JLabel("Clientes registrados: 00");
+            lblClientesRegistrados.setForeground(Color.WHITE);
+            lblClientesRegistrados.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblClientesRegistrados.setBounds(12, 23, 216, 16);
+            contentPanel.add(lblClientesRegistrados);
         }
         {
-            JLabel lblComercialesRegistrados = new JLabel("Clientes activos: 00");
-            lblComercialesRegistrados.setForeground(Color.WHITE);
-            lblComercialesRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblComercialesRegistrados.setBounds(12, 59, 216, 16);
-            contentPanel.add(lblComercialesRegistrados);
+            lblClientesActivos = new JLabel("Clientes activos: 00");
+            lblClientesActivos.setForeground(Color.WHITE);
+            lblClientesActivos.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblClientesActivos.setBounds(12, 59, 216, 16);
+            contentPanel.add(lblClientesActivos);
         }
         {
-            JLabel lblClientesPendientes = new JLabel("Clientes al Dia: 00");
+            lblClientesAldia = new JLabel("Clientes al Dia: 00");
+            lblClientesAldia.setForeground(Color.WHITE);
+            lblClientesAldia.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblClientesAldia.setBounds(240, 59, 216, 16);
+            contentPanel.add(lblClientesAldia);
+        }
+        {
+            lblClientesPendientes = new JLabel("Clientes Pendientes: 00");
             lblClientesPendientes.setForeground(Color.WHITE);
-            lblClientesPendientes.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblClientesPendientes.setBounds(240, 59, 216, 16);
+            lblClientesPendientes.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblClientesPendientes.setBounds(468, 59, 216, 16);
             contentPanel.add(lblClientesPendientes);
-        }
-        {
-            JLabel label = new JLabel("Clientes Pendientes: 00");
-            label.setForeground(Color.WHITE);
-            label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            label.setBounds(468, 59, 216, 16);
-            contentPanel.add(label);
         }
 
         // ====================== BOTONES LATERALES ======================
@@ -257,7 +266,6 @@ public class GestionClientes extends JDialog {
                         loadClientes();
                         btnModificar.setEnabled(false);
                         btnDesactivar.setEnabled(false);
-                        btnPagar.setEnabled(false);
                         btnDetalles.setEnabled(false);
                     }
                 }
@@ -278,7 +286,6 @@ public class GestionClientes extends JDialog {
                     desactivar();
                     btnModificar.setEnabled(false);
                     btnDesactivar.setEnabled(false);
-                    btnPagar.setEnabled(false);
                     btnDetalles.setEnabled(false);
                     loadClientes();
                 }
@@ -293,17 +300,6 @@ public class GestionClientes extends JDialog {
         }
 
         {
-            btnPagar = new JButton("Realizar Pago");
-            btnPagar.setForeground(Color.WHITE);
-            btnPagar.setBackground(new Color(0, 0, 51));
-            btnPagar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnPagar.setFocusPainted(false);
-            btnPagar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnPagar.setBounds(1143, 302, 97, 25);
-            contentPanel.add(btnPagar);
-        }
-
-        {
             btnDetalles = new JButton("Detalles");
             btnDetalles.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -313,7 +309,6 @@ public class GestionClientes extends JDialog {
                         detalles.setVisible(true);
                         btnModificar.setEnabled(false);
                         btnDesactivar.setEnabled(false);
-                        btnPagar.setEnabled(false);
                         btnDetalles.setEnabled(false);
                     }
                 }
@@ -323,12 +318,17 @@ public class GestionClientes extends JDialog {
             btnDetalles.setFocusPainted(false);
             btnDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
             btnDetalles.setBackground(new Color(0, 0, 51));
-            btnDetalles.setBounds(1143, 340, 97, 25);
+            btnDetalles.setBounds(1143, 274, 97, 25);
             contentPanel.add(btnDetalles);
         }
 
         {
             btnCedula = new JButton("Buscar");
+            btnCedula.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		loadClientes();
+            	}
+            });
             btnCedula.setForeground(Color.WHITE);
             btnCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnCedula.setFocusPainted(false);
@@ -365,24 +365,25 @@ public class GestionClientes extends JDialog {
         if (selected == null) {
             btnModificar.setEnabled(false);
             btnDesactivar.setEnabled(false);
-            btnPagar.setEnabled(false);
             btnDetalles.setEnabled(false);
         }
     }
 
-    // ====================== MÉTODO loadClientes ACTUALIZADO ======================
-    public static void loadClientes() {
+    public void loadClientes() {
         model.setRowCount(0);
-        row = new Object[table.getColumnCount()];   // Reinicializamos cada vez
+        row = new Object[table.getColumnCount()];
 
-        String filtro = comboFiltrar.getSelectedItem().toString();
+        String filtroGeneral = comboFiltrar.getSelectedItem().toString();
+        String textoCedula = txtCedula.getText().trim();
+        String textoNombre = txtNombre.getText().trim();
 
         for (Cliente cli : Altice.getInstance().getMisClientes()) {
             boolean incluir = false;
 
-            switch (filtro) {
+            // Filtro general (Todos, Personas, Empresas, Inactivos)
+            switch (filtroGeneral) {
                 case "Todos":
-                    incluir = cli.getUsuario() != null && cli.getUsuario().isActivo();
+                    incluir = cli.getUsuario() != null;
                     break;
                 case "Personas":
                     incluir = cli.getUsuario() != null && 
@@ -397,23 +398,42 @@ public class GestionClientes extends JDialog {
                 case "Inactivos":
                     incluir = cli.getUsuario() != null && !cli.getUsuario().isActivo();
                     break;
+                case "Activos":
+                	incluir = cli.getUsuario().isActivo();
+                	break;
             }
 
-            if (incluir) {
-                float deuda = calcularDeudaCliente(cli);
+            if (!incluir) continue;
 
-                row[0] = cli.getCodigo();
-                row[1] = cli.getCedula();
-                row[2] = cli.getNombre();
-                row[3] = cli.getTelefono();
-                row[4] = cli.getEmail();
-                row[5] = (cli.getUsuario() != null && cli.getUsuario().isEmpresa()) ? "EMPRESA" : "PERSONA";
-                row[6] = (cli.getUsuario() != null && cli.getUsuario().isActivo()) ? "Activo" : "Inactivo";
-                row[7] = String.format("RD$ %.2f", deuda);
-
-                model.addRow(row);
+            if (!textoCedula.isEmpty()) {
+                if (cli.getCedula() == null || 
+                    !cli.getCedula().toLowerCase().contains(textoCedula.toLowerCase())) {
+                    continue;
+                }
             }
+
+            if (!textoNombre.isEmpty()) {
+                if (cli.getNombre() == null || 
+                    !cli.getNombre().toLowerCase().contains(textoNombre.toLowerCase())) {
+                    continue;
+                }
+            }
+
+
+            float deuda = calcularDeudaCliente(cli);
+
+            row[0] = cli.getCodigo();
+            row[1] = cli.getCedula();
+            row[2] = cli.getNombre();
+            row[3] = cli.getTelefono();
+            row[4] = cli.getEmail();
+            row[5] = (cli.getUsuario() != null && cli.getUsuario().isEmpresa()) ? "EMPRESA" : "PERSONA";
+            row[6] = (cli.getUsuario() != null && cli.getUsuario().isActivo()) ? "Activo" : "Inactivo";
+            row[7] = String.format("RD$ %.2f", deuda);
+
+            model.addRow(row);
         }
+        actualizarContadores();
     }
 
     private static float calcularDeudaCliente(Cliente cli) {
@@ -444,5 +464,33 @@ public class GestionClientes extends JDialog {
             JOptionPane.showMessageDialog(this, "Cliente desactivado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             loadClientes();
         }
+    }
+    private void actualizarContadores() {
+        int registrados = 0;
+        int activos = 0;
+        int alDia = 0;
+        int pendientes = 0;
+
+        for (Cliente cli : Altice.getInstance().getMisClientes()) {
+            if (cli.getUsuario() == null) continue;
+
+            registrados++;
+
+            if (cli.getUsuario().isActivo()) {
+                activos++;
+
+                float deuda = calcularDeudaCliente(cli);
+                if (deuda <= 0) {
+                    alDia++;
+                } else {
+                    pendientes++;
+                }
+            }
+        }
+
+        lblClientesRegistrados.setText("Clientes registrados: " + String.format("%02d", registrados));
+        lblClientesActivos.setText("Clientes activos: " + String.format("%02d", activos));
+        lblClientesAldia.setText("Clientes al Dia: " + String.format("%02d", alDia));
+        lblClientesPendientes.setText("Clientes Pendientes: " + String.format("%02d", pendientes));
     }
 }

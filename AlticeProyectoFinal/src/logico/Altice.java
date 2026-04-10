@@ -5,12 +5,12 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Altice implements Serializable{
+public class Altice implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static Altice altice;
-	
+
 	private static Usuario sesion;
-	
+
 	private ArrayList<Plan> misPlanes;
 	private ArrayList<Cliente> misClientes;
 	private ArrayList<Empleado> misEmpleados;
@@ -19,7 +19,7 @@ public class Altice implements Serializable{
 	private ArrayList<Usuario> misUsuarios;
 	private ArrayList<Servicio> misServicios;
 	private ArrayList<Solicitud> misSolicitudes;
-	
+
 	private static int genClienteid = 0;
 	private static int genEmpleadoid = 0;
 	private static int genContratoid = 0;
@@ -27,9 +27,8 @@ public class Altice implements Serializable{
 	private static int genSolicitudid = 0;
 	private static int genPagoid = 0;
 	private static int genServicioid = 0;
-	
-	private Altice()
-	{
+
+	private Altice() {
 		misPlanes = new ArrayList<>();
 		misClientes = new ArrayList<>();
 		misEmpleados = new ArrayList<>();
@@ -39,109 +38,116 @@ public class Altice implements Serializable{
 		misServicios = new ArrayList<>();
 		misSolicitudes = new ArrayList<>();
 	}
-	
-	public static Altice getInstance()
-	{
-		if(altice == null)
+
+	public static Altice getInstance() {
+		if (altice == null)
 			altice = new Altice();
 		return altice;
 	}
-	
-    public boolean guardarDatos() {
-        try {
-            FileOutputStream fos = new FileOutputStream("altice.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-            oos.writeObject(this);
+	public boolean guardarDatos() {
+		try {
+			FileOutputStream fos = new FileOutputStream("altice.dat");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-            oos.close();
-            fos.close();
+			oos.writeObject(this);
 
-            System.out.println("Datos guardados correctamente en altice.dat");
-            return true;
+			oos.close();
+			fos.close();
 
-        } catch (IOException e) {
-            System.out.println("Error al guardar los datos.");
-            e.printStackTrace();
-            return false;
-        }
-    }
+			System.out.println("Datos guardados correctamente en altice.dat");
+			return true;
 
-    public boolean cargarDatos() {
-        try {
-            FileInputStream fis = new FileInputStream("altice.dat");
-            ObjectInputStream ois = new ObjectInputStream(fis);
+		} catch (IOException e) {
+			System.out.println("Error al guardar los datos.");
+			e.printStackTrace();
+			return false;
+		}
+	}
 
-            Altice alticeCargada = (Altice) ois.readObject();
+	public boolean cargarDatos() {
+		try {
+			FileInputStream fis = new FileInputStream("altice.dat");
+			ObjectInputStream ois = new ObjectInputStream(fis);
 
-            altice = alticeCargada;
+			Altice alticeCargada = (Altice) ois.readObject();
 
-            ois.close();
-            fis.close();
+			altice = alticeCargada;
 
-            System.out.println("Datos cargados correctamente desde altice.dat");
-            return true;
+			ois.close();
+			fis.close();
 
-        } catch (FileNotFoundException e) {
-            System.out.println("No se encontró el archivo altice.dat. Se iniciará con datos vacíos.");
-            return false;
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error al cargar los datos.");
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-    private void writeObject(ObjectOutputStream oos) throws IOException {
-        oos.defaultWriteObject();
-        oos.writeInt(genClienteid);
-        oos.writeInt(genEmpleadoid);
-        oos.writeInt(genContratoid);
-        oos.writeInt(genPlanid);
-        oos.writeInt(genSolicitudid);
-        oos.writeInt(genPagoid);
-        oos.writeInt(genServicioid);
-    }
+			System.out.println("Datos cargados correctamente desde altice.dat");
+			return true;
 
-    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        ois.defaultReadObject();   
-        genClienteid = ois.readInt();
-        genEmpleadoid = ois.readInt();
-        genContratoid = ois.readInt();
-        genPlanid = ois.readInt();
-        genSolicitudid = ois.readInt();
-        genPagoid = ois.readInt();
-        genServicioid = ois.readInt();
-    }
-    
-	
+		} catch (FileNotFoundException e) {
+			System.out.println("No se encontró el archivo altice.dat. Se iniciará con datos vacíos.");
+			return false;
+		} catch (IOException | ClassNotFoundException e) {
+			System.out.println("Error al cargar los datos.");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	private void writeObject(ObjectOutputStream oos) throws IOException {
+		oos.defaultWriteObject();
+		oos.writeInt(genClienteid);
+		oos.writeInt(genEmpleadoid);
+		oos.writeInt(genContratoid);
+		oos.writeInt(genPlanid);
+		oos.writeInt(genSolicitudid);
+		oos.writeInt(genPagoid);
+		oos.writeInt(genServicioid);
+	}
+
+	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+		ois.defaultReadObject();
+		genClienteid = ois.readInt();
+		genEmpleadoid = ois.readInt();
+		genContratoid = ois.readInt();
+		genPlanid = ois.readInt();
+		genSolicitudid = ois.readInt();
+		genPagoid = ois.readInt();
+		genServicioid = ois.readInt();
+	}
+
 	public ArrayList<Plan> getMisPlanes() {
 		return misPlanes;
 	}
+
 	public void setMisPlanes(ArrayList<Plan> misPlanes) {
 		this.misPlanes = misPlanes;
 	}
+
 	public ArrayList<Cliente> getMisClientes() {
 		return misClientes;
 	}
+
 	public void setMisClientes(ArrayList<Cliente> misClientes) {
 		this.misClientes = misClientes;
 	}
+
 	public ArrayList<Empleado> getMisEmpleados() {
 		return misEmpleados;
 	}
+
 	public void setMisEmpleados(ArrayList<Empleado> misEmpleados) {
 		this.misEmpleados = misEmpleados;
 	}
+
 	public ArrayList<Contrato> getMisContratos() {
 		return misContratos;
 	}
+
 	public void setMisContratos(ArrayList<Contrato> misContratos) {
 		this.misContratos = misContratos;
 	}
+
 	public ArrayList<Pago> getMisPagos() {
 		return misPagos;
 	}
+
 	public void setMisPagos(ArrayList<Pago> misPagos) {
 		this.misPagos = misPagos;
 	}
@@ -155,535 +161,627 @@ public class Altice implements Serializable{
 	}
 
 	public ArrayList<Servicio> getMisServicios() {
-	    return misServicios;
+		return misServicios;
 	}
 
 	public void setMisServicios(ArrayList<Servicio> misServicios) {
-	    this.misServicios = misServicios;
+		this.misServicios = misServicios;
 	}
-	
+
 	public void regUsuario(Usuario usuario) {
-        if (usuario != null && usuario.getCodigo() != null) {
-            misUsuarios.add(usuario);
-        }
-    }
-	
-    public float calcularDeudaContrato(Contrato contrato) {
-        if (contrato == null || contrato.getPagos() == null) {
-            return 0.0f;
-        }
+		if (usuario != null && usuario.getCodigo() != null) {
+			misUsuarios.add(usuario);
+		}
+	}
 
-        float deuda = 0.0f;
-        for (Pago p : contrato.getPagos()) {
-            if (p.isPendiente()) {
-                deuda += p.getMonto();
-            }
-        }
-        return deuda;
-    }
-    
-    public ArrayList<Pago> getPagosPendientesByCedula(String cedula) {
-        if (cedula == null || cedula.trim().isEmpty()) {
-            return new ArrayList<>();
-        }
+	public float calcularDeudaContrato(Contrato contrato) {
+		if (contrato == null || contrato.getPagos() == null) {
+			return 0.0f;
+		}
 
-        ArrayList<Pago> pendientes = new ArrayList<>();
+		float deuda = 0.0f;
+		for (Pago p : contrato.getPagos()) {
+			if (p.isPendiente()) {
+				deuda += p.getMonto();
+			}
+		}
+		return deuda;
+	}
 
-        for (Pago p : misPagos) {
-            if (p.getCliente() != null && 
-                p.getCliente().getCedula() != null &&
-                p.getCliente().getCedula().equalsIgnoreCase(cedula) &&
-                p.isPendiente()) {
-                
-                pendientes.add(p);
-            }
-        }
-        return pendientes;
-    }
+	public ArrayList<Pago> getPagosPendientesByCedula(String cedula) {
+		if (cedula == null || cedula.trim().isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		ArrayList<Pago> pendientes = new ArrayList<>();
+
+		for (Pago p : misPagos) {
+			if (p.getCliente() != null && p.getCliente().getCedula() != null
+					&& p.getCliente().getCedula().equalsIgnoreCase(cedula) && p.isPendiente()) {
+
+				pendientes.add(p);
+			}
+		}
+		return pendientes;
+	}
 
 	public boolean registrarEmpleado(Empleado empleado) {
-	    if (empleado == null || empleado.getCodigo() == null) {
-	        return false;
-	    }
-	    String codigo = empleado.getCodigo();
+		if (empleado == null || empleado.getCodigo() == null) {
+			return false;
+		}
+		String codigo = empleado.getCodigo();
 
-	    if (buscarEmpleadoById(codigo) != null) {
-	        return false;
-	    }
-	    misEmpleados.add(empleado);
-	    misUsuarios.add(empleado.getUsuario());
-	    genEmpleadoid++;
+		if (buscarEmpleadoById(codigo) != null) {
+			return false;
+		}
+		misEmpleados.add(empleado);
+		misUsuarios.add(empleado.getUsuario());
+		genEmpleadoid++;
 
-	    return true;
+		return true;
 	}
-	
+
 	public boolean modificarEmpleado(Empleado empleadoActualizado) {
-	    if (empleadoActualizado == null || empleadoActualizado.getCodigo() == null) {
-	        return false;
-	    }
+		if (empleadoActualizado == null || empleadoActualizado.getCodigo() == null) {
+			return false;
+		}
 
-	    int indice = buscarIndexEmpleadoById(empleadoActualizado.getCodigo());
+		int indice = buscarIndexEmpleadoById(empleadoActualizado.getCodigo());
 
-	    if (indice == -1) {
-	        return false;
-	    }
-	    misEmpleados.set(indice, empleadoActualizado);
-	    
-	    if (empleadoActualizado.getUsuario() != null) {
-	        int indiceUsuario = buscarIndexUsuarioByCodigo(empleadoActualizado.getCodigo());
-	        if (indiceUsuario != -1) {
-	            misUsuarios.set(indiceUsuario, empleadoActualizado.getUsuario());
-	        }
-	    }
+		if (indice == -1) {
+			return false;
+		}
+		misEmpleados.set(indice, empleadoActualizado);
 
-	    return true;
+		if (empleadoActualizado.getUsuario() != null) {
+			int indiceUsuario = buscarIndexUsuarioByCodigo(empleadoActualizado.getCodigo());
+			if (indiceUsuario != -1) {
+				misUsuarios.set(indiceUsuario, empleadoActualizado.getUsuario());
+			}
+		}
+
+		return true;
 	}
-	
+
 	public boolean desactivarEmpleado(String codigo) {
-	    if (codigo == null) return false;
+		if (codigo == null)
+			return false;
 
-	    int indice = buscarIndexEmpleadoById(codigo);
-	    if (indice == -1) {
-	        return false;
-	    }
+		int indice = buscarIndexEmpleadoById(codigo);
+		if (indice == -1) {
+			return false;
+		}
 
-	    Empleado empleado = misEmpleados.get(indice);
-	    if (empleado.getUsuario() != null) {
-	        empleado.getUsuario().setActivo(false);
-	        empleado.getUsuario().setFechaDesactivacion(LocalDate.now());
-	    }
+		Empleado empleado = misEmpleados.get(indice);
+		if (empleado.getUsuario() != null) {
+			empleado.getUsuario().setActivo(false);
+			empleado.getUsuario().setFechaDesactivacion(LocalDate.now());
+		}
 
-	    cancelarPagosPendientesDePersona(empleado.getCedula());
+		cancelarPagosPendientesDePersona(empleado.getCedula());
 
-	    return true;
+		return true;
 	}
-	
+
 	//
-	//CLIENTE
+	// CLIENTE
 	//
 	public boolean registrarCliente(Cliente cliente) {
-	    if (cliente == null || cliente.getCodigo() == null) {
-	        return false;
-	    }
+		if (cliente == null || cliente.getCodigo() == null) {
+			return false;
+		}
 
-	    String codigo = cliente.getCodigo();
-	    String cedula = cliente.getCedula();
+		String codigo = cliente.getCodigo();
+		String cedula = cliente.getCedula();
 
-	    if (buscarClienteById(codigo) != null) {
-	        return false;
-	    }
-	    if (buscarClienteByCedula(cedula) != null) {
-	        return false;
-	    }
+		if (buscarClienteById(codigo) != null) {
+			return false;
+		}
+		if (buscarClienteByCedula(cedula) != null) {
+			return false;
+		}
 
-	    misClientes.add(cliente);
-	    if (cliente.getUsuario() != null) {
-	        misUsuarios.add(cliente.getUsuario());
-	    }
+		misClientes.add(cliente);
+		if (cliente.getUsuario() != null) {
+			misUsuarios.add(cliente.getUsuario());
+		}
 
-	    genClienteid++;
-	    return true;
+		genClienteid++;
+		return true;
 	}
-	
 
 	public boolean modificarCliente(Cliente nuevo) {
-	    if (nuevo == null || nuevo.getCodigo() == null) {
-	        return false;
-	    }
+		if (nuevo == null || nuevo.getCodigo() == null) {
+			return false;
+		}
 
-	    int indice = buscarIndexClienteById(nuevo.getCodigo());
+		int indice = buscarIndexClienteById(nuevo.getCodigo());
 
-	    if (indice == -1) {
-	        return false;
-	    }
-	    misClientes.set(indice, nuevo);
-	    
-	    if (nuevo.getUsuario() != null) {
-	        int indiceUsuario = buscarIndexUsuarioByCodigo(nuevo.getCodigo());
-	        if (indiceUsuario != -1) {
-	            misUsuarios.set(indiceUsuario, nuevo.getUsuario());
-	        }
-	    }
+		if (indice == -1) {
+			return false;
+		}
+		misClientes.set(indice, nuevo);
 
-	    return true;
+		if (nuevo.getUsuario() != null) {
+			int indiceUsuario = buscarIndexUsuarioByCodigo(nuevo.getCodigo());
+			if (indiceUsuario != -1) {
+				misUsuarios.set(indiceUsuario, nuevo.getUsuario());
+			}
+		}
+
+		return true;
 	}
 
 	public boolean desactivarCliente(String codigo) {
-	    if (codigo == null) return false;
+		if (codigo == null)
+			return false;
 
-	    int indice = buscarIndexClienteById(codigo);
-	    if (indice == -1) {
-	        return false;
-	    }
+		int indice = buscarIndexClienteById(codigo);
+		if (indice == -1) {
+			return false;
+		}
 
-	    Cliente cliente = misClientes.get(indice);
-	    if (cliente.getUsuario() != null) {
-	        cliente.getUsuario().setActivo(false);
-	        cliente.getUsuario().setFechaDesactivacion(LocalDate.now());
-	    }
-	    cancelarPagosPendientesDePersona(cliente.getCedula());
+		Cliente cliente = misClientes.get(indice);
+		if (cliente.getUsuario() != null) {
+			cliente.getUsuario().setActivo(false);
+			cliente.getUsuario().setFechaDesactivacion(LocalDate.now());
+		}
+		cancelarPagosPendientesDePersona(cliente.getCedula());
 
-	    return true;
+		return true;
 	}
 
-
 	public boolean registrarPlan(Plan plan) {
-	    if (plan == null || plan.getCodigo() == null) {
-	        return false;
-	    }
+		if (plan == null || plan.getCodigo() == null) {
+			return false;
+		}
 
-	    if (buscarPlanByCodigo(plan.getCodigo()) != null) {
-	        return false;
-	    }
+		if (buscarPlanByCodigo(plan.getCodigo()) != null) {
+			return false;
+		}
 
-	    misPlanes.add(plan);
-	    genPlanid++;
-	    return true;
+		misPlanes.add(plan);
+		genPlanid++;
+		return true;
 	}
 
 	public boolean modificarPlan(Plan nuevoPlan) {
-	    if (nuevoPlan == null || nuevoPlan.getCodigo() == null) {
-	        return false;
-	    }
+		if (nuevoPlan == null || nuevoPlan.getCodigo() == null) {
+			return false;
+		}
 
-	    int indice = buscarIndexPlanByCodigo(nuevoPlan.getCodigo());
-	    if (indice == -1) {
-	        return false;
-	    }
+		int indice = buscarIndexPlanByCodigo(nuevoPlan.getCodigo());
+		if (indice == -1) {
+			return false;
+		}
 
-	    misPlanes.set(indice, nuevoPlan);
-	    return true;
+		misPlanes.set(indice, nuevoPlan);
+		return true;
 	}
 
 	public boolean desactivarPlan(String codigo) {
-	    if (codigo == null) return false;
+		if (codigo == null)
+			return false;
 
-	    int indice = buscarIndexPlanByCodigo(codigo);
-	    if (indice == -1) {
-	        return false;
-	    }
+		int indice = buscarIndexPlanByCodigo(codigo);
+		if (indice == -1) {
+			return false;
+		}
 
-	    Plan plan = misPlanes.get(indice);
-	    plan.setActivo(false);
+		Plan plan = misPlanes.get(indice);
+		plan.setActivo(false);
 
-	    return true;
+		return true;
 	}
-	
 
 //
 //SERVICIOS
 //
-	
-public boolean registrarServicio(Servicio servicio) {
-    if (servicio == null || servicio.getCodigo() == null) 
-        return false;
 
-    if (existeServicio(servicio.getTipo())) 
-        return false;
-    
-    for (Servicio s : misServicios) 
-        if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(servicio.getCodigo())) 
-            return false;
+	public boolean registrarServicio(Servicio servicio) {
+		if (servicio == null || servicio.getCodigo() == null)
+			return false;
 
-    misServicios.add(servicio);
-    genServicioid++;
-    return true;
-}
+		if (existeServicio(servicio.getTipo()))
+			return false;
 
-public boolean modificarServicio(Servicio servicioActualizado) {
-    if (servicioActualizado == null || servicioActualizado.getCodigo() == null) 
-        return false;
-    
+		for (Servicio s : misServicios)
+			if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(servicio.getCodigo()))
+				return false;
 
-    int indice = buscarIndexServicioByCodigo(servicioActualizado.getCodigo());
-    if (indice == -1) 
-        return false; 
+		misServicios.add(servicio);
+		genServicioid++;
+		return true;
+	}
 
-    misServicios.set(indice, servicioActualizado);
-    return true;
-}
+	public boolean modificarServicio(Servicio servicioActualizado) {
+		if (servicioActualizado == null || servicioActualizado.getCodigo() == null)
+			return false;
 
-public boolean desactivarServicio(String codigo) {
-    if (codigo == null || codigo.trim().isEmpty()) 
-        return false;
-   
-    int indice = buscarIndexServicioByCodigo(codigo);
-    if (indice == -1) 
-        return false; 
-    
-    Servicio servicio = misServicios.get(indice);
-    if (!servicio.isActivo()) 
-        return false; 
+		int indice = buscarIndexServicioByCodigo(servicioActualizado.getCodigo());
+		if (indice == -1)
+			return false;
 
-    servicio.setActivo(false);   
-    return true;
-}
+		misServicios.set(indice, servicioActualizado);
+		return true;
+	}
+
+	public boolean desactivarServicio(String codigo) {
+		if (codigo == null || codigo.trim().isEmpty())
+			return false;
+
+		int indice = buscarIndexServicioByCodigo(codigo);
+		if (indice == -1)
+			return false;
+
+		Servicio servicio = misServicios.get(indice);
+		if (!servicio.isActivo())
+			return false;
+
+		servicio.setActivo(false);
+		return true;
+	}
 
 //
 //SOLICITUDES
 //
 
-public boolean registrarSolicitud(Solicitud solicitud) {
-    if (solicitud == null || solicitud.getCodigo() == null) 
-        return false;
-    if (buscarSolicitudByCodigo(solicitud.getCodigo()) != null) 
-        return false;
-    
-    misSolicitudes.add(solicitud);
-    genSolicitudid++;
-    return true;
-}
+	public boolean registrarSolicitud(Solicitud solicitud) {
+		if (solicitud == null || solicitud.getCodigo() == null)
+			return false;
+		if (buscarSolicitudByCodigo(solicitud.getCodigo()) != null)
+			return false;
 
-public boolean modificarSolicitud(Solicitud solicitudActualizada) {
-    if (solicitudActualizada == null || solicitudActualizada.getCodigo() == null) 
-        return false;
-    int indice = buscarIndexSolicitudByCodigo(solicitudActualizada.getCodigo());
-    if (indice == -1) 
-        return false;
-    
-    misSolicitudes.set(indice, solicitudActualizada);
-    return true;
-}
-//
-public boolean cancelarSolicitud(String codigo) {
-    if (codigo == null || codigo.trim().isEmpty()) 
-        return false;
-    int indice = buscarIndexSolicitudByCodigo(codigo);
-    if (indice == -1) 
-        return false;
-    Solicitud solicitud = misSolicitudes.get(indice);
-    solicitud.cancelar();       
-    return true;
-}
+		misSolicitudes.add(solicitud);
+		genSolicitudid++;
+		return true;
+	}
+
+	public boolean modificarSolicitud(Solicitud solicitudActualizada) {
+		if (solicitudActualizada == null || solicitudActualizada.getCodigo() == null)
+			return false;
+		int indice = buscarIndexSolicitudByCodigo(solicitudActualizada.getCodigo());
+		if (indice == -1)
+			return false;
+
+		misSolicitudes.set(indice, solicitudActualizada);
+		return true;
+	}
+
+	public boolean cancelarSolicitud(String codigoSolicitud) {
+		if (codigoSolicitud == null || codigoSolicitud.trim().isEmpty()) {
+			return false;
+		}
+
+		int indice = buscarIndexSolicitudByCodigo(codigoSolicitud);
+		if (indice == -1) {
+			return false;
+		}
+
+		Solicitud solicitud = misSolicitudes.get(indice);
+
+		if (solicitud.isResuelto() || solicitud.isCancelada()) {
+			return false;
+		}
+
+		solicitud.cancelar();
+		return true;
+	}
+//====================== SOLICITUDES ======================
+
+	public boolean completarSolicitud(String codigoSolicitud) {
+		if (codigoSolicitud == null || codigoSolicitud.trim().isEmpty()) {
+			return false;
+		}
+
+		int indice = buscarIndexSolicitudByCodigo(codigoSolicitud);
+		if (indice == -1) {
+			return false;
+		}
+		Solicitud solicitud = misSolicitudes.get(indice);
+
+		if (solicitud.isResuelto() || solicitud.isCancelada()) {
+			return false;
+		}
+
+		solicitud.completar();
+		solicitud.getEmpleado().getSolicitudes().add(solicitud);
+		return true;
+	}
+
+	public boolean asignarTecnicoASolicitud(String codigoSolicitud, String codigoTecnico) {
+		if (codigoSolicitud == null || codigoTecnico == null) {
+			return false;
+		}
+
+		int indiceSolicitud = buscarIndexSolicitudByCodigo(codigoSolicitud);
+		if (indiceSolicitud == -1) {
+			return false;
+		}
+
+		Empleado tecnico = buscarEmpleadoById(codigoTecnico);
+		if (tecnico == null) {
+			return false;
+		}
+
+		if (tecnico.getRol() != Rol.TECNICO) {
+			return false;
+		}
+		Solicitud solicitud = misSolicitudes.get(indiceSolicitud);
+		if (solicitud.isResuelto() || solicitud.isCancelada()) {
+			return false;
+		}
+		solicitud.asignarEmpleado(tecnico);
+		return true;
+	}
 
 //
 //METODOS DE BUSQUEDA
 //
-public Solicitud buscarSolicitudByCodigo(String codigo) {
-    if (codigo == null) return null;
+	public Solicitud buscarSolicitudByCodigo(String codigo) {
+		if (codigo == null)
+			return null;
 
-    for (Solicitud s : getMisSolicitudes()) {
-        if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
-            return s;
-        }
-    }
-    return null;
-}
-
-private int buscarIndexSolicitudByCodigo(String codigo) {
-    if (codigo == null) return -1;
-
-    for (int i = 0; i < getMisSolicitudes().size(); i++) {
-        Solicitud s = getMisSolicitudes().get(i);
-        if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
-            return i;
-        }
-    }
-    return -1;
-}
-	
-	public Empleado buscarEmpleadoById(String codigo) {
-	    if (codigo == null) return null;
-
-	    for (Empleado e : misEmpleados) {
-	        if (e.getCodigo() != null && e.getCodigo().equalsIgnoreCase(codigo)) {
-	            return e;
-	        }
-	    }
-	    return null;
+		for (Solicitud s : getMisSolicitudes()) {
+			if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
+				return s;
+			}
+		}
+		return null;
 	}
 
-    public Empleado buscarEmpleadoByCedula(String cedula) {
-        for (Empleado e : misEmpleados) {
-            if (e.getCedula() != null && e.getCedula().equals(cedula)) {
-                return e;
-            }
-        }
-        return null;
-    }
+	private int buscarIndexSolicitudByCodigo(String codigo) {
+		if (codigo == null)
+			return -1;
 
-    public int buscarIndexEmpleadoById(String codigo) {
-        if (codigo == null) return -1;
+		for (int i = 0; i < getMisSolicitudes().size(); i++) {
+			Solicitud s = getMisSolicitudes().get(i);
+			if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
-        for (int i = 0; i < misEmpleados.size(); i++) {
-            Empleado e = misEmpleados.get(i);
-            if (e.getCodigo() != null && e.getCodigo().equalsIgnoreCase(codigo)) {
-                return i;
-            }
-        }
-        return -1;
-    }
+	public Empleado buscarEmpleadoById(String codigo) {
+		if (codigo == null)
+			return null;
 
-    public Cliente buscarClienteById(String codigo) {
-        if (codigo == null) return null;
-        for (Cliente c : misClientes) {
-            if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
-                return c;
-            }
-        }
-        return null;
-    }
+		for (Empleado e : misEmpleados) {
+			if (e.getCodigo() != null && e.getCodigo().equalsIgnoreCase(codigo)) {
+				return e;
+			}
+		}
+		return null;
+	}
 
-    private int buscarIndexClienteById(String codigo) {
-        if (codigo == null) return -1;
-        for (int i = 0; i < misClientes.size(); i++) {
-            Cliente c = misClientes.get(i);
-            if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-	
-    public int buscarIndexUsuarioByCodigo(String codigo) {
-        if (codigo == null) return -1;
+	public Empleado buscarEmpleadoByCedula(String cedula) {
+		for (Empleado e : misEmpleados) {
+			if (e.getCedula() != null && e.getCedula().equals(cedula)) {
+				return e;
+			}
+		}
+		return null;
+	}
 
-        for (int i = 0; i < misUsuarios.size(); i++) {
-            Usuario u = misUsuarios.get(i);
-            if (u.getCodigo() != null && u.getCodigo().equalsIgnoreCase(codigo)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    
-    public Cliente buscarClienteByCedula(String cedula) {
-        if (cedula == null) return null;
-        for (Cliente c : misClientes) {
-            if (c.getCedula() != null && c.getCedula().equals(cedula)) {
-                return c;
-            }
-        }
-        return null;
-    }
+	public int buscarIndexEmpleadoById(String codigo) {
+		if (codigo == null)
+			return -1;
 
-    public Persona buscarPersonaByCedula(String cedula) {
-        Cliente cliente = buscarClienteByCedula(cedula);
-        if (cliente != null) {
-            return cliente;
-        }
+		for (int i = 0; i < misEmpleados.size(); i++) {
+			Empleado e = misEmpleados.get(i);
+			if (e.getCodigo() != null && e.getCodigo().equalsIgnoreCase(codigo)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
-        Empleado empleado = buscarEmpleadoByCedula(cedula);
-        if (empleado != null) {
-            return empleado;
-        }
+	public Cliente buscarClienteById(String codigo) {
+		if (codigo == null)
+			return null;
+		for (Cliente c : misClientes) {
+			if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
+				return c;
+			}
+		}
+		return null;
+	}
 
-        return null;
-    }
-    public int contarSolicitudesTotal() {
-        return misSolicitudes.size();
-    }
+	private int buscarIndexClienteById(String codigo) {
+		if (codigo == null)
+			return -1;
+		for (int i = 0; i < misClientes.size(); i++) {
+			Cliente c = misClientes.get(i);
+			if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
-    public int contarSolicitudesPorEstado(EstadoSolicitud estado) {
-        if (estado == null) return 0;
-        int count = 0;
-        for (Solicitud s : misSolicitudes) {
-            if (s.getEstado() == estado) {
-                count++;
-            }
-        }
-        return count;
-    }
+	public int buscarIndexUsuarioByCodigo(String codigo) {
+		if (codigo == null)
+			return -1;
 
-    public Contrato buscarContratoByCodigo(String codigo) {
-        for (Contrato c : misContratos) {
-            if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
-                return c;
-            }
-        }
-        return null;
-    }
-    
-    public Plan buscarPlanByNombre(String nombre)
-    {
-    	for(Plan p: misPlanes)
-    	{
-    		if(p.getNombre().equalsIgnoreCase(nombre))
-    			return p;
-    	}
-    	return null;
-    }
-    
-    public Plan buscarPlanByCodigo(String codigo) {
-        for (Plan p : misPlanes) {
-            if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
-                return p;
-            }
-        }
-        return null;
-    }
+		for (int i = 0; i < misUsuarios.size(); i++) {
+			Usuario u = misUsuarios.get(i);
+			if (u.getCodigo() != null && u.getCodigo().equalsIgnoreCase(codigo)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
-    public int buscarIndexPlanByCodigo(String codigo) {
-        for (int i = 0; i < misPlanes.size(); i++) {
-            Plan p = misPlanes.get(i);
-            if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
-                return i;
-            }
-        }
-        return -1;
-    }
+	public Cliente buscarClienteByCedula(String cedula) {
+		if (cedula == null)
+			return null;
+		for (Cliente c : misClientes) {
+			if (c.getCedula() != null && c.getCedula().equals(cedula)) {
+				return c;
+			}
+		}
+		return null;
+	}
 
-    private int buscarIndexServicioByCodigo(String codigo) {
-        if (codigo == null) return -1;
+	public Persona buscarPersonaByCedula(String cedula) {
+		Cliente cliente = buscarClienteByCedula(cedula);
+		if (cliente != null) {
+			return cliente;
+		}
 
-        for (int i = 0; i < misServicios.size(); i++) {
-            Servicio s = misServicios.get(i);
-            if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    
-    public Servicio buscarServicioByCodigo(String codigo) {
-        if (codigo == null) return null;
+		Empleado empleado = buscarEmpleadoByCedula(cedula);
+		if (empleado != null) {
+			return empleado;
+		}
 
-        for (Servicio s : misServicios) {
-            if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
-                return s;
-            }
-        }
-        return null;
-    }
-    
-    public Pago buscarPagoByCodigo(String codigo) {
-        if (codigo == null) return null;
-        for (Pago p : misPagos) {
-            if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
-                return p;
-            }
-        }
-        return null;
-    }
+		return null;
+	}
 
-    private int buscarIndexPagoByCodigo(String codigo) {
-        if (codigo == null) return -1;
-        for (int i = 0; i < misPagos.size(); i++) {
-            Pago p = misPagos.get(i);
-            if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    
+	public boolean existeCorreo(String correo) {
+		if (correo == null || correo.trim().isEmpty()) {
+			return false;
+		}
+
+		String correoNormalizado = correo.trim().toLowerCase();
+
+		for (Cliente c : misClientes) {
+			if (c.getEmail() != null && c.getEmail().trim().toLowerCase().equals(correoNormalizado)) {
+				return true;
+			}
+		}
+
+		for (Empleado e : misEmpleados) {
+			if (e.getEmail() != null && e.getEmail().trim().toLowerCase().equals(correoNormalizado)) {
+				return true;
+			}
+		}
+
+		for (Usuario u : misUsuarios) {
+			if (u.getUser() != null && u.getUser().trim().toLowerCase().equals(correoNormalizado)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public int contarSolicitudesTotal() {
+		return misSolicitudes.size();
+	}
+
+	public int contarSolicitudesPorEstado(EstadoSolicitud estado) {
+		if (estado == null)
+			return 0;
+		int count = 0;
+		for (Solicitud s : misSolicitudes) {
+			if (s.getEstado() == estado) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public Contrato buscarContratoByCodigo(String codigo) {
+		for (Contrato c : misContratos) {
+			if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
+				return c;
+			}
+		}
+		return null;
+	}
+
+	public Plan buscarPlanByNombre(String nombre) {
+		for (Plan p : misPlanes) {
+			if (p.getNombre().equalsIgnoreCase(nombre))
+				return p;
+		}
+		return null;
+	}
+
+	public Plan buscarPlanByCodigo(String codigo) {
+		for (Plan p : misPlanes) {
+			if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	public int buscarIndexPlanByCodigo(String codigo) {
+		for (int i = 0; i < misPlanes.size(); i++) {
+			Plan p = misPlanes.get(i);
+			if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private int buscarIndexServicioByCodigo(String codigo) {
+		if (codigo == null)
+			return -1;
+
+		for (int i = 0; i < misServicios.size(); i++) {
+			Servicio s = misServicios.get(i);
+			if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public Servicio buscarServicioByCodigo(String codigo) {
+		if (codigo == null)
+			return null;
+
+		for (Servicio s : misServicios) {
+			if (s.getCodigo() != null && s.getCodigo().equalsIgnoreCase(codigo)) {
+				return s;
+			}
+		}
+		return null;
+	}
+
+	public Pago buscarPagoByCodigo(String codigo) {
+		if (codigo == null)
+			return null;
+		for (Pago p : misPagos) {
+			if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	private int buscarIndexPagoByCodigo(String codigo) {
+		if (codigo == null)
+			return -1;
+		for (int i = 0; i < misPagos.size(); i++) {
+			Pago p = misPagos.get(i);
+			if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 //VALIDACIONES
 ///       
 
-    public boolean existeServicio(TipoServicio tipo) {
-        if (tipo == null) {
-            return false;
-        }
+	public boolean existeServicio(TipoServicio tipo) {
+		if (tipo == null) {
+			return false;
+		}
 
-        for (Servicio serv : misServicios) {
-            if (serv.getTipo() == tipo) {  
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    
+		for (Servicio serv : misServicios) {
+			if (serv.getTipo() == tipo) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static int getGenClienteid() {
 		return genClienteid;
 	}
@@ -740,245 +838,244 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
 		Altice.genServicioid = genServicioid;
 	}
 
-    public boolean tieneDeuda(String cedula) {
-        if (cedula == null || cedula.trim().isEmpty()) {
-            return false;
-        }
+	public boolean tieneDeuda(String cedula) {
+		if (cedula == null || cedula.trim().isEmpty()) {
+			return false;
+		}
 
-        for (Pago pago : misPagos) {
-            if (pago.getCliente() != null && 
-                pago.getCliente().getCedula() != null &&
-                pago.getCliente().getCedula().equalsIgnoreCase(cedula) &&
-                pago.isPendiente()) {
-                
-                return true;
-            }
-        }
+		for (Pago pago : misPagos) {
+			if (pago.getCliente() != null && pago.getCliente().getCedula() != null
+					&& pago.getCliente().getCedula().equalsIgnoreCase(cedula) && pago.isPendiente()) {
 
-        return false;
-    }
-	
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 //	
 //PAGOS
 //
-    public boolean registrarPago(Pago pago) {
-        if (pago == null || pago.getCodigo() == null || pago.getContrato() == null) {
-            return false;
-        }
-        if (buscarPagoByCodigo(pago.getCodigo()) != null) {
-            return false;
-        }
+	public boolean registrarPago(Pago pago) {
+		if (pago == null || pago.getCodigo() == null || pago.getContrato() == null) {
+			return false;
+		}
+		if (buscarPagoByCodigo(pago.getCodigo()) != null) {
+			return false;
+		}
 
-        misPagos.add(pago);
-        genPagoid++;
+		misPagos.add(pago);
+		genPagoid++;
 
-        Contrato contrato = pago.getContrato();
-        if (contrato != null) {
-            contrato.agregarPago(pago);
-        }
-        Persona cliente = pago.getCliente();
-        if (cliente instanceof Cliente) {
-            ((Cliente) cliente).agregarPago(pago);
-        }
+		Contrato contrato = pago.getContrato();
+		if (contrato != null) {
+			contrato.agregarPago(pago);
+		}
+		Persona cliente = pago.getCliente();
+		if (cliente instanceof Cliente) {
+			((Cliente) cliente).agregarPago(pago);
+		}
 
-        return true;
-    }
-    // ====================== GENERACIÓN DE PAGOS MENSUALES ======================
-    public void producirPagos() {
-        LocalDate hoy = LocalDate.now();
-        int diaActual = hoy.getDayOfMonth();
-        int mesActual = hoy.getMonthValue();
-        int añoActual = hoy.getYear();
+		return true;
+	}
 
-        for (Contrato contrato : misContratos) {
-            if (!contrato.isActivo()) continue;
+	// ====================== GENERACIÓN DE PAGOS MENSUALES ======================
+	public void producirPagos() {
+		LocalDate hoy = LocalDate.now();
+		int diaActual = hoy.getDayOfMonth();
+		int mesActual = hoy.getMonthValue();
+		int añoActual = hoy.getYear();
 
-            int diaDePago = contrato.getFechaInicio().getDayOfMonth();
+		for (Contrato contrato : misContratos) {
+			if (!contrato.isActivo())
+				continue;
 
-            if (diaActual != diaDePago) continue;
+			int diaDePago = contrato.getFechaInicio().getDayOfMonth();
 
-            boolean yaTienePagoEsteMes = false;
+			if (diaActual != diaDePago)
+				continue;
 
-            for (Pago pago : contrato.getPagos()) {
-                if (pago.getFechaRegistro() != null &&
-                    pago.getFechaRegistro().getDayOfMonth() == diaDePago &&
-                    pago.getFechaRegistro().getMonthValue() == mesActual &&
-                    pago.getFechaRegistro().getYear() == añoActual) {
-                    
-                    yaTienePagoEsteMes = true;
-                    break;
-                }
-            }
-            if (!yaTienePagoEsteMes) {
-                String codigoPago = String.format("P-%05d", genPagoid + 1);
-                float monto = contrato.getPlan().getMonto();
+			boolean yaTienePagoEsteMes = false;
 
-                Pago nuevoPago = new Pago(codigoPago, contrato.getCliente(), contrato, monto);
+			for (Pago pago : contrato.getPagos()) {
+				if (pago.getFechaRegistro() != null && pago.getFechaRegistro().getDayOfMonth() == diaDePago
+						&& pago.getFechaRegistro().getMonthValue() == mesActual
+						&& pago.getFechaRegistro().getYear() == añoActual) {
 
-                LocalDate fechaCorrecta = LocalDate.of(añoActual, mesActual, diaDePago);
-                nuevoPago.setFechaRegistro(fechaCorrecta);
+					yaTienePagoEsteMes = true;
+					break;
+				}
+			}
+			if (!yaTienePagoEsteMes) {
+				String codigoPago = String.format("P-%05d", genPagoid + 1);
+				float monto = contrato.getPlan().getMonto();
 
-                registrarPago(nuevoPago);
-            }
-        }
-    }
-    
-    public boolean realizarPago(String codigoPago) {
-        if (codigoPago == null || codigoPago.trim().isEmpty()) {
-            return false;
-        }
+				Pago nuevoPago = new Pago(codigoPago, contrato.getCliente(), contrato, monto);
 
-        Pago pago = buscarPagoByCodigo(codigoPago);
-        if (pago == null) {
-            return false;
-        }
+				LocalDate fechaCorrecta = LocalDate.of(añoActual, mesActual, diaDePago);
+				nuevoPago.setFechaRegistro(fechaCorrecta);
 
-        if (!pago.isPendiente()) {
-            return false;
-        }
+				registrarPago(nuevoPago);
+			}
+		}
+	}
 
-        pago.setPendiente(false);
-        pago.setFechaPago(LocalDate.now());
+	public boolean realizarPago(String codigoPago) {
+		if (codigoPago == null || codigoPago.trim().isEmpty()) {
+			return false;
+		}
 
-        return true;
-    }
-    
-    public boolean cancelarPago(String codigoPago) {
-        if (codigoPago == null || codigoPago.trim().isEmpty()) {
-            return false;
-        }
+		Pago pago = buscarPagoByCodigo(codigoPago);
+		if (pago == null) {
+			return false;
+		}
 
-        Pago pago = buscarPagoByCodigo(codigoPago);
-        if (pago == null) {
-            return false;
-        }
+		if (!pago.isPendiente()) {
+			return false;
+		}
 
-        pago.setPendiente(false);
-        pago.setActivo(false);                   
-        pago.setFechaPago(LocalDate.now());      
+		pago.setPendiente(false);
+		pago.setFechaPago(LocalDate.now());
 
-        return true;
-    }
-    
-    public boolean cancelarPagosPendientesDePersona(String cedula) {
-        if (cedula == null || cedula.trim().isEmpty()) {
-            return false;
-        }
+		return true;
+	}
 
-        boolean seCanceloAlgo = false;
+	public boolean cancelarPago(String codigoPago) {
+		if (codigoPago == null || codigoPago.trim().isEmpty()) {
+			return false;
+		}
 
-        for (Pago pago : misPagos) {
-            if (pago.isPendiente() && 
-                pago.getCliente() != null && 
-                pago.getCliente().getCedula() != null &&
-                pago.getCliente().getCedula().equalsIgnoreCase(cedula)) {
-                
-                pago.setPendiente(false);
-                pago.setActivo(false);
-                pago.setFechaPago(LocalDate.now());
-                seCanceloAlgo = true;
-            }
-        }
+		Pago pago = buscarPagoByCodigo(codigoPago);
+		if (pago == null) {
+			return false;
+		}
 
-        return seCanceloAlgo;
-    }
-    
+		pago.setPendiente(false);
+		pago.setActivo(false);
+		pago.setFechaPago(LocalDate.now());
+
+		return true;
+	}
+
+	public boolean cancelarPagosPendientesDePersona(String cedula) {
+		if (cedula == null || cedula.trim().isEmpty()) {
+			return false;
+		}
+
+		boolean seCanceloAlgo = false;
+
+		for (Pago pago : misPagos) {
+			if (pago.isPendiente() && pago.getCliente() != null && pago.getCliente().getCedula() != null
+					&& pago.getCliente().getCedula().equalsIgnoreCase(cedula)) {
+
+				pago.setPendiente(false);
+				pago.setActivo(false);
+				pago.setFechaPago(LocalDate.now());
+				seCanceloAlgo = true;
+			}
+		}
+
+		return seCanceloAlgo;
+	}
+
 //	
 //CONTRATO
 //
-    public boolean registrarContrato(Contrato contrato) {
-        if (contrato == null || contrato.getCodigo() == null) {
-            return false;
-        }
-        if (buscarContratoByCodigo(contrato.getCodigo()) != null) {
-            return false;
-        }
+	public boolean registrarContrato(Contrato contrato) {
+		if (contrato == null || contrato.getCodigo() == null) {
+			return false;
+		}
+		if (buscarContratoByCodigo(contrato.getCodigo()) != null) {
+			return false;
+		}
 
-        misContratos.add(contrato);
-        genContratoid++;
+		misContratos.add(contrato);
+		genContratoid++;
 
-        Persona persona = contrato.getCliente();
-        if (persona instanceof Cliente) {
-            Cliente cliente = (Cliente) persona;
+		Persona persona = contrato.getCliente();
+		if (persona instanceof Cliente) {
+			Cliente cliente = (Cliente) persona;
 
-            if (cliente.getContratos() == null) {
-                cliente.setContratos(new ArrayList<Contrato>());
-            }
-            
-            cliente.getContratos().add(contrato);
-        }
+			if (cliente.getContratos() == null) {
+				cliente.setContratos(new ArrayList<Contrato>());
+			}
 
-        return true;
-    }
+			cliente.getContratos().add(contrato);
+			contrato.getEmpleado().getContratos().add(contrato);
+		}
+
+		return true;
+	}
 
 	public boolean cerrarContrato(String codigo) {
-	    if (codigo == null) return false;
+		if (codigo == null)
+			return false;
 
-	    int indice = buscarIndexContratoByCodigo(codigo);
-	    if (indice == -1) {
-	        return false;
-	    }
+		int indice = buscarIndexContratoByCodigo(codigo);
+		if (indice == -1) {
+			return false;
+		}
 
-	    Contrato contrato = misContratos.get(indice);
-	    contrato.setActivo(false);
-	    contrato.setFechaCierre(LocalDate.now());
+		Contrato contrato = misContratos.get(indice);
+		contrato.setActivo(false);
+		contrato.setFechaCierre(LocalDate.now());
 
-	    return true;
+		return true;
 	}
 
 	public int buscarIndexContratoByCodigo(String codigo) {
-	    for (int i = 0; i < misContratos.size(); i++) {
-	        Contrato c = misContratos.get(i);
-	        if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
-	            return i;
-	        }
-	    }
-	    return -1;
+		for (int i = 0; i < misContratos.size(); i++) {
+			Contrato c = misContratos.get(i);
+			if (c.getCodigo() != null && c.getCodigo().equalsIgnoreCase(codigo)) {
+				return i;
+			}
+		}
+		return -1;
 	}
-	
-    public static Usuario getSesion() {
-        return sesion;
-    }
 
-    public static void setSesion(Usuario usuario) {
-        sesion = usuario;
-    }
+	public static Usuario getSesion() {
+		return sesion;
+	}
 
+	public static void setSesion(Usuario usuario) {
+		sesion = usuario;
+	}
 
-    public boolean confirmarLogin(String username, String password) {
-        if (username == null || password == null) {
-            return false;
-        }
+	public boolean confirmarLogin(String username, String password) {
+		if (username == null || password == null) {
+			return false;
+		}
 
-        for (Usuario u : misUsuarios) {
-            if (u.getUser() != null && u.getUser().equals(username) &&
-                u.getPassword() != null && u.getPassword().equals(password)) {
-                
-                if (u.isActivo()) {
-                    sesion = u;
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
+		for (Usuario u : misUsuarios) {
+			if (u.getUser() != null && u.getUser().equals(username) && u.getPassword() != null
+					&& u.getPassword().equals(password)) {
 
-    public void cerrarSesion() {
-        sesion = null;
-    }
+				if (u.isActivo()) {
+					sesion = u;
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
 
-    public boolean haySesionActiva() {
-        return sesion != null;
-    }
+	public void cerrarSesion() {
+		sesion = null;
+	}
 
-    public Rol getRolUsuarioLogueado() {
-        if (sesion != null && sesion.getRol() != null) {
-            return sesion.getRol();
-        }
-        return null;
-    }
+	public boolean haySesionActiva() {
+		return sesion != null;
+	}
+
+	public Rol getRolUsuarioLogueado() {
+		if (sesion != null && sesion.getRol() != null) {
+			return sesion.getRol();
+		}
+		return null;
+	}
 
 	public ArrayList<Solicitud> getMisSolicitudes() {
 		return misSolicitudes;

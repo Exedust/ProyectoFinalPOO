@@ -48,6 +48,10 @@ public class GestionEmpleados extends JDialog {
 	private JButton btnDesactivar;
 	private JButton btnDetalles;
 	private static JComboBox<String> comboFiltrar;
+	private JLabel lblEmpleadosRegistrados;
+	private JLabel lblTecnicosRegistrados;
+	private JLabel lblComercialesRegistrados;
+	private JLabel lblAdministradoresRegistrados;
 	
     public GestionEmpleados() {
         setTitle("Gestionar Empleados");
@@ -145,6 +149,11 @@ public class GestionEmpleados extends JDialog {
         }
         {
             btnBuscarNombre = new JButton("Buscar");
+            btnBuscarNombre.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		loadEmpleados();
+            	}
+            });
             btnBuscarNombre.setForeground(Color.WHITE);
             btnBuscarNombre.setBackground(new Color(0, 0, 51));
             btnBuscarNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -193,30 +202,30 @@ public class GestionEmpleados extends JDialog {
             contentPanel.add(lblNewLabel_1);
         }
         {
-            JLabel lblEmpleadosRegistrados = new JLabel("Empleados registrados: 00");
+            lblEmpleadosRegistrados = new JLabel("Empleados registrados: 00");
             lblEmpleadosRegistrados.setForeground(Color.WHITE);
-            lblEmpleadosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblEmpleadosRegistrados.setFont(new Font("Segoe UI", Font.BOLD, 13));
             lblEmpleadosRegistrados.setBounds(12, 23, 216, 16);
             contentPanel.add(lblEmpleadosRegistrados);
         }
         {
-            JLabel lblTecnicosRegistrados = new JLabel("Tecnicos registrados: 00");
+            lblTecnicosRegistrados = new JLabel("Tecnicos registrados: 00");
             lblTecnicosRegistrados.setForeground(Color.WHITE);
-            lblTecnicosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblTecnicosRegistrados.setFont(new Font("Segoe UI", Font.BOLD, 13));
             lblTecnicosRegistrados.setBounds(12, 59, 216, 16);
             contentPanel.add(lblTecnicosRegistrados);
         }
         {
-            JLabel label = new JLabel("Comerciales registrados: 00");
-            label.setForeground(Color.WHITE);
-            label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            label.setBounds(240, 59, 216, 16);
-            contentPanel.add(label);
+            lblComercialesRegistrados = new JLabel("Comerciales registrados: 00");
+            lblComercialesRegistrados.setForeground(Color.WHITE);
+            lblComercialesRegistrados.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblComercialesRegistrados.setBounds(240, 59, 216, 16);
+            contentPanel.add(lblComercialesRegistrados);
         }
         {
-            JLabel lblAdministradoresRegistrados = new JLabel("Administradores registrados: 00");
+            lblAdministradoresRegistrados = new JLabel("Administradores registrados: 00");
             lblAdministradoresRegistrados.setForeground(Color.WHITE);
-            lblAdministradoresRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            lblAdministradoresRegistrados.setFont(new Font("Segoe UI", Font.BOLD, 13));
             lblAdministradoresRegistrados.setBounds(468, 59, 216, 16);
             contentPanel.add(lblAdministradoresRegistrados);
         }
@@ -315,6 +324,11 @@ public class GestionEmpleados extends JDialog {
         }
         
         btnBuscarCedula = new JButton("Buscar");
+        btnBuscarCedula.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		loadEmpleados();
+        	}
+        });
         btnBuscarCedula.setForeground(Color.WHITE);
         btnBuscarCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnBuscarCedula.setFocusPainted(false);
@@ -347,11 +361,15 @@ public class GestionEmpleados extends JDialog {
         loadEmpleados();
     }
     
-    public static void loadEmpleados() {
+    public void loadEmpleados() {
         model.setRowCount(0);
         row = new Object[table.getColumnCount()];
 
-        String filtro = comboFiltrar.getSelectedItem().toString();
+        String filtro = comboFiltrar.getSelectedItem() != null ? 
+                        comboFiltrar.getSelectedItem().toString() : "Todos";
+
+        String textoCedula = txtCedula.getText().trim();
+        String textoNombre = txtNombre.getText().trim();
 
         for (Empleado emp : Altice.getInstance().getMisEmpleados()) {
             boolean incluir = false;
@@ -370,22 +388,59 @@ public class GestionEmpleados extends JDialog {
                     incluir = emp.getRol() == Rol.ADMINISTRADOR && emp.isActivo();
                     break;
                 case "Inactivos":
-                    incluir = !emp.getUsuario().isActivo();
+                    incluir = !emp.isActivo();  
                     break;
             }
 
-            if (incluir) {
-                row[0] = emp.getCodigo();
-                row[1] = emp.getCedula();
-                row[2] = emp.getNombre();
-                row[3] = emp.getTelefono();
-                row[4] = emp.getEmail();
-                row[5] = emp.getRol().name();
-                row[6] = emp.getSalario();
-                row[7] = emp.getUsuario().getFechaRegistro();
-                model.addRow(row);
+            if (!incluir) continue;
+
+            if (!textoCedula.isEmpty()) {
+                if (emp.getCedula() == null || 
+                    !emp.getCedula().toLowerCase().contains(textoCedula.toLowerCase())) {
+                    continue;
+                }
+            }
+
+            if (!textoNombre.isEmpty()) {
+                if (emp.getNombre() == null || 
+                    !emp.getNombre().toLowerCase().contains(textoNombre.toLowerCase())) {
+                    continue;
+                }
+            }
+            row[0] = emp.getCodigo();
+            row[1] = emp.getCedula();
+            row[2] = emp.getNombre();
+            row[3] = emp.getTelefono();
+            row[4] = emp.getEmail();
+            row[5] = emp.getRol().name();
+            row[6] = String.format("RD$ %.2f", emp.getSalario());
+            row[7] = emp.getUsuario() != null ? emp.getUsuario().getFechaRegistro() : "";
+
+            model.addRow(row);
+        }
+
+        actualizarContadores();
+    }
+    private void actualizarContadores() {
+        int registrados = 0;
+        int tecnicos = 0;
+        int comerciales = 0;
+        int administradores = 0;
+
+        for (Empleado emp : Altice.getInstance().getMisEmpleados()) {
+
+            if (emp.isActivo()) {
+            	registrados++;
+                if (emp.getRol() == Rol.TECNICO) tecnicos++;
+                else if (emp.getRol() == Rol.COMERCIAL) comerciales++;
+                else if (emp.getRol() == Rol.ADMINISTRADOR) administradores++;
             }
         }
+
+        lblEmpleadosRegistrados.setText("Empleados Activos: " + String.format("%02d", registrados));
+        lblTecnicosRegistrados.setText("Tecnicos Activos: " + String.format("%02d", tecnicos));
+        lblComercialesRegistrados.setText("Comerciales Activos: " + String.format("%02d", comerciales));
+        lblAdministradoresRegistrados.setText("Administradores Activos: " + String.format("%02d", administradores));
     }
     
     public void desactivar()

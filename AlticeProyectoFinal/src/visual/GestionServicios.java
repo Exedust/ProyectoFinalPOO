@@ -40,6 +40,7 @@ public class GestionServicios extends JDialog {
     private JButton btnDesactivar;
     private JButton btnSalir;
     private static JComboBox<String> comboFiltrar;
+    private static JLabel lblServiciosRegistrados;
 
     public static void main(String[] args) {
         try {
@@ -142,7 +143,7 @@ public class GestionServicios extends JDialog {
         }
 
         {
-            JLabel lblServiciosRegistrados = new JLabel("Servicios Registrados: 00");
+            lblServiciosRegistrados = new JLabel("Servicios Registrados: 00");
             lblServiciosRegistrados.setForeground(Color.WHITE);
             lblServiciosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             lblServiciosRegistrados.setBounds(12, 32, 216, 16);
@@ -157,7 +158,7 @@ public class GestionServicios extends JDialog {
             btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnAgregar.setFocusPainted(false);
             btnAgregar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnAgregar.setBounds(1150, 284, 97, 25);
+            btnAgregar.setBounds(1133, 60, 97, 25);
             btnAgregar.addActionListener(e -> {
                 RegistrarServicio reg = new RegistrarServicio(null, false);
                 reg.setModal(true);
@@ -173,7 +174,7 @@ public class GestionServicios extends JDialog {
             btnModificar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnModificar.setFocusPainted(false);
             btnModificar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnModificar.setBounds(1150, 322, 97, 25);
+            btnModificar.setBounds(1133, 98, 97, 25);
             btnModificar.setEnabled(false);
             btnModificar.addActionListener(e -> {
                 if (selected != null) {
@@ -199,7 +200,7 @@ public class GestionServicios extends JDialog {
             btnDesactivar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnDesactivar.setFocusPainted(false);
             btnDesactivar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnDesactivar.setBounds(1150, 360, 97, 25);
+            btnDesactivar.setBounds(1133, 136, 97, 25);
             btnDesactivar.setEnabled(false);
             contentPanel.add(btnDesactivar);
         }
@@ -257,16 +258,7 @@ public class GestionServicios extends JDialog {
                 count++;
             }
         }
-
-        for (Component c : contentPanel.getComponents()) {
-            if (c instanceof JLabel) {
-                JLabel label = (JLabel) c;
-                if (label.getText().startsWith("Servicios Registrados")) {
-                    label.setText("Servicios Registrados: " + String.format("%02d", count));
-                    break;
-                }
-            }
-        }
+        lblServiciosRegistrados.setText("Servicios Registrados: " + String.format("%02d", count));
         if(count == 3)
         	btnAgregar.setEnabled(false);
         	

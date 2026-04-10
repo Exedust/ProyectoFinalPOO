@@ -117,6 +117,14 @@ public class RegistrarCliente extends JDialog {
 					txtNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
 					txtNombre.setColumns(10);
 					txtNombre.setBounds(12, 53, 263, 24);
+					txtNombre.addKeyListener(new KeyAdapter() {
+						@Override
+						public void keyTyped(KeyEvent e) {
+							char tecla = e.getKeyChar();
+							if(Character.isDigit(tecla))
+								e.consume();
+						}
+					});
 					panel_1.add(txtNombre);
 				}
 				{
@@ -133,6 +141,8 @@ public class RegistrarCliente extends JDialog {
 						public void keyTyped(KeyEvent e) {
 							char tecla = e.getKeyChar();
 							if(!Character.isDigit(tecla))
+								e.consume();
+							if (txtCedula.getText().length() >= 11) 
 								e.consume();
 						}
 					});
@@ -160,8 +170,11 @@ public class RegistrarCliente extends JDialog {
 							char tecla = e.getKeyChar();
 							if(!Character.isDigit(tecla))
 								e.consume();
+							if (txtTelefono.getText().length() >= 10) 
+								e.consume();
 						}
 					});
+
 					txtTelefono.setBackground(new Color(0, 0, 51));
 					txtTelefono.setForeground(Color.WHITE);
 					txtTelefono.setCaretColor(Color.WHITE);
@@ -404,6 +417,15 @@ public class RegistrarCliente extends JDialog {
 			checkActivo.setSelected(true);
 			checkActivo.setVisible(false);
 		}
+		if(miCliente != null)
+		{
+			txtCedula.setEnabled(false);
+			txtCorreo.setEnabled(false);
+			txtNombre.setEnabled(false);
+			rbPersona.setEnabled(false);
+			rbEmpresa.setEnabled(false);
+			
+		}
 		loadCliente();
 	}
 	private void registrarCliente() {
@@ -459,8 +481,8 @@ public class RegistrarCliente extends JDialog {
 	    Usuario user = new Usuario(codigo, correo, contra, Rol.CLIENTE);
 	    user.setActivo(checkActivo.isSelected());
 	    user.setEmpresa(rbEmpresa.isSelected());
-
-	    Cliente nuevo = new Cliente(nombre, cedula, telefono, direccion, correo, user);
+	   
+	    Cliente nuevo = new Cliente(nombre, cedula, correo, telefono, direccion, user);
 
 	    if (miCliente == null) {
 	        return Altice.getInstance().registrarCliente(nuevo);
@@ -470,27 +492,81 @@ public class RegistrarCliente extends JDialog {
 	}
 
 	private boolean validar() {
-	    if (txtNombre.getText().trim().isEmpty() ||
-	        txtCedula.getText().trim().isEmpty() ||
-	        txtTelefono.getText().trim().isEmpty() ||
-	        txtDireccion.getText().trim().isEmpty() ||
-	        txtCorreo.getText().trim().isEmpty() ||
-	        txtContra.getPassword().length == 0) {
+	    String nombre = txtNombre.getText().trim();
+	    String cedula = txtCedula.getText().trim();
+	    String telefono = txtTelefono.getText().trim();
+	    String direccion = txtDireccion.getText().trim();
+	    String correo = txtCorreo.getText().trim();
+	    String contra = new String(txtContra.getPassword());
+	    String confirmar = new String(txtConfirmar.getPassword());
 
+	    if (nombre.isEmpty() || cedula.isEmpty() || telefono.isEmpty() || 
+	        direccion.isEmpty() || correo.isEmpty() || contra.isEmpty()) {
 	        JOptionPane.showMessageDialog(this, "Debe llenar todos los campos!", "Error", JOptionPane.ERROR_MESSAGE);
+	        if (nombre.isEmpty()) txtNombre.requestFocus();
+	        else if (cedula.isEmpty()) txtCedula.requestFocus();
+	        else if (telefono.isEmpty()) txtTelefono.requestFocus();
+	        else if (direccion.isEmpty()) txtDireccion.requestFocus();
+	        else if (correo.isEmpty()) txtCorreo.requestFocus();
+	        else txtContra.requestFocus();
 	        return false;
 	    }
 
-	    if (!txtContra.getText().equals(txtConfirmar.getText())) {
+	    if (!contra.equals(confirmar)) {
 	        JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden", "Error", JOptionPane.ERROR_MESSAGE);
 	        txtConfirmar.requestFocus();
 	        return false;
 	    }
 
-	    if (miCliente == null) {
-	        if (Altice.getInstance().buscarClienteByCedula(txtCedula.getText().trim()) != null) {
-	            JOptionPane.showMessageDialog(this, "Ya existe un cliente con esta cédula", "Error", JOptionPane.ERROR_MESSAGE);
+	    if (rbPersona.isSelected()) {
+	        if (cedula.length() != 11) {
+	            JOptionPane.showMessageDialog(this, "La cédula debe tener exactamente 11 dígitos", "Error", JOptionPane.ERROR_MESSAGE);
 	            txtCedula.requestFocus();
+	            return false;
+	        }
+	    } else { 
+	        if (cedula.length() != 9) {
+	            JOptionPane.showMessageDialog(this, "El RNC debe tener exactamente 9 dígitos", "Error", JOptionPane.ERROR_MESSAGE);
+	            txtCedula.requestFocus();
+	            return false;
+	        }
+	    }
+
+	    if (!cedula.matches("\\d+")) {
+	        JOptionPane.showMessageDialog(this, "La cédula/RNC solo debe contener números", "Error", JOptionPane.ERROR_MESSAGE);
+	        txtCedula.requestFocus();
+	        return false;
+	    }
+
+	    if (telefono.length() != 10) {
+	        JOptionPane.showMessageDialog(this, "El teléfono debe tener exactamente 10 dígitos", "Error", JOptionPane.ERROR_MESSAGE);
+	        txtTelefono.requestFocus();
+	        return false;
+	    }
+	    if (!telefono.matches("\\d+")) {
+	        JOptionPane.showMessageDialog(this, "El teléfono solo debe contener números", "Error", JOptionPane.ERROR_MESSAGE);
+	        txtTelefono.requestFocus();
+	        return false;
+	    }
+
+	    if (!correo.contains("@") || !correo.contains(".") || correo.indexOf("@") > correo.lastIndexOf(".")) {
+	        JOptionPane.showMessageDialog(this, 
+	            "El correo debe contener '@' y un dominio válido (ej: usuario@gmail.com)",
+	            "Error", JOptionPane.ERROR_MESSAGE);
+	        txtCorreo.requestFocus();
+	        return false;
+	    }
+
+	    if (miCliente == null) {  
+	        if (Altice.getInstance().buscarPersonaByCedula(cedula) != null) {
+	            JOptionPane.showMessageDialog(this, "Esta cédula/RNC ya ha sido registrada.", "Error", JOptionPane.ERROR_MESSAGE);
+	            txtCedula.requestFocus();
+	            return false;
+	        }
+
+	        if (Altice.getInstance().existeCorreo(correo)) {
+	            JOptionPane.showMessageDialog(this, "Este correo ya ha sido registrado.", "Error", JOptionPane.ERROR_MESSAGE);
+	            txtCorreo.requestFocus();
 	            return false;
 	        }
 	    }

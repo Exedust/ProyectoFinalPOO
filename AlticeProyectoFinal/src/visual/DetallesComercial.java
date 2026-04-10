@@ -6,13 +6,19 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
+import logico.Altice;
+import logico.Contrato;
 import logico.Empleado;
 import logico.Rol;
 
@@ -21,6 +27,8 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class DetallesComercial extends JDialog {
 
@@ -43,6 +51,16 @@ public class DetallesComercial extends JDialog {
     private JTextField txtDesactivado;
     private JTextField txtRegistro;
     private JLabel lblFechaDesactivacion;
+    private JLabel lblContratosRegistrados;
+    private JLabel lblContratosActivos;
+    private JLabel lblContratosCerrados;
+    private JComboBox comboFiltrar;
+    private JButton btnFiltrar;
+    private JTable table;
+    private JButton btnDetalles;
+    
+    private DefaultTableModel model;
+    private Object[] row;
 
     /**
      * Launch the application.
@@ -330,46 +348,91 @@ public class DetallesComercial extends JDialog {
                 JPanel panel_2 = new JPanel();
                 panel_2.setLayout(null);
                 panel_2.setBackground(new Color(102, 102, 204));
-                panel_2.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "Contratos Realizados", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
+                panel_2.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), 
+                        "Contratos Realizados", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
                 panel_2.setBounds(12, 499, 567, 318);
                 panel.add(panel_2);
 
+                // Combo de filtro
+                comboFiltrar = new JComboBox<>();
+                comboFiltrar.setForeground(Color.WHITE);
+                comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                comboFiltrar.setBackground(new Color(0, 0, 51));
+                comboFiltrar.setBounds(12, 27, 208, 24);
+                comboFiltrar.addItem("Activos");
+                comboFiltrar.addItem("Cerrados");
+                comboFiltrar.addItem("Todos");
+                panel_2.add(comboFiltrar);
+
+                btnFiltrar = new JButton("Filtrar");
+                btnFiltrar.setForeground(Color.WHITE);
+                btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                btnFiltrar.setFocusPainted(false);
+                btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                btnFiltrar.setBackground(new Color(0, 0, 51));
+                btnFiltrar.setBounds(230, 27, 97, 25);
+                panel_2.add(btnFiltrar);
+
+                // Panel de la tabla
                 {
                     JPanel panel_3 = new JPanel();
                     panel_3.setBackground(new Color(0, 0, 51));
                     panel_3.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
                     panel_3.setBounds(12, 66, 543, 201);
                     panel_2.add(panel_3);
-                    // Aquí irá tu JTable o lista de contratos más adelante
+                    panel_3.setLayout(new BorderLayout(0, 0));
+
+                    JScrollPane scrollPane = new JScrollPane();
+                    panel_3.add(scrollPane, BorderLayout.CENTER);
+
+                    table = new JTable();
+                    table.setFillsViewportHeight(true);
+                    scrollPane.setViewportView(table);
+
+                    table.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            btnDetalles.setEnabled(table.getSelectedRow() != -1);
+                        }
+                    });
                 }
-                
-                            // ====================== BOTONES DE ACCIÓN ======================
-                            {
-                                JButton btnRealizarPago = new JButton("Ver Detalles");
-                                btnRealizarPago.setBounds(438, 280, 117, 25);
-                                panel_2.add(btnRealizarPago);
-                                btnRealizarPago.setForeground(Color.WHITE);
-                                btnRealizarPago.setBackground(new Color(0, 0, 51));
-                                btnRealizarPago.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                                btnRealizarPago.setFocusPainted(false);
-                                btnRealizarPago.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+
+                // Botón Ver Detalles
+                {
+                    btnDetalles = new JButton("Ver Detalles");
+                    btnDetalles.setBounds(438, 280, 117, 25);
+                    btnDetalles.setForeground(Color.WHITE);
+                    btnDetalles.setBackground(new Color(0, 0, 51));
+                    btnDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                    btnDetalles.setFocusPainted(false);
+                    btnDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                    btnDetalles.setEnabled(false);   // Inicialmente deshabilitado
+                    panel_2.add(btnDetalles);
+
+                    btnDetalles.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            int fila = table.getSelectedRow();
+                            if (fila == -1) return;
+
+                            String codigoContrato = table.getValueAt(fila, 0).toString();
+                            Contrato contratoSeleccionado = Altice.getInstance().buscarContratoByCodigo(codigoContrato);
+
+                            if (contratoSeleccionado != null) {
+                                DetallesContrato dialog = new DetallesContrato(contratoSeleccionado);
+                                dialog.setModal(true);
+                                dialog.setVisible(true);
+                                loadEmpleado();
                             }
-                            
-                            JComboBox comboBox = new JComboBox();
-                            comboBox.setForeground(Color.WHITE);
-                            comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                            comboBox.setBackground(new Color(0, 0, 51));
-                            comboBox.setBounds(238, 27, 208, 24);
-                            panel_2.add(comboBox);
-                            
-                            JButton button = new JButton("Filtrar");
-                            button.setForeground(Color.WHITE);
-                            button.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                            button.setFocusPainted(false);
-                            button.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                            button.setBackground(new Color(0, 0, 51));
-                            button.setBounds(458, 27, 97, 25);
-                            panel_2.add(button);
+                        }
+                    });
+                }
+
+                // Acción del botón Filtrar
+                btnFiltrar.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        loadContratosEmpleado();
+                    }
+                });
             }
             {
             	JPanel panel_1 = new JPanel();
@@ -423,21 +486,21 @@ public class DetallesComercial extends JDialog {
             	panel_1.setBounds(338, 362, 241, 114);
             	panel.add(panel_1);
             	{
-            		JLabel lblContratosRegistrados = new JLabel("Contratos Activos: 00");
+            		lblContratosActivos = new JLabel("Contratos Activos: 00");
+            		lblContratosActivos.setForeground(Color.WHITE);
+            		lblContratosActivos.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            		lblContratosActivos.setBounds(12, 42, 175, 16);
+            		panel_1.add(lblContratosActivos);
+            	}
+            	{
+            		lblContratosRegistrados = new JLabel("Contratos Registrados: 00");
             		lblContratosRegistrados.setForeground(Color.WHITE);
             		lblContratosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            		lblContratosRegistrados.setBounds(12, 42, 175, 16);
+            		lblContratosRegistrados.setBounds(12, 13, 175, 16);
             		panel_1.add(lblContratosRegistrados);
             	}
             	{
-            		JLabel label = new JLabel("Contratos Registrados: 00");
-            		label.setForeground(Color.WHITE);
-            		label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            		label.setBounds(12, 13, 175, 16);
-            		panel_1.add(label);
-            	}
-            	{
-            		JLabel lblContratosCerrados = new JLabel("Contratos Cerrados: 00");
+            		lblContratosCerrados = new JLabel("Contratos Cerrados: 00");
             		lblContratosCerrados.setForeground(Color.WHITE);
             		lblContratosCerrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             		lblContratosCerrados.setBounds(12, 71, 175, 16);
@@ -498,5 +561,72 @@ public class DetallesComercial extends JDialog {
         if(!miEmpleado.isActivo())
         	txtDesactivado.setText(miEmpleado.getUsuario().getFechaDesactivacion().toString());
         
+        loadContratosEmpleado();
+    }
+    private void loadContratosEmpleado() {
+        if (model == null) {
+            model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            table.setModel(model);
+        }
+
+        model.setRowCount(0);
+        row = new Object[5];
+
+        String filtro = comboFiltrar.getSelectedItem() != null ? 
+                        comboFiltrar.getSelectedItem().toString() : "Todos";
+        int totalRegistrados = 0;
+        int totalActivos = 0;
+        int totalCerrados = 0;
+        String[] headers = {"Código", "Plan", "Fecha Inicio", "Fecha Cierre", "Estado"};
+        model.setColumnIdentifiers(headers);
+
+        if (miEmpleado != null && miEmpleado.getContratos() != null) {
+            for (Contrato c : miEmpleado.getContratos()) {
+                totalRegistrados++;
+                if (c.isActivo()) {
+                    totalActivos++;
+                } else {
+                    totalCerrados++;
+                }
+            }
+        }
+
+        lblContratosRegistrados.setText("Contratos Registrados: " + String.format("%02d", totalRegistrados));
+        lblContratosActivos.setText("Contratos Activos: " + String.format("%02d", totalActivos));
+        lblContratosCerrados.setText("Contratos Cerrados: " + String.format("%02d", totalCerrados));
+
+        if (miEmpleado != null && miEmpleado.getContratos() != null) {
+            for (Contrato c : miEmpleado.getContratos()) {
+                boolean incluir = false;
+
+                switch (filtro) {
+                    case "Todos":
+                        incluir = true;
+                        break;
+                    case "Activos":
+                        incluir = c.isActivo();
+                        break;
+                    case "Cerrados":
+                        incluir = !c.isActivo();
+                        break;
+                }
+
+                if (incluir) {
+
+                    row[0] = c.getCodigo() != null ? c.getCodigo() : "";
+                    row[1] = c.getPlan() != null ? c.getPlan().getNombre() : "N/A";
+                    row[2] = c.getFechaInicio() != null ? c.getFechaInicio().toString() : "";
+                    row[3] = c.getFechaCierre() != null ? c.getFechaCierre().toString() : "";
+                    row[4] = c.isActivo() ? "Activo" : "Cerrado";
+
+                    model.addRow(row);
+                }
+            }
+        }
     }
 }

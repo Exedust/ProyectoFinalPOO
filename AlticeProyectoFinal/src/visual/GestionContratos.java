@@ -38,11 +38,18 @@ public class GestionContratos extends JDialog {
 
     private JButton btnAgregar;
     private JButton btnCerrarContrato;
-    private JButton btnPagar;
     private JButton btnDetalles;
     private JButton btnSalir;
 
     private JComboBox<String> comboFiltrar;
+    private JTextField txtCedulaCliente;
+    private JTextField txtCodigoContrato;
+    private JLabel lblCodigoContrato;
+    private JLabel lblContratosRegistrados;
+    private JLabel lblContratosActivos;
+    private JLabel lblContratosPendientes;
+    private JButton btnBuscar;
+    private JButton btnCedula;
 
     public static void main(String[] args) {
         try {
@@ -57,7 +64,7 @@ public class GestionContratos extends JDialog {
     public GestionContratos() {
         setTitle("Gestionar Contratos");
         setResizable(false);
-        setBounds(100, 100, 1280, 770);
+        setBounds(100, 100, 1280, 765);
         setLocationRelativeTo(null);
 
         getContentPane().setBackground(new Color(0, 0, 51));
@@ -73,7 +80,7 @@ public class GestionContratos extends JDialog {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
             panel.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            panel.setBounds(12, 145, 1102, 496);
+            panel.setBounds(12, 124, 1102, 542);
             contentPanel.add(panel);
             panel.setLayout(new BorderLayout(0, 0));
 
@@ -108,32 +115,35 @@ public class GestionContratos extends JDialog {
                         selected = Altice.getInstance().buscarContratoByCodigo(codigo);
 
                         btnCerrarContrato.setEnabled(selected != null && selected.isActivo());
-                        btnPagar.setEnabled(true);
                         btnDetalles.setEnabled(true);
                     }
                 }
             });
         }
 
-        // ====================== CAMPO DE BÚSQUEDA ======================
         {
-            JTextField txtBuscar = new JTextField();
-            txtBuscar.setBackground(new Color(0, 0, 51));
-            txtBuscar.setForeground(Color.WHITE);
-            txtBuscar.setCaretColor(Color.WHITE);
-            txtBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            txtBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            txtBuscar.setBounds(12, 110, 232, 24);
-            contentPanel.add(txtBuscar);
+            txtCodigoContrato = new JTextField();
+            txtCodigoContrato.setBackground(new Color(0, 0, 51));
+            txtCodigoContrato.setForeground(Color.WHITE);
+            txtCodigoContrato.setCaretColor(Color.WHITE);
+            txtCodigoContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            txtCodigoContrato.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+            txtCodigoContrato.setBounds(12, 86, 232, 24);
+            contentPanel.add(txtCodigoContrato);
         }
         {
-            JButton btnBuscar = new JButton("Buscar");
+            btnBuscar = new JButton("Buscar");
+            btnBuscar.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		loadContratos();
+            	}
+            });
             btnBuscar.setForeground(Color.WHITE);
             btnBuscar.setBackground(new Color(0, 0, 51));
             btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnBuscar.setFocusPainted(false);
             btnBuscar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnBuscar.setBounds(256, 110, 97, 25);
+            btnBuscar.setBounds(256, 86, 97, 25);
             contentPanel.add(btnBuscar);
         }
 
@@ -143,10 +153,10 @@ public class GestionContratos extends JDialog {
             comboFiltrar.setBackground(new Color(0, 0, 51));
             comboFiltrar.setForeground(Color.WHITE);
             comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboFiltrar.setBounds(797, 110, 208, 24);
-            comboFiltrar.addItem("Todos");
+            comboFiltrar.setBounds(797, 83, 208, 24);
             comboFiltrar.addItem("Activos");
             comboFiltrar.addItem("Cerrados");
+            comboFiltrar.addItem("Todos");
             contentPanel.add(comboFiltrar);
         }
         {
@@ -161,23 +171,23 @@ public class GestionContratos extends JDialog {
             btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnFiltrar.setFocusPainted(false);
             btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnFiltrar.setBounds(1017, 110, 97, 25);
+            btnFiltrar.setBounds(1017, 83, 97, 25);
             contentPanel.add(btnFiltrar);
         }
 
         // ====================== CONTADORES ======================
         {
-            JLabel lblContratosRegistrados = new JLabel("Contratos registrados: 00");
+            lblContratosRegistrados = new JLabel("Contratos registrados: 00");
             lblContratosRegistrados.setForeground(Color.WHITE);
-            lblContratosRegistrados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblContratosRegistrados.setBounds(12, 59, 216, 16);
+            lblContratosRegistrados.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblContratosRegistrados.setBounds(12, 26, 216, 16);
             contentPanel.add(lblContratosRegistrados);
         }
         {
-            JLabel lblContratosActivos = new JLabel("Contratos activos: 00");
+            lblContratosActivos = new JLabel("Contratos activos: 00");
             lblContratosActivos.setForeground(Color.WHITE);
-            lblContratosActivos.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            lblContratosActivos.setBounds(240, 59, 216, 16);
+            lblContratosActivos.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblContratosActivos.setBounds(240, 26, 216, 16);
             contentPanel.add(lblContratosActivos);
         }
 
@@ -197,7 +207,7 @@ public class GestionContratos extends JDialog {
             btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnAgregar.setFocusPainted(false);
             btnAgregar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnAgregar.setBounds(1143, 145, 97, 25);
+            btnAgregar.setBounds(1142, 110, 97, 25);
             contentPanel.add(btnAgregar);
         }
 
@@ -215,21 +225,9 @@ public class GestionContratos extends JDialog {
             btnCerrarContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnCerrarContrato.setFocusPainted(false);
             btnCerrarContrato.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnCerrarContrato.setBounds(1143, 183, 97, 25);
+            btnCerrarContrato.setBounds(1142, 148, 97, 25);
             btnCerrarContrato.setEnabled(false);
             contentPanel.add(btnCerrarContrato);
-        }
-
-        {
-            btnPagar = new JButton("Realizar Pago");
-            btnPagar.setForeground(Color.WHITE);
-            btnPagar.setBackground(new Color(0, 0, 51));
-            btnPagar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btnPagar.setFocusPainted(false);
-            btnPagar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnPagar.setBounds(1143, 221, 97, 25);
-            btnPagar.setEnabled(false);
-            contentPanel.add(btnPagar);
         }
 
         {
@@ -240,6 +238,7 @@ public class GestionContratos extends JDialog {
                         DetallesContrato nuevo = new DetallesContrato(selected);
                         nuevo.setModal(true);
                         nuevo.setVisible(true);
+                        loadContratos();
                     }
                 }
             });
@@ -248,9 +247,55 @@ public class GestionContratos extends JDialog {
             btnDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnDetalles.setFocusPainted(false);
             btnDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnDetalles.setBounds(1143, 259, 97, 25);
+            btnDetalles.setBounds(1142, 201, 97, 25);
             btnDetalles.setEnabled(false);
             contentPanel.add(btnDetalles);
+        }
+        {
+        	txtCedulaCliente = new JTextField();
+        	txtCedulaCliente.setForeground(Color.WHITE);
+        	txtCedulaCliente.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	txtCedulaCliente.setCaretColor(Color.WHITE);
+        	txtCedulaCliente.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        	txtCedulaCliente.setBackground(new Color(0, 0, 51));
+        	txtCedulaCliente.setBounds(365, 83, 232, 24);
+        	contentPanel.add(txtCedulaCliente);
+        }
+        {
+        	btnCedula = new JButton("Buscar");
+        	btnCedula.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			loadContratos();
+        		}
+        	});
+        	btnCedula.setForeground(Color.WHITE);
+        	btnCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	btnCedula.setFocusPainted(false);
+        	btnCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        	btnCedula.setBackground(new Color(0, 0, 51));
+        	btnCedula.setBounds(609, 83, 97, 25);
+        	contentPanel.add(btnCedula);
+        }
+        {
+        	lblCodigoContrato = new JLabel("C\u00F3digo del Contrato");
+        	lblCodigoContrato.setForeground(Color.WHITE);
+        	lblCodigoContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	lblCodigoContrato.setBounds(12, 57, 216, 16);
+        	contentPanel.add(lblCodigoContrato);
+        }
+        {
+        	JLabel lblCdulaDelCliente = new JLabel("C\u00E9dula del Cliente");
+        	lblCdulaDelCliente.setForeground(Color.WHITE);
+        	lblCdulaDelCliente.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	lblCdulaDelCliente.setBounds(365, 57, 216, 16);
+        	contentPanel.add(lblCdulaDelCliente);
+        }
+        {
+        	lblContratosPendientes = new JLabel("Contratos pendientes: 00");
+        	lblContratosPendientes.setForeground(Color.WHITE);
+        	lblContratosPendientes.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        	lblContratosPendientes.setBounds(460, 26, 216, 16);
+        	contentPanel.add(lblContratosPendientes);
         }
 
         // ====================== BOTONES INFERIORES ======================
@@ -281,11 +326,13 @@ public class GestionContratos extends JDialog {
     public void loadContratos() {
         if (model == null) return;
         model.setRowCount(0);
-        
         row = new Object[table.getColumnCount()];
 
-        String filtro = comboFiltrar.getSelectedItem().toString();
-        int count = 0;
+        String filtro = comboFiltrar.getSelectedItem() != null ? 
+                        comboFiltrar.getSelectedItem().toString() : "Todos";
+
+        String textoCodigo = txtCodigoContrato.getText().trim();
+        String textoCedula = txtCedulaCliente.getText().trim();
 
         for (Contrato c : Altice.getInstance().getMisContratos()) {
             boolean incluir = false;
@@ -302,36 +349,62 @@ public class GestionContratos extends JDialog {
                     break;
             }
 
-            if (incluir) {
-                float deuda = Altice.getInstance().calcularDeudaContrato(c);
-                String estado = (deuda > 0) ? "Pendiente" : "Al Día";
+            if (!incluir) continue;
 
-                row[0] = c.getCodigo();
-                row[1] = c.getCliente().getNombre();
-                row[2] = c.getCliente().getCedula();
-                row[3] = c.getPlan().getNombre();
-                row[4] = c.getFechaInicio() != null ? c.getFechaInicio().toString() : "";
-                row[5] = c.getFechaCierre() != null ? c.getFechaCierre().toString() : "";
-                row[6] = estado;
-                row[7] = String.format("RD$ %.2f", deuda);
-
-                model.addRow(row);
-                count++;
-            }
-        }
-
-        // Actualizar contador
-        for (Component c : contentPanel.getComponents()) {
-            if (c instanceof JLabel) {
-                JLabel label = (JLabel) c;
-                if (label.getText().startsWith("Contratos registrados")) {
-                    label.setText("Contratos registrados: " + String.format("%02d", count));
-                    break;
+            if (!textoCodigo.isEmpty()) {
+                if (c.getCodigo() == null || 
+                    !c.getCodigo().toLowerCase().contains(textoCodigo.toLowerCase())) {
+                    continue;
                 }
             }
+
+            if (!textoCedula.isEmpty()) {
+                if (c.getCliente() == null || c.getCliente().getCedula() == null ||
+                    !c.getCliente().getCedula().toLowerCase().contains(textoCedula.toLowerCase())) {
+                    continue;
+                }
+            }
+
+            float deuda = Altice.getInstance().calcularDeudaContrato(c);
+            String estado = (deuda > 0) ? "Pendiente" : "Al Día";
+
+            row[0] = c.getCodigo();
+            row[1] = c.getCliente() != null ? c.getCliente().getNombre() : "N/A";
+            row[2] = c.getCliente() != null ? c.getCliente().getCedula() : "N/A";
+            row[3] = c.getPlan() != null ? c.getPlan().getNombre() : "N/A";
+            row[4] = c.getFechaInicio() != null ? c.getFechaInicio().toString() : "";
+            row[5] = c.getFechaCierre() != null ? c.getFechaCierre().toString() : "";
+            row[6] = estado;
+            row[7] = String.format("RD$ %.2f", deuda);
+
+            model.addRow(row);
         }
+
+        actualizarContadores();
     }
 
+    private void actualizarContadores() {
+        int registrados = 0;
+        int activos = 0;
+        int pendientes = 0;
+
+        for (Contrato c : Altice.getInstance().getMisContratos()) {
+            registrados++;
+
+            if (c.isActivo()) {
+                activos++;
+            }
+
+            float deuda = Altice.getInstance().calcularDeudaContrato(c);
+            if (deuda > 0) {
+                pendientes++;
+            }
+        }
+
+        lblContratosRegistrados.setText("Contratos registrados: " + String.format("%02d", registrados));
+        lblContratosActivos.setText("Contratos activos: " + String.format("%02d", activos));
+        lblContratosPendientes.setText("Contratos pendientes: " + String.format("%02d", pendientes));
+    }
 
 
     private void cerrarContrato() {
@@ -349,7 +422,6 @@ public class GestionContratos extends JDialog {
             JOptionPane.showMessageDialog(this, "Contrato cerrado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             loadContratos();
             btnCerrarContrato.setEnabled(false);
-            btnPagar.setEnabled(false);
             btnDetalles.setEnabled(false);
             selected = null;
         } else {

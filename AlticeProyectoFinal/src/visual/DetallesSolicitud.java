@@ -36,6 +36,8 @@ public class DetallesSolicitud extends JDialog {
     private JTextField txtFechaAtencion;
 
     private JLabel lblDescripcion;
+    private JTextField txtTelefono;
+    private JTextField txtDireccion;
 
     public static void main(String[] args) {
         try {
@@ -77,11 +79,11 @@ public class DetallesSolicitud extends JDialog {
                 panelInfo.setLayout(null);
                 panelInfo.setBackground(new Color(102, 102, 204));
                 panelInfo.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                panelInfo.setBounds(12, 13, 600, 252);
+                panelInfo.setBounds(12, 13, 600, 235);
                 panel.add(panelInfo);
 
                 {
-                    JLabel lblCodigo = new JLabel("Código de Solicitud");
+                    JLabel lblCodigo = new JLabel("C\u00F3digo");
                     lblCodigo.setForeground(Color.WHITE);
                     lblCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
                     lblCodigo.setBounds(12, 13, 140, 16);
@@ -178,7 +180,7 @@ public class DetallesSolicitud extends JDialog {
                 panelClienteInfo.setLayout(null);
                 panelClienteInfo.setBackground(new Color(102, 102, 204));
                 panelClienteInfo.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-                panelClienteInfo.setBounds(12, 278, 600, 110);
+                panelClienteInfo.setBounds(12, 261, 600, 135);
                 panel.add(panelClienteInfo);
 
                 {
@@ -196,14 +198,14 @@ public class DetallesSolicitud extends JDialog {
                     txtClienteNombre.setCaretColor(Color.WHITE);
                     txtClienteNombre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
                     txtClienteNombre.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    txtClienteNombre.setBounds(12, 42, 280, 24);
+                    txtClienteNombre.setBounds(12, 42, 263, 24);
                     panelClienteInfo.add(txtClienteNombre);
                 }
                 {
                     JLabel lblClienteCedula = new JLabel("Cédula");
                     lblClienteCedula.setForeground(Color.WHITE);
                     lblClienteCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                    lblClienteCedula.setBounds(310, 13, 100, 16);
+                    lblClienteCedula.setBounds(287, 13, 100, 16);
                     panelClienteInfo.add(lblClienteCedula);
                 }
                 {
@@ -214,9 +216,41 @@ public class DetallesSolicitud extends JDialog {
                     txtClienteCedula.setCaretColor(Color.WHITE);
                     txtClienteCedula.setFont(new Font("Segoe UI", Font.PLAIN, 13));
                     txtClienteCedula.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    txtClienteCedula.setBounds(310, 42, 180, 24);
+                    txtClienteCedula.setBounds(287, 42, 263, 24);
                     panelClienteInfo.add(txtClienteCedula);
                 }
+                
+                JLabel lblTelefono = new JLabel("Telefono");
+                lblTelefono.setForeground(Color.WHITE);
+                lblTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblTelefono.setBounds(287, 69, 122, 16);
+                panelClienteInfo.add(lblTelefono);
+                
+                txtTelefono = new JTextField();
+                txtTelefono.setForeground(Color.WHITE);
+                txtTelefono.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtTelefono.setEditable(false);
+                txtTelefono.setCaretColor(Color.WHITE);
+                txtTelefono.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                txtTelefono.setBackground(new Color(0, 0, 51));
+                txtTelefono.setBounds(287, 98, 263, 24);
+                panelClienteInfo.add(txtTelefono);
+                
+                JLabel lblDireccion = new JLabel("Direccion");
+                lblDireccion.setForeground(Color.WHITE);
+                lblDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                lblDireccion.setBounds(12, 69, 56, 16);
+                panelClienteInfo.add(lblDireccion);
+                
+                txtDireccion = new JTextField();
+                txtDireccion.setForeground(Color.WHITE);
+                txtDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+                txtDireccion.setEditable(false);
+                txtDireccion.setCaretColor(Color.WHITE);
+                txtDireccion.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+                txtDireccion.setBackground(new Color(0, 0, 51));
+                txtDireccion.setBounds(12, 98, 263, 24);
+                panelClienteInfo.add(txtDireccion);
             }
 
             // ====================== PANEL EMPLEADO ASIGNADO ======================
@@ -225,7 +259,7 @@ public class DetallesSolicitud extends JDialog {
                 panelEmpleado.setLayout(null);
                 panelEmpleado.setBackground(new Color(102, 102, 204));
                 panelEmpleado.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-                panelEmpleado.setBounds(12, 401, 600, 80);
+                panelEmpleado.setBounds(12, 409, 600, 80);
                 panel.add(panelEmpleado);
 
                 {
@@ -254,7 +288,7 @@ public class DetallesSolicitud extends JDialog {
                 panelDescripcion.setLayout(null);
                 panelDescripcion.setBackground(new Color(102, 102, 204));
                 panelDescripcion.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
-                panelDescripcion.setBounds(12, 505, 600, 130);
+                panelDescripcion.setBounds(12, 502, 600, 149);
                 panel.add(panelDescripcion);
 
                 {
@@ -286,7 +320,7 @@ public class DetallesSolicitud extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton btnCerrar = new JButton("Cerrar");
+            JButton btnCerrar = new JButton("Salir");
             btnCerrar.setForeground(Color.WHITE);
             btnCerrar.setBackground(new Color(102, 0, 0));
             btnCerrar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -318,20 +352,20 @@ public class DetallesSolicitud extends JDialog {
         txtFechaAtencion.setText(miSolicitud.getFechaAtencion() != null ? 
                 miSolicitud.getFechaAtencion().toString() : "");
 
-        // Cliente
         Persona cli = miSolicitud.getCliente();
         if (cli != null) {
             txtClienteNombre.setText(cli.getNombre() != null ? cli.getNombre() : "N/A");
             txtClienteCedula.setText(cli.getCedula() != null ? cli.getCedula() : "N/A");
+            txtDireccion.setText(cli.getDireccion());
+            txtTelefono.setText(cli.getTelefono());
         } else {
             txtClienteNombre.setText("N/A");
             txtClienteCedula.setText("N/A");
         }
 
-        // Empleado
         Empleado emp = miSolicitud.getEmpleado();
         if (emp != null) {
-            txtEmpleadoAsignado.setText(emp.getNombre() != null ? emp.getNombre() : "No asignado");
+            txtEmpleadoAsignado.setText(emp.getNombre() != null ? emp.getCedula() + " - " + emp.getNombre(): "No asignado");
         } else {
             txtEmpleadoAsignado.setText("No asignado");
         }
