@@ -389,11 +389,17 @@ public class DetallesCliente extends JDialog {
                 btnVerContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
                 btnVerContrato.setFocusPainted(false);
                 btnVerContrato.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                btnVerContrato.setBounds(240, 610, 117, 25);
+                btnVerContrato.setBounds(462, 610, 117, 25);
                 panel.add(btnVerContrato);
             }
             {
                 btnCancelarPago = new JButton("Cancelar Pago");
+                btnCancelarPago.addActionListener(new ActionListener() {
+                	public void actionPerformed(ActionEvent e) {
+                		cancelarPago();
+                		
+                	}
+                });
                 btnCancelarPago.setForeground(Color.WHITE);
                 btnCancelarPago.setBackground(new Color(102, 0, 0));
                 btnCancelarPago.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -408,11 +414,10 @@ public class DetallesCliente extends JDialog {
             lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
             lblEstado.setForeground(new Color(0, 200, 0));
             lblEstado.setFont(new Font("Segoe UI", Font.BOLD, 15));
-            lblEstado.setBounds(220, 648, 150, 20);
+            lblEstado.setBounds(227, 610, 150, 20);
             panel.add(lblEstado);
         }
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -434,7 +439,6 @@ public class DetallesCliente extends JDialog {
             buttonPane.add(cancelButton);
         }
 
-        // ====================== BOTÓN MOSTRAR CONTRASEÑA ======================
         btnMostrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (txtContraVisible.isVisible()) {
@@ -553,6 +557,43 @@ public class DetallesCliente extends JDialog {
 
         actualizarEstadoDeuda();
     }
+    
+    private void cancelarPago() {
+        int fila = table.getSelectedRow();
+        if (fila == -1) {
+            return;
+        }
+        if (radioContratos.isSelected()) {
+            return;
+        }
+
+        String codigoPago = table.getValueAt(fila, 0).toString();
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea cancelar este pago pendiente?",
+                "Confirmar Cancelación de Pago",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        if (Altice.getInstance().cancelarPago(codigoPago)) {
+            JOptionPane.showMessageDialog(this,
+                    "Pago cancelado correctamente",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            loadTablaHistorial();
+            actualizarEstadoDeuda();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo cancelar el pago",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     private void actualizarEstadoDeuda() {
         if (miCliente == null) {
@@ -603,7 +644,14 @@ public class DetallesCliente extends JDialog {
                     row[1] = String.format("RD$ %.2f", p.getMonto());
                     row[2] = p.getFechaRegistro() != null ? p.getFechaRegistro().toString() : "";
                     row[3] = p.getFechaPago() != null ? p.getFechaPago().toString() : "";
-                    row[4] = p.isPendiente() ? "Pendiente" : "Realizado";
+                    
+                    String estado = "REALIZADO";
+                    if (!p.isActivo()) {
+                        estado = "CANCELADO";
+                    } else if (p.isPendiente()) {
+                        estado = "PENDIENTE";
+                    }
+                    row[4] = estado;
                     model.addRow(row);
                 }
             }
@@ -617,15 +665,43 @@ public class DetallesCliente extends JDialog {
         boolean haySeleccion = fila != -1;
 
         if (radioContratos.isSelected()) {
-            btnCerrarContrato.setVisible(haySeleccion);
-            btnVerContrato.setVisible(haySeleccion);
+            btnCerrarContrato.setVisible(true);
+            btnVerContrato.setVisible(true);
             btnRealizarPago.setVisible(false);
             btnCancelarPago.setVisible(false);
+
+            if (haySeleccion) {
+                String estadoContrato = table.getValueAt(fila, 4).toString();
+                boolean estaCerrado = estadoContrato.equals("Cerrado");
+
+                btnCerrarContrato.setEnabled(!estaCerrado); 
+                btnVerContrato.setEnabled(true);
+            } else {
+                btnCerrarContrato.setEnabled(false);
+                btnVerContrato.setEnabled(false);
+            }
+
         } else {
             btnCerrarContrato.setVisible(false);
             btnVerContrato.setVisible(false);
-            btnRealizarPago.setVisible(haySeleccion);
-            btnCancelarPago.setVisible(false);
+            btnRealizarPago.setVisible(true);
+            btnCancelarPago.setVisible(true);
+
+            if (haySeleccion) {
+                String estadoPago = table.getValueAt(fila, 4).toString();
+
+                boolean esPendiente = estadoPago.equals("PENDIENTE");
+                boolean esRealizado = estadoPago.equals("REALIZADO");
+                boolean esCancelado = estadoPago.equals("CANCELADO");
+
+                // Reglas solicitadas:
+                btnRealizarPago.setEnabled(esPendiente);       
+                btnCancelarPago.setEnabled(esPendiente || esRealizado); 
+
+            } else {
+                btnRealizarPago.setEnabled(false);
+                btnCancelarPago.setEnabled(false);
+            }
         }
     }
 }

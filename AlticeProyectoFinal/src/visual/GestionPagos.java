@@ -45,6 +45,7 @@ public class GestionPagos extends JDialog {
     private JButton btnBuscar;
 
     private JComboBox<String> comboFiltrar;
+    private JButton btnAgregar;
 
     public static void main(String[] args) {
         try {
@@ -108,9 +109,19 @@ public class GestionPagos extends JDialog {
                         String codigo = table.getValueAt(ind, 0).toString();
                         selected = Altice.getInstance().buscarPagoByCodigo(codigo);
 
-                        btnRealizarPago.setEnabled(selected != null && selected.isPendiente());
-                        btnCancelarPago.setEnabled(selected != null);
-                        btnVerContrato.setEnabled(selected != null);
+                        if (selected != null) {
+                            boolean esPendiente = selected.isPendiente() && selected.isActivo();
+                            boolean esRealizado = !selected.isPendiente() && selected.isActivo();
+
+                            btnRealizarPago.setEnabled(esPendiente);           
+                            btnCancelarPago.setEnabled(esPendiente || esRealizado);
+                            btnVerContrato.setEnabled(true);
+                        }
+                    } else {
+                        selected = null;
+                        btnRealizarPago.setEnabled(false);
+                        btnCancelarPago.setEnabled(false);
+                        btnVerContrato.setEnabled(false);
                     }
                 }
             });
@@ -148,17 +159,19 @@ public class GestionPagos extends JDialog {
             contentPanel.add(btnBuscar);
         }
 
-        // ====================== FILTRO ======================
         {
-            comboFiltrar = new JComboBox<>();
-            comboFiltrar.setBackground(new Color(0, 0, 51));
-            comboFiltrar.setForeground(Color.WHITE);
-            comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            comboFiltrar.setBounds(797, 110, 208, 24);
-            comboFiltrar.addItem("Todos");
-            comboFiltrar.addItem("Pendientes");
-            comboFiltrar.addItem("Realizados");
-            contentPanel.add(comboFiltrar);
+        	comboFiltrar = new JComboBox<>();
+        	comboFiltrar.setBackground(new Color(0, 0, 51));
+        	comboFiltrar.setForeground(Color.WHITE);
+        	comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	comboFiltrar.setBounds(797, 110, 208, 24);
+
+        	comboFiltrar.addItem("Pendientes");
+        	comboFiltrar.addItem("Realizados");
+        	comboFiltrar.addItem("Cancelados");
+        	comboFiltrar.addItem("Todos");  
+
+        	contentPanel.add(comboFiltrar);
         }
         {
             JButton btnFiltrar = new JButton("Filtrar");
@@ -224,7 +237,7 @@ public class GestionPagos extends JDialog {
             btnRealizarPago.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnRealizarPago.setFocusPainted(false);
             btnRealizarPago.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnRealizarPago.setBounds(1143, 145, 97, 25);
+            btnRealizarPago.setBounds(1143, 190, 97, 25);
             btnRealizarPago.setEnabled(false);
             contentPanel.add(btnRealizarPago);
         }
@@ -250,21 +263,44 @@ public class GestionPagos extends JDialog {
             btnVerContrato.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnVerContrato.setFocusPainted(false);
             btnVerContrato.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnVerContrato.setBounds(1143, 183, 97, 25);
+            btnVerContrato.setBounds(1143, 228, 97, 25);
             btnVerContrato.setEnabled(false);
             contentPanel.add(btnVerContrato);
         }
 
         {
             btnCancelarPago = new JButton("Cancelar Pago");
+            btnCancelarPago.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		cancelarPago();
+            	}
+            });
             btnCancelarPago.setForeground(Color.WHITE);
             btnCancelarPago.setBackground(new Color(102, 0, 0));
             btnCancelarPago.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             btnCancelarPago.setFocusPainted(false);
             btnCancelarPago.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-            btnCancelarPago.setBounds(1143, 221, 97, 25);
+            btnCancelarPago.setBounds(1143, 266, 97, 25);
             btnCancelarPago.setEnabled(false);
             contentPanel.add(btnCancelarPago);
+        }
+        {
+        	btnAgregar = new JButton("Agregar");
+        	btnAgregar.addActionListener(new ActionListener() {
+        		public void actionPerformed(ActionEvent e) {
+        			RegistrarPago pago = new RegistrarPago();
+        			pago.setModal(true);
+        			pago.setVisible(true);
+        			loadPagos();
+        		}
+        	});
+        	btnAgregar.setForeground(Color.WHITE);
+        	btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        	btnAgregar.setFocusPainted(false);
+        	btnAgregar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        	btnAgregar.setBackground(new Color(0, 0, 51));
+        	btnAgregar.setBounds(1143, 152, 97, 25);
+        	contentPanel.add(btnAgregar);
         }
 
         // ====================== BOTONES INFERIORES ======================
@@ -292,7 +328,44 @@ public class GestionPagos extends JDialog {
         loadPagos();
     }
 
-    // ====================== MÉTODO DE CARGA ======================
+    private void cancelarPago() {
+        if (selected == null) {
+            return;
+        }
+        if (!selected.isActivo()) {
+            JOptionPane.showMessageDialog(this,
+                    "Este pago ya está cancelado.",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea cancelar este pago?",
+                "Confirmar Cancelación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        if (Altice.getInstance().cancelarPago(selected.getCodigo())) {
+            JOptionPane.showMessageDialog(this,
+                    "Pago cancelado correctamente",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            loadPagos();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo cancelar el pago",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
     public void loadPagos() {
         if (model == null) return;
         model.setRowCount(0);
@@ -306,14 +379,18 @@ public class GestionPagos extends JDialog {
             boolean incluir = false;
 
             switch (filtro) {
-                case "Todos":
-                    incluir = true;
-                    break;
                 case "Pendientes":
-                    incluir = p.isPendiente();
+                    incluir = p.isPendiente() && p.isActivo();
                     break;
                 case "Realizados":
-                    incluir = !p.isPendiente();
+                    incluir = !p.isPendiente() && p.isActivo();
+                    break;
+                case "Cancelados":
+                    incluir = !p.isActivo();
+                    break;
+                case "Todos":
+                default:
+                    incluir = true;
                     break;
             }
 
@@ -329,7 +406,13 @@ public class GestionPagos extends JDialog {
                 row[4] = String.format("RD$ %.2f", p.getMonto());
                 row[5] = p.getFechaRegistro() != null ? p.getFechaRegistro().toString() : "";
                 row[6] = p.getFechaPago() != null ? p.getFechaPago().toString() : "";
-                row[7] = p.isPendiente() ? "Pendiente" : "Realizado";
+                String estado = "REALIZADO";
+                if (!p.isActivo()) {
+                    estado = "CANCELADO";
+                } else if (p.isPendiente()) {
+                    estado = "PENDIENTE";
+                }
+                row[7] = estado;
 
                 model.addRow(row);
                 count++;

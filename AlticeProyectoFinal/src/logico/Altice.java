@@ -243,23 +243,21 @@ public class Altice implements Serializable{
 	    if (codigo == null) return false;
 
 	    int indice = buscarIndexEmpleadoById(codigo);
-
 	    if (indice == -1) {
 	        return false;
 	    }
 
 	    Empleado empleado = misEmpleados.get(indice);
-
 	    if (empleado.getUsuario() != null) {
 	        empleado.getUsuario().setActivo(false);
+	        empleado.getUsuario().setFechaDesactivacion(LocalDate.now());
 	    }
-	    empleado.getUsuario().setFechaDesactivacion(LocalDate.now());
+
+	    cancelarPagosPendientesDePersona(empleado.getCedula());
 
 	    return true;
 	}
 	
-	
-
 	//
 	//CLIENTE
 	//
@@ -323,6 +321,8 @@ public class Altice implements Serializable{
 	        cliente.getUsuario().setActivo(false);
 	        cliente.getUsuario().setFechaDesactivacion(LocalDate.now());
 	    }
+	    cancelarPagosPendientesDePersona(cliente.getCedula());
+
 	    return true;
 	}
 
@@ -842,6 +842,47 @@ private int buscarIndexSolicitudByCodigo(String codigo) {
 
         return true;
     }
+    
+    public boolean cancelarPago(String codigoPago) {
+        if (codigoPago == null || codigoPago.trim().isEmpty()) {
+            return false;
+        }
+
+        Pago pago = buscarPagoByCodigo(codigoPago);
+        if (pago == null) {
+            return false;
+        }
+
+        pago.setPendiente(false);
+        pago.setActivo(false);                   
+        pago.setFechaPago(LocalDate.now());      
+
+        return true;
+    }
+    
+    public boolean cancelarPagosPendientesDePersona(String cedula) {
+        if (cedula == null || cedula.trim().isEmpty()) {
+            return false;
+        }
+
+        boolean seCanceloAlgo = false;
+
+        for (Pago pago : misPagos) {
+            if (pago.isPendiente() && 
+                pago.getCliente() != null && 
+                pago.getCliente().getCedula() != null &&
+                pago.getCliente().getCedula().equalsIgnoreCase(cedula)) {
+                
+                pago.setPendiente(false);
+                pago.setActivo(false);
+                pago.setFechaPago(LocalDate.now());
+                seCanceloAlgo = true;
+            }
+        }
+
+        return seCanceloAlgo;
+    }
+    
 //	
 //CONTRATO
 //
