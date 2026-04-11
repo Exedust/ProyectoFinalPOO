@@ -140,6 +140,11 @@ public class RegistrarContrato extends JDialog {
 		panelExistente.add(lblTelefono);
 
 		comboClientes = new JComboBox<String>();
+		comboClientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actualizarSelectedDesdeCombo();
+			}
+		});
 		comboClientes.setForeground(Color.WHITE);
 		comboClientes.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		comboClientes.setBackground(new Color(0, 0, 51));
@@ -354,7 +359,6 @@ public class RegistrarContrato extends JDialog {
 				}
 			}
 		}
-
 		for (Empleado emp : Altice.getInstance().getMisEmpleados()) {
 			if (emp.isActivo()) {
 				String item = emp.getCedula() + " - " + emp.getNombre() + " (Empleado)";
@@ -363,7 +367,6 @@ public class RegistrarContrato extends JDialog {
 				}
 			}
 		}
-
 		if (comboClientes.getItemCount() == 0) {
 			comboClientes.addItem("No hay personas activas registradas");
 		}
@@ -499,5 +502,40 @@ public class RegistrarContrato extends JDialog {
 				comboPlan.addItem("No hay planes disponibles para clientes");
 			}
 		}
+	}
+	private void actualizarSelectedDesdeCombo() {
+	    String itemSeleccionado = (String) comboClientes.getSelectedItem();
+	    if (itemSeleccionado == null || itemSeleccionado.contains("No hay personas")) {
+	        selected = null;
+	        return;
+	    }
+
+	    String cedula = itemSeleccionado.split(" - ")[0].trim();
+
+	    for (Cliente cli : Altice.getInstance().getMisClientes()) {
+	        if (cli.getCedula() != null && cli.getCedula().equalsIgnoreCase(cedula)) {
+	            selected = cli;
+	            cargarPlanes();
+				checkInstalacion.setSelected(true);
+				checkInstalacion.setVisible(true);
+	            return;
+	        }
+	    }
+
+	    for (Empleado emp : Altice.getInstance().getMisEmpleados()) {
+	        if (emp.getCedula() != null && emp.getCedula().equalsIgnoreCase(cedula)) {
+	            selected = emp;
+	            {
+					JOptionPane.showMessageDialog(this, "Se mostrarán los planes exclusivos para empleados.", "Empleado seleccionado.",
+							JOptionPane.INFORMATION_MESSAGE);
+					cargarPlanes();
+					checkInstalacion.setSelected(false);
+					checkInstalacion.setVisible(false);
+	            }
+	            return;
+	        }
+	    }
+
+	    selected = null;
 	}
 }

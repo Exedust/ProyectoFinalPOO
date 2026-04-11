@@ -62,7 +62,7 @@ public class DetallesPlan extends JDialog {
         setTitle("Detalles del Plan");
         miPlan = plan;
         setResizable(false);
-        setBounds(100, 100, 595, 814);
+        setBounds(100, 100, 595, 766);
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(0, 0, 51));
         getContentPane().setLayout(new BorderLayout());
@@ -135,7 +135,7 @@ public class DetallesPlan extends JDialog {
                 panelServicios.setBackground(new Color(102, 102, 204));
                 panelServicios.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Servicios Incluidos", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelServicios.setBounds(25, 278, 510, 71);
+                panelServicios.setBounds(25, 266, 510, 71);
                 panel.add(panelServicios);
 
                 {
@@ -174,7 +174,7 @@ public class DetallesPlan extends JDialog {
                 panelInternet.setBackground(new Color(102, 102, 204));
                 panelInternet.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Internet", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelInternet.setBounds(25, 372, 137, 232);
+                panelInternet.setBounds(25, 350, 137, 232);
                 panel.add(panelInternet);
 
                 {
@@ -240,7 +240,7 @@ public class DetallesPlan extends JDialog {
                 panelCable.setBackground(new Color(102, 102, 204));
                 panelCable.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Cable", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelCable.setBounds(217, 372, 137, 232);
+                panelCable.setBounds(217, 350, 137, 232);
                 panel.add(panelCable);
 
                 {
@@ -288,7 +288,7 @@ public class DetallesPlan extends JDialog {
                 panelMovil.setBackground(new Color(102, 102, 204));
                 panelMovil.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Movil", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelMovil.setBounds(398, 372, 137, 232);
+                panelMovil.setBounds(398, 350, 137, 232);
                 panel.add(panelMovil);
 
                 {
@@ -353,7 +353,7 @@ public class DetallesPlan extends JDialog {
                 panelCosto.setLayout(null);
                 panelCosto.setBackground(new Color(102, 102, 204));
                 panelCosto.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Costo Total", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelCosto.setBounds(25, 641, 510, 61);
+                panelCosto.setBounds(25, 595, 510, 61);
                 panel.add(panelCosto);
 
                 {

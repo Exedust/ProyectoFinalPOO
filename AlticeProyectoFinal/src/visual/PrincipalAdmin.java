@@ -72,7 +72,10 @@ public class PrincipalAdmin extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				Altice.getInstance().guardarDatos();
+				if(Altice.getSesion() != null)
+				{
+					Altice.getInstance().guardarDatos();					
+				}
 			}
 		});
 		setBackground(new Color(0, 0, 51));
@@ -335,7 +338,7 @@ public class PrincipalAdmin extends JFrame {
 		lblBienvenido.setBorder(new EmptyBorder(5, 10, 5, 10));
 		topPanel.add(lblBienvenido, BorderLayout.WEST);
 		
-		if(!Altice.getSesion().getUser().equalsIgnoreCase("admin"))
+		if(Altice.getSesion() != null && !Altice.getSesion().getUser().equalsIgnoreCase("admin"))
 			lblBienvenido.setText("Bienvenido, "+Altice.getInstance().buscarEmpleadoById((Altice.getSesion().getCodigo())).getNombre());
 		
 		JButton btnCerrarSesion = new JButton("Cerrar sesión");
@@ -565,6 +568,10 @@ public class PrincipalAdmin extends JFrame {
 	
 	private void cerrarSesion()
 	{
+		if(Altice.getSesion() == null)
+		{
+			return;
+		}
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Seguro que desea cerrar sesión?",
                 "Cerrar Sesión",

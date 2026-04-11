@@ -77,7 +77,7 @@ public class RegistrarPlan extends JDialog {
         	setTitle("Modificar Plan");
         
         setResizable(false);
-        setBounds(100, 100, 595, 818);
+        setBounds(100, 100, 595, 770);
         setLocationRelativeTo(null);
         
         getContentPane().setBackground(new Color(0, 0, 51));
@@ -102,7 +102,7 @@ public class RegistrarPlan extends JDialog {
                 panelGeneral.setLayout(null);
                 panelGeneral.setBackground(new Color(102, 102, 204));
                 panelGeneral.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                panelGeneral.setBounds(22, 46, 510, 207);
+                panelGeneral.setBounds(22, 42, 510, 207);
                 panel.add(panelGeneral);
 
                 {
@@ -149,7 +149,7 @@ public class RegistrarPlan extends JDialog {
                 panelServicios.setBackground(new Color(102, 102, 204));
                 panelServicios.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Servicios Incluidos", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelServicios.setBounds(22, 278, 510, 71);
+                panelServicios.setBounds(22, 261, 510, 71);
                 panel.add(panelServicios);
 
                 {
@@ -185,7 +185,7 @@ public class RegistrarPlan extends JDialog {
                 panelInternet.setBackground(new Color(102, 102, 204));
                 panelInternet.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Internet", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelInternet.setBounds(22, 372, 137, 232);
+                panelInternet.setBounds(22, 345, 137, 232);
                 panel.add(panelInternet);
 
                 {
@@ -242,7 +242,7 @@ public class RegistrarPlan extends JDialog {
                 panelCable.setBackground(new Color(102, 102, 204));
                 panelCable.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Cable", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelCable.setBounds(214, 372, 137, 232);
+                panelCable.setBounds(214, 345, 137, 232);
                 panel.add(panelCable);
 
                 {
@@ -285,7 +285,7 @@ public class RegistrarPlan extends JDialog {
                 panelMovil.setBackground(new Color(102, 102, 204));
                 panelMovil.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Movil", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelMovil.setBounds(395, 372, 137, 232);
+                panelMovil.setBounds(395, 345, 137, 232);
                 panel.add(panelMovil);
 
                 {
@@ -341,7 +341,7 @@ public class RegistrarPlan extends JDialog {
                 panelCosto.setBackground(new Color(102, 102, 204));
                 panelCosto.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true),
                         "Costo Total", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
-                panelCosto.setBounds(22, 641, 510, 61);
+                panelCosto.setBounds(22, 590, 510, 61);
                 panel.add(panelCosto);
 
                 {

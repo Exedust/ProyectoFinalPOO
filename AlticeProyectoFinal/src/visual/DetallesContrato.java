@@ -384,14 +384,7 @@ public class DetallesContrato extends JDialog {
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-            JButton okButton = new JButton("OK");
-            okButton.setForeground(Color.WHITE);
-            okButton.setBackground(new Color(0, 0, 51));
-            okButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            okButton.setFocusPainted(false);
-            buttonPane.add(okButton);
-
-            JButton cancelButton = new JButton("Cancelar");
+            JButton cancelButton = new JButton("Salir");
             cancelButton.setForeground(Color.WHITE);
             cancelButton.setBackground(new Color(102, 0, 0));
             cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));

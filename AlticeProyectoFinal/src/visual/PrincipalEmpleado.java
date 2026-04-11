@@ -77,7 +77,10 @@ public class PrincipalEmpleado extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				Altice.getInstance().guardarDatos();
+				if(Altice.getSesion() != null)
+				{
+					Altice.getInstance().guardarDatos();					
+				}
 			}
 		});
 		setBackground(new Color(0, 0, 51));
@@ -129,7 +132,6 @@ public class PrincipalEmpleado extends JFrame {
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
 
-		// Panel interno para el dashboard
 		JPanel dashboardPanel = new JPanel();
 		dashboardPanel.setBackground(new Color(0, 0, 51));
 		GridBagLayout gbl_dashboardPanel = new GridBagLayout();
@@ -276,6 +278,10 @@ public class PrincipalEmpleado extends JFrame {
 	
 	private void cerrarSesion()
 	{
+		if(Altice.getSesion() == null)
+		{
+			return;
+		}
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Seguro que desea cerrar sesión?",
                 "Cerrar Sesión",

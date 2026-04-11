@@ -30,9 +30,9 @@ public class GestionPlanes extends JDialog {
 
     private final static JPanel contentPanel = new JPanel();
    
-    private static JTable table;
-    private static DefaultTableModel model;
-    private static Object[] row;
+    private JTable table;
+    private DefaultTableModel model;
+    private Object[] row;
     private Plan selected = null;
 
     private JButton btnAgregar;
