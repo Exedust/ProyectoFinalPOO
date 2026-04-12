@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -22,13 +23,13 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import logico.Altice;
+import java.time.LocalDate;
 
 public class Reportes extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
     private JTabbedPane tabbedPane;
 
-    // Variables para controlar el gr·fico actual
     private ChartPanel chartPanelActual = null;
     private JLabel lblInfoClientes;
     private JLabel lblInfoContratos;
@@ -70,7 +71,6 @@ public class Reportes extends JDialog {
         crearPestanaPlanes();
         crearPestanaNomina();
 
-        // BotÛn Salir
         JPanel buttonPane = new JPanel();
         buttonPane.setBackground(new Color(0, 0, 51));
         buttonPane.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "",
@@ -87,7 +87,7 @@ public class Reportes extends JDialog {
         buttonPane.add(btnSalir);
     }
 
-    // ====================== PESTA—A CLIENTES ======================
+    // ====================== PESTA√ëA CLIENTES ======================
     private void crearPestanaClientes() {
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 51));
@@ -103,7 +103,7 @@ public class Reportes extends JDialog {
         agregarBotonEstilo(btnEstadoPago);
         panelBotones.add(btnEstadoPago);
 
-        JButton btnDistribucionDeuda = new JButton("DistribuciÛn por Deuda");
+        JButton btnDistribucionDeuda = new JButton("Distribuci√≥n por Deuda");
         btnDistribucionDeuda.addActionListener(e -> mostrarGraficoDistribucionDeuda(panel));
         agregarBotonEstilo(btnDistribucionDeuda);
         panelBotones.add(btnDistribucionDeuda);
@@ -120,10 +120,10 @@ public class Reportes extends JDialog {
 
         panel.add(panelBotones);
 
-        lblInfoClientes = new JLabel("<html><b>InformaciÛn General de Clientes:</b><br><br>" +
+        lblInfoClientes = new JLabel("<html><b>Informaci√≥n General de Clientes:</b><br><br>" +
                 "Total de clientes: " + Altice.getInstance().contarClientesTotal() + "<br>" +
                 "Clientes activos: " + Altice.getInstance().contarClientesActivos() + "<br>" +
-                "Clientes al dÌa: " + Altice.getInstance().contarClientesAlDia() + "<br>" +
+                "Clientes al d√≠a: " + Altice.getInstance().contarClientesAlDia() + "<br>" +
                 "Clientes con deuda: " + Altice.getInstance().contarClientesPendientes() + "<br>" +
                 "Deuda total: RD$ " + String.format("%.2f", Altice.getInstance().calcularDeudaTotalClientes()) +
                 "</html>");
@@ -135,7 +135,7 @@ public class Reportes extends JDialog {
         tabbedPane.addTab("Clientes", panel);
     }
 
-    // ====================== PESTA—A CONTRATOS ======================
+    // ====================== PESTA√ëA CONTRATOS ======================
     private void crearPestanaContratos() {
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 51));
@@ -147,14 +147,17 @@ public class Reportes extends JDialog {
         panelBotones.setLayout(new GridLayout(0, 1, 0, 10));
 
         JButton btnEstado = new JButton("Contratos por Estado");
+        btnEstado.addActionListener(e -> mostrarGraficoContratosPorEstado(panel));
         agregarBotonEstilo(btnEstado);
         panelBotones.add(btnEstado);
 
         JButton btnPorPlan = new JButton("Contratos por Plan");
+        btnPorPlan.addActionListener(e -> mostrarGraficoContratosPorPlan(panel));
         agregarBotonEstilo(btnPorPlan);
         panelBotones.add(btnPorPlan);
 
         JButton btnMontoDeuda = new JButton("Monto Total de Deuda");
+        btnMontoDeuda.addActionListener(e -> mostrarGraficoMontoDeudaPorMes(panel));   // ‚Üê Nuevo
         agregarBotonEstilo(btnMontoDeuda);
         panelBotones.add(btnMontoDeuda);
 
@@ -165,8 +168,7 @@ public class Reportes extends JDialog {
 
         panel.add(panelBotones);
 
-        // Resumen de Contratos
-        lblInfoContratos = new JLabel("<html><b>InformaciÛn General de Contratos:</b><br><br>" +
+        lblInfoContratos = new JLabel("<html><b>Informaci√≥n General de Contratos:</b><br><br>" +
                 "Total de contratos: " + Altice.getInstance().contarContratosTotal() + "<br>" +
                 "Contratos activos: " + Altice.getInstance().contarContratosActivos() + "<br>" +
                 "Contratos cerrados: " + Altice.getInstance().contarContratosCerrados() + "<br>" +
@@ -180,18 +182,39 @@ public class Reportes extends JDialog {
         tabbedPane.addTab("Contratos", panel);
     }
 
-    private void mostrarResumenContratos(JPanel panel) {
+    // ====================== GR√ÅFICO: MONTO TOTAL DE DEUDA POR MES (Line Chart) ======================
+    private void mostrarGraficoMontoDeudaPorMes(JPanel panel) {
         ocultarGraficoActual(panel);
-        if (lblInfoContratos != null) lblInfoContratos.setVisible(true);
+
+        float[] deudaPorMes = Altice.getInstance().getDeudaTotalPorMesUltimoAno();
+        String[] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (int i = 0; i < 12; i++) {
+            dataset.setValue(deudaPorMes[i], "Deuda", meses[i]);
+        }
+
+        JFreeChart chart = ChartFactory.createLineChart(
+                "Monto Total de Deuda por Mes (√öltimo A√±o)",
+                "Mes",
+                "Monto de Deuda (RD$)",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+        panel.add(chartPanelActual);
+        if (lblInfoContratos != null) lblInfoContratos.setVisible(false);
         panel.revalidate();
         panel.repaint();
     }
 
-    // ====================== M…TODOS DE GR¡FICOS CLIENTES ======================
+    // ====================== GR√ÅFICOS ANTERIORES (mantenidos) ======================
     private void mostrarGraficoEstadoPago(JPanel panel) {
         ocultarGraficoActual(panel);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.setValue(Altice.getInstance().contarClientesAlDia(), "Estado", "Al DÌa");
+        dataset.setValue(Altice.getInstance().contarClientesAlDia(), "Estado", "Al D√≠a");
         dataset.setValue(Altice.getInstance().contarClientesPendientes(), "Estado", "Pendientes");
 
         JFreeChart chart = ChartFactory.createBarChart("Estado de Pago de Clientes",
@@ -213,7 +236,7 @@ public class Reportes extends JDialog {
         dataset.setValue("Deuda Media", Altice.getInstance().contarClientesDeudaMedia());
         dataset.setValue("Deuda Alta", Altice.getInstance().contarClientesDeudaAlta());
 
-        JFreeChart chart = ChartFactory.createPieChart("DistribuciÛn de Clientes por Nivel de Deuda",
+        JFreeChart chart = ChartFactory.createPieChart("Distribuci√≥n de Clientes por Nivel de Deuda",
                 dataset, true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
@@ -226,7 +249,6 @@ public class Reportes extends JDialog {
 
     private void mostrarGraficoMesRegistro(JPanel panel) {
         ocultarGraficoActual(panel);
-
         int[] clientesPorMes = Altice.getInstance().getClientesPorMesUltimoAno();
         String[] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
 
@@ -235,13 +257,70 @@ public class Reportes extends JDialog {
             dataset.setValue(clientesPorMes[i], "Clientes", meses[i]);
         }
 
-        JFreeChart chart = ChartFactory.createBarChart("Clientes Registrados por Mes (⁄ltimo AÒo)",
+        JFreeChart chart = ChartFactory.createBarChart("Clientes Registrados por Mes (√öltimo A√±o)",
                 "Mes", "Cantidad de Clientes", dataset, PlotOrientation.VERTICAL, true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
         panel.add(chartPanelActual);
         lblInfoClientes.setVisible(false);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void mostrarGraficoContratosPorEstado(JPanel panel) {
+        ocultarGraficoActual(panel);
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        dataset.setValue("Activos", Altice.getInstance().contarContratosActivos());
+        dataset.setValue("Cerrados", Altice.getInstance().contarContratosCerrados());
+
+        JFreeChart chart = ChartFactory.createPieChart(
+                "Distribuci√≥n de Contratos por Estado",
+                dataset, true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+        panel.add(chartPanelActual);
+        if (lblInfoContratos != null) lblInfoContratos.setVisible(false);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void mostrarGraficoContratosPorPlan(JPanel panel) {
+        ocultarGraficoActual(panel);
+        Map<String, Integer> contratosPorPlan = Altice.getInstance().contarContratosPorPlan();
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (Map.Entry<String, Integer> entry : contratosPorPlan.entrySet()) {
+            dataset.setValue(entry.getValue(), "Contratos", entry.getKey());
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Cantidad de Contratos por Plan",
+                "Plan",
+                "N√∫mero de Contratos",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+        panel.add(chartPanelActual);
+        if (lblInfoContratos != null) lblInfoContratos.setVisible(false);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void mostrarResumen(JPanel panel) {
+        ocultarGraficoActual(panel);
+        if (lblInfoClientes != null) lblInfoClientes.setVisible(true);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void mostrarResumenContratos(JPanel panel) {
+        ocultarGraficoActual(panel);
+        if (lblInfoContratos != null) lblInfoContratos.setVisible(true);
         panel.revalidate();
         panel.repaint();
     }
@@ -253,13 +332,6 @@ public class Reportes extends JDialog {
         }
     }
 
-    private void mostrarResumen(JPanel panel) {
-        ocultarGraficoActual(panel);
-        lblInfoClientes.setVisible(true);
-        panel.revalidate();
-        panel.repaint();
-    }
-
     private void agregarBotonEstilo(JButton boton) {
         boton.setForeground(Color.WHITE);
         boton.setBackground(new Color(0, 0, 51));
@@ -268,11 +340,11 @@ public class Reportes extends JDialog {
         boton.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
     }
 
-    // ====================== OTRAS PESTA—AS ======================
+    // ====================== OTRAS PESTA√ëAS ======================
     private void crearPestanaPagos() { JPanel panel = crearPanelBase("Pagos"); tabbedPane.addTab("Pagos", panel); }
     private void crearPestanaSolicitudes() { JPanel panel = crearPanelBase("Solicitudes"); tabbedPane.addTab("Solicitudes", panel); }
     private void crearPestanaPlanes() { JPanel panel = crearPanelBase("Planes"); tabbedPane.addTab("Planes", panel); }
-    private void crearPestanaNomina() { JPanel panel = crearPanelBase("NÛmina"); tabbedPane.addTab("NÛmina", panel); }
+    private void crearPestanaNomina() { JPanel panel = crearPanelBase("N√≥mina"); tabbedPane.addTab("N√≥mina", panel); }
 
     private JPanel crearPanelBase(String titulo) {
         JPanel panel = new JPanel();

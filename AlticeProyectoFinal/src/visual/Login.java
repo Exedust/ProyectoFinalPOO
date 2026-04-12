@@ -157,8 +157,8 @@ public class Login extends JFrame {
                 PrincipalAdmin principal = new PrincipalAdmin();
                 principal.setVisible(true);
             } else if (rol == Rol.TECNICO || rol == Rol.COMERCIAL) {
-                // PrincipalEmpleado principal = new PrincipalEmpleado();
-                // principal.setVisible(true);
+                 PrincipalEmpleado principal = new PrincipalEmpleado();
+                 principal.setVisible(true);
                 JOptionPane.showMessageDialog(this, "Bienvenido, " + rol.name(), "Acceso", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Rol no reconocido.", "Error", JOptionPane.ERROR_MESSAGE);

@@ -1352,6 +1352,17 @@ public class Altice implements Serializable {
 		return count;
 	}
 
+    public java.util.Map<String, Integer> contarContratosPorPlan() {
+        java.util.Map<String, Integer> mapa = new java.util.HashMap<>();
+        
+        for (Contrato c : misContratos) {
+            if (c.getPlan() != null) {
+                String nombrePlan = c.getPlan().getNombre();
+                mapa.put(nombrePlan, mapa.getOrDefault(nombrePlan, 0) + 1);
+            }
+        }
+        return mapa;
+    }
 	public float calcularDeudaTotalClientes() {
 		float total = 0;
 		for (Cliente c : misClientes) {
@@ -1362,6 +1373,22 @@ public class Altice implements Serializable {
 	
     public int contarContratosCerrados() {
         return misContratos.size() - contarContratosActivos();
+    }
+    
+    public float[] getDeudaTotalPorMesUltimoAno() {
+        float[] deudaPorMes = new float[12];
+        LocalDate hoy = LocalDate.now();
+        int añoActual = hoy.getYear();
+
+        for (Contrato c : misContratos) {
+            if (!c.isActivo()) continue;
+            LocalDate fechaInicio = c.getFechaInicio();
+            if (fechaInicio.getYear() == añoActual) {
+                int mes = fechaInicio.getMonthValue() - 1;
+                deudaPorMes[mes] += c.getDeuda();
+            }
+        }
+        return deudaPorMes;
     }
 
     
