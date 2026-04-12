@@ -761,17 +761,6 @@ public class Altice implements Serializable {
 		return null;
 	}
 
-	private int buscarIndexPagoByCodigo(String codigo) {
-		if (codigo == null)
-			return -1;
-		for (int i = 0; i < misPagos.size(); i++) {
-			Pago p = misPagos.get(i);
-			if (p.getCodigo() != null && p.getCodigo().equalsIgnoreCase(codigo)) {
-				return i;
-			}
-		}
-		return -1;
-	}
 
 	//VALIDACIONES
 	///       
