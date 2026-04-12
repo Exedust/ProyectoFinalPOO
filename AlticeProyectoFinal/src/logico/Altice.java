@@ -687,17 +687,7 @@ public class Altice implements Serializable {
 		return misSolicitudes.size();
 	}
 
-	public int contarSolicitudesPorEstado(EstadoSolicitud estado) {
-		if (estado == null)
-			return 0;
-		int count = 0;
-		for (Solicitud s : misSolicitudes) {
-			if (s.getEstado() == estado) {
-				count++;
-			}
-		}
-		return count;
-	}
+	
 
 	public Contrato buscarContratoByCodigo(String codigo) {
 		for (Contrato c : misContratos) {
@@ -1157,13 +1147,7 @@ public class Altice implements Serializable {
 		}
 		return count;
 	}
-	public int contarSolicitudesPorTipo(TipoSolicitud tipo) {
-		int count = 0;
-		for (Solicitud s : misSolicitudes) {
-			if (s.getTipo() == tipo) count++;
-		}
-		return count;
-	}
+
 
 	public int contarSolicitudesPorTecnico(String codigoTecnico) {
 		int count = 0;
@@ -1428,6 +1412,85 @@ public class Altice implements Serializable {
             }
         }
         return total;
+    }
+    
+    // ====================== REPORTES - SOLICITUDES ======================
+
+    /**
+     * Cuenta solicitudes por tipo (corregido para que coincida con tu enum)
+     */
+    public int contarSolicitudesPorTipo(TipoSolicitud tipo) {
+        if (tipo == null) return 0;
+        int count = 0;
+        for (Solicitud s : misSolicitudes) {
+            if (s.getTipo() == tipo) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Cuenta solicitudes por estado (corregido para que coincida con tu enum)
+     */
+    public int contarSolicitudesPorEstado(EstadoSolicitud estado) {
+        if (estado == null) return 0;
+        int count = 0;
+        for (Solicitud s : misSolicitudes) {
+            if (s.getEstado() == estado) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Tiempo promedio de resolución en días (solo para solicitudes RESUELTO)
+     * Retorna 0 si no hay datos suficientes
+     */
+    public double calcularTiempoPromedioResolucion() {
+        int count = 0;
+        long totalDias = 0;
+
+        for (Solicitud s : misSolicitudes) {
+            if (s.isResuelto() && s.getFechaRegistro() != null && s.getFechaAtencion() != null) {
+                long dias = java.time.temporal.ChronoUnit.DAYS.between(
+                    s.getFechaRegistro(), s.getFechaAtencion());
+                
+                if (dias > 0) {
+                    totalDias += dias;
+                    count++;
+                }
+            }
+        }
+
+        return (count > 0) ? (double) totalDias / count : 0.0;
+    }
+
+    /**
+     * Tiempo promedio de resolución por tipo de solicitud
+     */
+    public double calcularTiempoPromedioResolucionPorTipo(TipoSolicitud tipo) {
+        if (tipo == null) return 0.0;
+
+        int count = 0;
+        long totalDias = 0;
+
+        for (Solicitud s : misSolicitudes) {
+            if (s.getTipo() == tipo && s.isResuelto() && 
+                s.getFechaRegistro() != null && s.getFechaAtencion() != null) {
+                
+                long dias = java.time.temporal.ChronoUnit.DAYS.between(
+                    s.getFechaRegistro(), s.getFechaAtencion());
+                
+                if (dias > 0) {
+                    totalDias += dias;
+                    count++;
+                }
+            }
+        }
+
+        return (count > 0) ? (double) totalDias / count : 0.0;
     }
     
 }

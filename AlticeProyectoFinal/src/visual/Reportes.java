@@ -23,6 +23,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import logico.Altice;
+import logico.EstadoSolicitud;
+import logico.TipoSolicitud;
 
 public class Reportes extends JDialog {
 
@@ -30,9 +32,11 @@ public class Reportes extends JDialog {
     private JTabbedPane tabbedPane;
 
     private ChartPanel chartPanelActual = null;
+
     private JLabel lblInfoClientes;
     private JLabel lblInfoContratos;
     private JLabel lblInfoPagos;
+    private JLabel lblInfoSolicitudes;
 
     public static void main(String[] args) {
         try {
@@ -64,6 +68,7 @@ public class Reportes extends JDialog {
         tabbedPane.setForeground(Color.WHITE);
         contentPanel.add(tabbedPane, BorderLayout.CENTER);
 
+        // Llamadas corregidas y completas
         crearPestanaClientes();
         crearPestanaContratos();
         crearPestanaPagos();
@@ -225,34 +230,50 @@ public class Reportes extends JDialog {
         tabbedPane.addTab("Pagos", panel);
     }
 
-    // ====================== GRÁFICO: MONTO PENDIENTE VS RECAUDADO (Bar Chart) ======================
-    private void mostrarGraficoMontoPendienteVsRecaudado(JPanel panel) {
-        ocultarGraficoActual(panel);
+    // ====================== PESTAÑA SOLICITUDES ======================
+    private void crearPestanaSolicitudes() {
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(0, 0, 51));
+        panel.setLayout(null);
 
-        double montoPendiente = Altice.getInstance().calcularMontoPendienteTotal();
-        double montoRecaudado = Altice.getInstance().calcularMontoRecaudadoTotal();
+        JPanel panelBotones = new JPanel();
+        panelBotones.setBackground(new Color(0, 0, 51));
+        panelBotones.setBounds(30, 30, 280, 420);
+        panelBotones.setLayout(new GridLayout(0, 1, 0, 10));
 
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.setValue(montoPendiente, "Monto", "Pendiente");
-        dataset.setValue(montoRecaudado, "Monto", "Recaudado");
+        JButton btnTipo = new JButton("Tipo");
+        btnTipo.addActionListener(e -> mostrarGraficoSolicitudesPorTipo(panel));
+        agregarBotonEstilo(btnTipo);
+        panelBotones.add(btnTipo);
 
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Monto Pendiente Total vs Recaudado",
-                "Categoría",
-                "Monto (RD$)",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true, true, false);
+        JButton btnTiempoResolucion = new JButton("Tiempo de Resolución Promedio");
+        btnTiempoResolucion.addActionListener(e -> mostrarGraficoTiempoResolucion(panel));
+        agregarBotonEstilo(btnTiempoResolucion);
+        panelBotones.add(btnTiempoResolucion);
 
-        chartPanelActual = new ChartPanel(chart);
-        chartPanelActual.setBounds(350, 30, 750, 500);
-        panel.add(chartPanelActual);
-        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
-        panel.revalidate();
-        panel.repaint();
+        JButton btnResumen = new JButton("Resumen");
+        btnResumen.addActionListener(e -> mostrarResumenSolicitudes(panel));
+        agregarBotonEstilo(btnResumen);
+        panelBotones.add(btnResumen);
+
+        panel.add(panelBotones);
+
+        lblInfoSolicitudes = new JLabel("<html><b>Información General de Solicitudes:</b><br><br>" +
+                "Total de solicitudes: " + Altice.getInstance().contarSolicitudesTotal() + "<br>" +
+                "Solicitudes pendientes: " + Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.PENDIENTE) + "<br>" +
+                "Solicitudes en proceso: " + Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.EN_PROCESO) + "<br>" +
+                "Solicitudes resueltas: " + Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.COMPLETADA) + "<br>" +
+                "Solicitudes canceladas: " + Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.CANCELADA) +
+                "</html>");
+        lblInfoSolicitudes.setForeground(Color.WHITE);
+        lblInfoSolicitudes.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        lblInfoSolicitudes.setBounds(350, 30, 550, 220);
+        panel.add(lblInfoSolicitudes);
+
+        tabbedPane.addTab("Solicitudes", panel);
     }
 
-    // ====================== GRÁFICOS ANTERIORES (mantenidos) ======================
+    // ====================== GRÁFICOS ======================
     private void mostrarGraficoEstadoPago(JPanel panel) {
         ocultarGraficoActual(panel);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -316,8 +337,7 @@ public class Reportes extends JDialog {
         dataset.setValue("Activos", Altice.getInstance().contarContratosActivos());
         dataset.setValue("Cerrados", Altice.getInstance().contarContratosCerrados());
 
-        JFreeChart chart = ChartFactory.createPieChart(
-                "Distribución de Contratos por Estado",
+        JFreeChart chart = ChartFactory.createPieChart("Distribución de Contratos por Estado",
                 dataset, true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
@@ -337,13 +357,8 @@ public class Reportes extends JDialog {
             dataset.setValue(entry.getValue(), "Contratos", entry.getKey());
         }
 
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Cantidad de Contratos por Plan",
-                "Plan",
-                "Número de Contratos",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true, true, false);
+        JFreeChart chart = ChartFactory.createBarChart("Cantidad de Contratos por Plan",
+                "Plan", "Número de Contratos", dataset, PlotOrientation.VERTICAL, true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
@@ -363,13 +378,8 @@ public class Reportes extends JDialog {
             dataset.setValue(deudaPorMes[i], "Deuda", meses[i]);
         }
 
-        JFreeChart chart = ChartFactory.createLineChart(
-                "Monto Total de Deuda por Mes (Último Año)",
-                "Mes",
-                "Monto de Deuda (RD$)",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true, true, false);
+        JFreeChart chart = ChartFactory.createLineChart("Monto Total de Deuda por Mes (Último Año)",
+                "Mes", "Monto de Deuda (RD$)", dataset, PlotOrientation.VERTICAL, true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
@@ -389,13 +399,8 @@ public class Reportes extends JDialog {
             dataset.setValue(ingresosPorMes[i], "Ingresos", meses[i]);
         }
 
-        JFreeChart chart = ChartFactory.createLineChart(
-                "Ingresos Mensuales (Último Año)",
-                "Mes",
-                "Monto de Ingresos (RD$)",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true, true, false);
+        JFreeChart chart = ChartFactory.createLineChart("Ingresos Mensuales (Último Año)",
+                "Mes", "Monto de Ingresos (RD$)", dataset, PlotOrientation.VERTICAL, true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
@@ -405,6 +410,69 @@ public class Reportes extends JDialog {
         panel.repaint();
     }
 
+    private void mostrarGraficoMontoPendienteVsRecaudado(JPanel panel) {
+        ocultarGraficoActual(panel);
+        double montoPendiente = Altice.getInstance().calcularMontoPendienteTotal();
+        double montoRecaudado = Altice.getInstance().calcularMontoRecaudadoTotal();
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        dataset.setValue(montoPendiente, "Monto", "Pendiente");
+        dataset.setValue(montoRecaudado, "Monto", "Recaudado");
+
+        JFreeChart chart = ChartFactory.createBarChart("Monto Pendiente Total vs Recaudado",
+                "Categoría", "Monto (RD$)", dataset, PlotOrientation.VERTICAL, true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+        panel.add(chartPanelActual);
+        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void mostrarGraficoSolicitudesPorTipo(JPanel panel) {
+        ocultarGraficoActual(panel);
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        dataset.setValue("Instalación", Altice.getInstance().contarSolicitudesPorTipo(TipoSolicitud.INSTALACION));
+        dataset.setValue("Soporte", Altice.getInstance().contarSolicitudesPorTipo(TipoSolicitud.SOPORTE));
+
+        JFreeChart chart = ChartFactory.createPieChart("Solicitudes por Tipo", dataset, true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+        panel.add(chartPanelActual);
+        if (lblInfoSolicitudes != null) lblInfoSolicitudes.setVisible(false);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void mostrarGraficoTiempoResolucion(JPanel panel) {
+        ocultarGraficoActual(panel);
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        // Calculamos tiempo real por tipo
+        dataset.setValue(Altice.getInstance().calcularTiempoPromedioResolucionPorTipo(TipoSolicitud.INSTALACION), 
+                        "Días Promedio", "Instalación");
+        
+        dataset.setValue(Altice.getInstance().calcularTiempoPromedioResolucionPorTipo(TipoSolicitud.SOPORTE), 
+                        "Días Promedio", "Soporte");
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Tiempo Promedio de Resolución por Tipo de Solicitud",
+                "Tipo de Solicitud",
+                "Días Promedio",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+        panel.add(chartPanelActual);
+        if (lblInfoSolicitudes != null) lblInfoSolicitudes.setVisible(false);
+        panel.revalidate();
+        panel.repaint();
+    }
     private void ocultarGraficoActual(JPanel panel) {
         if (chartPanelActual != null) {
             panel.remove(chartPanelActual);
@@ -433,6 +501,13 @@ public class Reportes extends JDialog {
         panel.repaint();
     }
 
+    private void mostrarResumenSolicitudes(JPanel panel) {
+        ocultarGraficoActual(panel);
+        if (lblInfoSolicitudes != null) lblInfoSolicitudes.setVisible(true);
+        panel.revalidate();
+        panel.repaint();
+    }
+
     private void agregarBotonEstilo(JButton boton) {
         boton.setForeground(Color.WHITE);
         boton.setBackground(new Color(0, 0, 51));
@@ -442,7 +517,6 @@ public class Reportes extends JDialog {
     }
 
     // ====================== OTRAS PESTAÑAS ======================
-    private void crearPestanaSolicitudes() { JPanel panel = crearPanelBase("Solicitudes"); tabbedPane.addTab("Solicitudes", panel); }
     private void crearPestanaPlanes() { JPanel panel = crearPanelBase("Planes"); tabbedPane.addTab("Planes", panel); }
     private void crearPestanaNomina() { JPanel panel = crearPanelBase("Nómina"); tabbedPane.addTab("Nómina", panel); }
 
