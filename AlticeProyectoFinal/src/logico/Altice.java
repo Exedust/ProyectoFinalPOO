@@ -44,7 +44,7 @@ public class Altice implements Serializable {
 			altice = new Altice();
 		return altice;
 	}
-	
+
 	public boolean guardarDatos() {
 		try {
 			FileOutputStream fos = new FileOutputStream("altice.dat");
@@ -173,23 +173,23 @@ public class Altice implements Serializable {
 			misUsuarios.add(usuario);
 		}
 	}
-	
-    public boolean estaDisponibleTecnico(String codigo) {
-        Empleado emp = buscarEmpleadoById(codigo);
-    	if (emp == null || emp.getRol() != Rol.TECNICO) {
-            return false;
-        }
 
-        for (Solicitud s : misSolicitudes) {
-            if (s.getEmpleado() != null && 
-                s.getEmpleado().getCodigo().equals(emp.getCodigo()) &&
-                s.getEstado() == EstadoSolicitud.EN_PROCESO) {
-                
-                return false;
-            }
-        }
-        return true; 
-    }
+	public boolean estaDisponibleTecnico(String codigo) {
+		Empleado emp = buscarEmpleadoById(codigo);
+		if (emp == null || emp.getRol() != Rol.TECNICO) {
+			return false;
+		}
+
+		for (Solicitud s : misSolicitudes) {
+			if (s.getEmpleado() != null && 
+					s.getEmpleado().getCodigo().equals(emp.getCodigo()) &&
+					s.getEstado() == EstadoSolicitud.EN_PROCESO) {
+
+				return false;
+			}
+		}
+		return true; 
+	}
 
 	public float calcularDeudaContrato(Contrato contrato) {
 		if (contrato == null || contrato.getPagos() == null) {
@@ -391,9 +391,9 @@ public class Altice implements Serializable {
 		return true;
 	}
 
-//
-//SERVICIOS
-//
+	//
+	//SERVICIOS
+	//
 
 	public boolean registrarServicio(Servicio servicio) {
 		if (servicio == null || servicio.getCodigo() == null)
@@ -439,9 +439,9 @@ public class Altice implements Serializable {
 		return true;
 	}
 
-//
-//SOLICITUDES
-//
+	//
+	//SOLICITUDES
+	//
 
 	public boolean registrarSolicitud(Solicitud solicitud) {
 		if (solicitud == null || solicitud.getCodigo() == null)
@@ -484,7 +484,7 @@ public class Altice implements Serializable {
 		solicitud.cancelar();
 		return true;
 	}
-//====================== SOLICITUDES ======================
+	//====================== SOLICITUDES ======================
 
 	public boolean completarSolicitud(String codigoSolicitud) {
 		if (codigoSolicitud == null || codigoSolicitud.trim().isEmpty()) {
@@ -532,9 +532,9 @@ public class Altice implements Serializable {
 		return true;
 	}
 
-//
-//METODOS DE BUSQUEDA
-//
+	//
+	//METODOS DE BUSQUEDA
+	//
 	public Solicitud buscarSolicitudByCodigo(String codigo) {
 		if (codigo == null)
 			return null;
@@ -783,8 +783,8 @@ public class Altice implements Serializable {
 		return -1;
 	}
 
-//VALIDACIONES
-///       
+	//VALIDACIONES
+	///       
 
 	public boolean existeServicio(TipoServicio tipo) {
 		if (tipo == null) {
@@ -871,9 +871,9 @@ public class Altice implements Serializable {
 		return false;
 	}
 
-//	
-//PAGOS
-//
+	//	
+	//PAGOS
+	//
 	public boolean registrarPago(Pago pago) {
 		if (pago == null || pago.getCodigo() == null || pago.getContrato() == null) {
 			return false;
@@ -996,9 +996,9 @@ public class Altice implements Serializable {
 		return seCanceloAlgo;
 	}
 
-//	
-//CONTRATO
-//
+	//	
+	//CONTRATO
+	//
 	public boolean registrarContrato(Contrato contrato) {
 		if (contrato == null || contrato.getCodigo() == null) {
 			return false;
@@ -1101,199 +1101,262 @@ public class Altice implements Serializable {
 	public void setMisSolicitudes(ArrayList<Solicitud> misSolicitudes) {
 		this.misSolicitudes = misSolicitudes;
 	}
-	
+
 	public int contarClientesPersonas() {
-	    int count = 0;
-	    for (Cliente c : misClientes) {
-	        if (c.getUsuario() != null && !c.getUsuario().isEmpresa() && c.isActivo()) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Cliente c : misClientes) {
+			if (c.getUsuario() != null && !c.getUsuario().isEmpresa() && c.isActivo()) count++;
+		}
+		return count;
 	}
 
 	public int contarClientesEmpresas() {
-	    int count = 0;
-	    for (Cliente c : misClientes) {
-	        if (c.getUsuario() != null && c.getUsuario().isEmpresa() && c.isActivo()) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Cliente c : misClientes) {
+			if (c.getUsuario() != null && c.getUsuario().isEmpresa() && c.isActivo()) count++;
+		}
+		return count;
 	}
-	
+
 	public int contarEmpleadosTotal() {
-	    return misEmpleados.size();
+		return misEmpleados.size();
 	}
 
 	public int contarTecnicos() {
-	    int count = 0;
-	    for (Empleado e : misEmpleados) {
-	        if (e.getRol() == Rol.TECNICO) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Empleado e : misEmpleados) {
+			if (e.getRol() == Rol.TECNICO) count++;
+		}
+		return count;
 	}
 
 	public int contarComerciales() {
-	    int count = 0;
-	    for (Empleado e : misEmpleados) {
-	        if (e.getRol() == Rol.COMERCIAL) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Empleado e : misEmpleados) {
+			if (e.getRol() == Rol.COMERCIAL) count++;
+		}
+		return count;
 	}
 
 	public int contarAdministradores() {
-	    int count = 0;
-	    for (Empleado e : misEmpleados) {
-	        if (e.getRol() == Rol.ADMINISTRADOR) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Empleado e : misEmpleados) {
+			if (e.getRol() == Rol.ADMINISTRADOR) count++;
+		}
+		return count;
 	}
 
 	public int contarSolicitudesCompletadasPorTecnico(String codigoTecnico) {
-	    int count = 0;
-	    for (Solicitud s : misSolicitudes) {
-	        if (s.getEmpleado() != null && 
-	            s.getEmpleado().getCodigo().equals(codigoTecnico) && 
-	            s.isResuelto()) {
-	            count++;
-	        }
-	    }
-	    return count;
+		int count = 0;
+		for (Solicitud s : misSolicitudes) {
+			if (s.getEmpleado() != null && 
+					s.getEmpleado().getCodigo().equals(codigoTecnico) && 
+					s.isResuelto()) {
+				count++;
+			}
+		}
+		return count;
 	}
 	public int contarSolicitudesPorTipo(TipoSolicitud tipo) {
-	    int count = 0;
-	    for (Solicitud s : misSolicitudes) {
-	        if (s.getTipo() == tipo) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Solicitud s : misSolicitudes) {
+			if (s.getTipo() == tipo) count++;
+		}
+		return count;
 	}
 
 	public int contarSolicitudesPorTecnico(String codigoTecnico) {
-	    int count = 0;
-	    for (Solicitud s : misSolicitudes) {
-	        if (s.getEmpleado() != null && s.getEmpleado().getCodigo().equals(codigoTecnico)) {
-	            count++;
-	        }
-	    }
-	    return count;
+		int count = 0;
+		for (Solicitud s : misSolicitudes) {
+			if (s.getEmpleado() != null && s.getEmpleado().getCodigo().equals(codigoTecnico)) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	// ====================== REPORTES - PLANES ======================
 
 	public int contarPlanesTotal() {
-	    return misPlanes.size();
+		return misPlanes.size();
 	}
 
 	public int contarPlanesActivos() {
-	    int count = 0;
-	    for (Plan p : misPlanes) {
-	        if (p.isActivo()) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Plan p : misPlanes) {
+			if (p.isActivo()) count++;
+		}
+		return count;
 	}
 	public int contarPagosTotal() {
-	    return misPagos.size();
+		return misPagos.size();
 	}
 
 	public int contarPagosPendientes() {
-	    int count = 0;
-	    for (Pago p : misPagos) {
-	        if (p.isPendiente() && p.isActivo()) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Pago p : misPagos) {
+			if (p.isPendiente() && p.isActivo()) count++;
+		}
+		return count;
 	}
 
 	public int contarPagosRealizados() {
-	    int count = 0;
-	    for (Pago p : misPagos) {
-	        if (!p.isPendiente() && p.isActivo()) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Pago p : misPagos) {
+			if (!p.isPendiente() && p.isActivo()) count++;
+		}
+		return count;
 	}
 
 	public int contarPagosCancelados() {
-	    int count = 0;
-	    for (Pago p : misPagos) {
-	        if (!p.isActivo()) count++;
-	    }
-	    return count;
+		int count = 0;
+		for (Pago p : misPagos) {
+			if (!p.isActivo()) count++;
+		}
+		return count;
 	}
 
 	public double calcularMontoPendienteTotal() {
-	    double total = 0;
-	    for (Pago p : misPagos) {
-	        if (p.isPendiente() && p.isActivo()) {
-	            total += p.getMonto();
-	        }
-	    }
-	    return total;
+		double total = 0;
+		for (Pago p : misPagos) {
+			if (p.isPendiente() && p.isActivo()) {
+				total += p.getMonto();
+			}
+		}
+		return total;
 	}
 
 	public double calcularIngresosMensuales(int mes, int año) {
-	    double total = 0;
-	    for (Pago p : misPagos) {
-	        if (p.getFechaPago() != null && 
-	            p.getFechaPago().getMonthValue() == mes && 
-	            p.getFechaPago().getYear() == año && 
-	            !p.isPendiente() && p.isActivo()) {
-	            total += p.getMonto();
-	        }
-	    }
-	    return total;
+		double total = 0;
+		for (Pago p : misPagos) {
+			if (p.getFechaPago() != null && 
+					p.getFechaPago().getMonthValue() == mes && 
+					p.getFechaPago().getYear() == año && 
+					!p.isPendiente() && p.isActivo()) {
+				total += p.getMonto();
+			}
+		}
+		return total;
 	}
-	
-    // ====================== REPORTES - CLIENTES ======================
 
-    public int contarClientesTotal() {
-        return misClientes.size();
-    }
+	// ====================== REPORTES - CLIENTES ======================
 
-    public int contarClientesActivos() {
-        int count = 0;
-        for (Cliente c : misClientes) {
-            if (c.isActivo()) count++;
-        }
-        return count;
-    }
+	public int contarClientesTotal() {
+		return misClientes.size();
+	}
 
-    public int contarClientesInactivos() {
-        return misClientes.size() - contarClientesActivos();
-    }
+	public int contarClientesActivos() {
+		int count = 0;
+		for (Cliente c : misClientes) {
+			if (c.isActivo()) count++;
+		}
+		return count;
+	}
 
-    public int contarClientesAlDia() {
-        int count = 0;
-        for (Cliente c : misClientes) {
-            if (c.isActivo() && calcularDeudaCliente(c) <= 0) {
-                count++;
-            }
-        }
-        return count;
-    }
+	public int contarClientesInactivos() {
+		return misClientes.size() - contarClientesActivos();
+	}
 
-    public int contarClientesPendientes() {
-        int count = 0;
-        for (Cliente c : misClientes) {
-            if (c.isActivo() && calcularDeudaCliente(c) > 0) {
-                count++;
-            }
-        }
-        return count;
-    }
+	public int contarClientesAlDia() {
+		int count = 0;
+		for (Cliente c : misClientes) {
+			if (c.isActivo() && calcularDeudaCliente(c) <= 0) {
+				count++;
+			}
+		}
+		return count;
+	}
 
-    /** Calcula la deuda real del cliente sumando pagos pendientes */
-    public double calcularDeudaCliente(Cliente cli) {
-        if (cli == null || cli.getPagos() == null) return 0.0;
-        double deuda = 0.0;
-        for (Pago p : cli.getPagos()) {
-            if (p.isPendiente() && p.isActivo()) {
-                deuda += p.getMonto();
-            }
-        }
-        return deuda;
-    }
+	public int contarClientesPendientes() {
+		int count = 0;
+		for (Cliente c : misClientes) {
+			if (c.isActivo() && calcularDeudaCliente(c) > 0) {
+				count++;
+			}
+		}
+		return count;
+	}
 
-    public double calcularDeudaTotalClientes() {
-        double total = 0;
-        for (Cliente c : misClientes) {
-            total += calcularDeudaCliente(c);
-        }
-        return total;
-    }
+	/** Calcula la deuda real del cliente sumando pagos pendientes */
+	public double calcularDeudaCliente(Cliente cli) {
+		if (cli == null || cli.getPagos() == null) return 0.0;
+		double deuda = 0.0;
+		for (Pago p : cli.getPagos()) {
+			if (p.isPendiente() && p.isActivo()) {
+				deuda += p.getMonto();
+			}
+		}
+		return deuda;
+	}
+	// ====================== DISTRIBUCIÓN POR DEUDA ======================
+
+	public int contarClientesSinDeuda() {
+		int count = 0;
+		for (Cliente c : misClientes) {
+			if (c.isActivo() && calcularDeudaCliente(c) <= 0) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public int contarClientesDeudaBaja() {
+		int count = 0;
+		for (Cliente c : misClientes) {
+			double deuda = calcularDeudaCliente(c);
+			if (c.isActivo() && deuda > 0 && deuda <= 5000) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public int contarClientesDeudaMedia() {
+		int count = 0;
+		for (Cliente c : misClientes) {
+			double deuda = calcularDeudaCliente(c);
+			if (c.isActivo() && deuda > 5000 && deuda <= 15000) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public int[] getClientesPorMesUltimoAno() {
+		int[] clientesPorMes = new int[12]; // 12 meses
+
+		LocalDate hoy = LocalDate.now();
+		int añoActual = hoy.getYear();
+
+		for (Cliente c : misClientes) {
+			if (c.getUsuario() != null && c.getUsuario().getFechaRegistro() != null) {
+				LocalDate fechaReg = c.getUsuario().getFechaRegistro();
+				if (fechaReg.getYear() == añoActual) {
+					int mes = fechaReg.getMonthValue() - 1; // 0 = Enero, 11 = Diciembre
+					clientesPorMes[mes]++;
+				}
+			}
+		}
+		return clientesPorMes;
+	}
+
+
+	public int contarClientesDeudaAlta() {
+		int count = 0;
+		for (Cliente c : misClientes) {
+			double deuda = calcularDeudaCliente(c);
+			if (c.isActivo() && deuda > 15000) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public double calcularDeudaTotalClientes() {
+		double total = 0;
+		for (Cliente c : misClientes) {
+			total += calcularDeudaCliente(c);
+		}
+		return total;
+	}
 }
