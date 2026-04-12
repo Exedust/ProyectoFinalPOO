@@ -22,15 +22,16 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import logico.Altice;
-import java.time.LocalDate;
 
 public class Reportes extends JDialog {
 
     private final JPanel contentPanel = new JPanel();
     private JTabbedPane tabbedPane;
 
+    // Variables para controlar el gráfico actual
     private ChartPanel chartPanelActual = null;
     private JLabel lblInfoClientes;
+    private JLabel lblInfoContratos;
 
     public static void main(String[] args) {
         try {
@@ -69,6 +70,7 @@ public class Reportes extends JDialog {
         crearPestanaPlanes();
         crearPestanaNomina();
 
+        // Botón Salir
         JPanel buttonPane = new JPanel();
         buttonPane.setBackground(new Color(0, 0, 51));
         buttonPane.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "",
@@ -118,7 +120,6 @@ public class Reportes extends JDialog {
 
         panel.add(panelBotones);
 
-        // Resumen inicial
         lblInfoClientes = new JLabel("<html><b>Información General de Clientes:</b><br><br>" +
                 "Total de clientes: " + Altice.getInstance().contarClientesTotal() + "<br>" +
                 "Clientes activos: " + Altice.getInstance().contarClientesActivos() + "<br>" +
@@ -134,6 +135,59 @@ public class Reportes extends JDialog {
         tabbedPane.addTab("Clientes", panel);
     }
 
+    // ====================== PESTAÑA CONTRATOS ======================
+    private void crearPestanaContratos() {
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(0, 0, 51));
+        panel.setLayout(null);
+
+        JPanel panelBotones = new JPanel();
+        panelBotones.setBackground(new Color(0, 0, 51));
+        panelBotones.setBounds(30, 30, 280, 420);
+        panelBotones.setLayout(new GridLayout(0, 1, 0, 10));
+
+        JButton btnEstado = new JButton("Contratos por Estado");
+        agregarBotonEstilo(btnEstado);
+        panelBotones.add(btnEstado);
+
+        JButton btnPorPlan = new JButton("Contratos por Plan");
+        agregarBotonEstilo(btnPorPlan);
+        panelBotones.add(btnPorPlan);
+
+        JButton btnMontoDeuda = new JButton("Monto Total de Deuda");
+        agregarBotonEstilo(btnMontoDeuda);
+        panelBotones.add(btnMontoDeuda);
+
+        JButton btnResumen = new JButton("Resumen");
+        btnResumen.addActionListener(e -> mostrarResumenContratos(panel));
+        agregarBotonEstilo(btnResumen);
+        panelBotones.add(btnResumen);
+
+        panel.add(panelBotones);
+
+        // Resumen de Contratos
+        lblInfoContratos = new JLabel("<html><b>Información General de Contratos:</b><br><br>" +
+                "Total de contratos: " + Altice.getInstance().contarContratosTotal() + "<br>" +
+                "Contratos activos: " + Altice.getInstance().contarContratosActivos() + "<br>" +
+                "Contratos cerrados: " + Altice.getInstance().contarContratosCerrados() + "<br>" +
+                "Deuda total de contratos: RD$ " + String.format("%.2f", Altice.getInstance().calcularDeudaTotalClientes()) +
+                "</html>");
+        lblInfoContratos.setForeground(Color.WHITE);
+        lblInfoContratos.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        lblInfoContratos.setBounds(350, 30, 550, 220);
+        panel.add(lblInfoContratos);
+
+        tabbedPane.addTab("Contratos", panel);
+    }
+
+    private void mostrarResumenContratos(JPanel panel) {
+        ocultarGraficoActual(panel);
+        if (lblInfoContratos != null) lblInfoContratos.setVisible(true);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    // ====================== MÉTODOS DE GRÁFICOS CLIENTES ======================
     private void mostrarGraficoEstadoPago(JPanel panel) {
         ocultarGraficoActual(panel);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -141,7 +195,7 @@ public class Reportes extends JDialog {
         dataset.setValue(Altice.getInstance().contarClientesPendientes(), "Estado", "Pendientes");
 
         JFreeChart chart = ChartFactory.createBarChart("Estado de Pago de Clientes",
-                "Estado", "Cantidad", dataset, PlotOrientation.VERTICAL, true, true, false);
+                "Estado", "Cantidad de Clientes", dataset, PlotOrientation.VERTICAL, true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
@@ -159,7 +213,7 @@ public class Reportes extends JDialog {
         dataset.setValue("Deuda Media", Altice.getInstance().contarClientesDeudaMedia());
         dataset.setValue("Deuda Alta", Altice.getInstance().contarClientesDeudaAlta());
 
-        JFreeChart chart = ChartFactory.createPieChart("Distribución de Clientes por Nivel de Deuda", 
+        JFreeChart chart = ChartFactory.createPieChart("Distribución de Clientes por Nivel de Deuda",
                 dataset, true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
@@ -177,18 +231,12 @@ public class Reportes extends JDialog {
         String[] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
         for (int i = 0; i < 12; i++) {
             dataset.setValue(clientesPorMes[i], "Clientes", meses[i]);
         }
 
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Clientes Registrados por Mes (Último Año)",
-                "Mes", 
-                "Cantidad de Clientes", 
-                dataset, 
-                PlotOrientation.VERTICAL, 
-                true, true, false);
+        JFreeChart chart = ChartFactory.createBarChart("Clientes Registrados por Mes (Último Año)",
+                "Mes", "Cantidad de Clientes", dataset, PlotOrientation.VERTICAL, true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
@@ -221,7 +269,6 @@ public class Reportes extends JDialog {
     }
 
     // ====================== OTRAS PESTAÑAS ======================
-    private void crearPestanaContratos() { JPanel panel = crearPanelBase("Contratos"); tabbedPane.addTab("Contratos", panel); }
     private void crearPestanaPagos() { JPanel panel = crearPanelBase("Pagos"); tabbedPane.addTab("Pagos", panel); }
     private void crearPestanaSolicitudes() { JPanel panel = crearPanelBase("Solicitudes"); tabbedPane.addTab("Solicitudes", panel); }
     private void crearPestanaPlanes() { JPanel panel = crearPanelBase("Planes"); tabbedPane.addTab("Planes", panel); }

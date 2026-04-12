@@ -1352,11 +1352,28 @@ public class Altice implements Serializable {
 		return count;
 	}
 
-	public double calcularDeudaTotalClientes() {
-		double total = 0;
+	public float calcularDeudaTotalClientes() {
+		float total = 0;
 		for (Cliente c : misClientes) {
 			total += calcularDeudaCliente(c);
 		}
 		return total;
 	}
+	
+    public int contarContratosCerrados() {
+        return misContratos.size() - contarContratosActivos();
+    }
+
+    
+    public int contarContratosTotal() {
+        return misContratos.size();
+    }
+    
+    public int contarContratosActivos() {
+        int count = 0;
+        for (Contrato c : misContratos) {
+            if (c.isActivo()) count++;
+        }
+        return count;
+    }
 }
