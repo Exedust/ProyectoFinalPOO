@@ -246,8 +246,8 @@ public class Reportes extends JDialog {
         agregarBotonEstilo(btnTipo);
         panelBotones.add(btnTipo);
 
-        JButton btnTiempoResolucion = new JButton("Tiempo de Resolución Promedio");
-        btnTiempoResolucion.addActionListener(e -> mostrarGraficoTiempoResolucion(panel));
+        JButton btnTiempoResolucion = new JButton("Estado");
+        btnTiempoResolucion.addActionListener(e -> mostrarGraficoEstado(panel));
         agregarBotonEstilo(btnTiempoResolucion);
         panelBotones.add(btnTiempoResolucion);
 
@@ -430,6 +430,34 @@ public class Reportes extends JDialog {
         panel.repaint();
     }
 
+    
+    private void mostrarGraficoEstado(JPanel panel) {
+        ocultarGraficoActual(panel);
+
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        
+        dataset.setValue("Pendientes", Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.PENDIENTE));
+        dataset.setValue("En Proceso", Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.EN_PROCESO));
+        dataset.setValue("Completadas", Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.COMPLETADA));
+        dataset.setValue("Canceladas", Altice.getInstance().contarSolicitudesPorEstado(EstadoSolicitud.CANCELADA));
+
+        JFreeChart chart = ChartFactory.createPieChart(
+                "Estado de las Solicitudes",
+                dataset, 
+                true,   // legend
+                true,   // tooltips
+                false); // urls
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+        panel.add(chartPanelActual);
+
+        if (lblInfoSolicitudes != null) lblInfoSolicitudes.setVisible(false);
+        
+        panel.revalidate();
+        panel.repaint();
+    }
+    
     private void mostrarGraficoSolicitudesPorTipo(JPanel panel) {
         ocultarGraficoActual(panel);
         DefaultPieDataset dataset = new DefaultPieDataset();
@@ -446,33 +474,6 @@ public class Reportes extends JDialog {
         panel.repaint();
     }
 
-    private void mostrarGraficoTiempoResolucion(JPanel panel) {
-        ocultarGraficoActual(panel);
-
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-        // Calculamos tiempo real por tipo
-        dataset.setValue(Altice.getInstance().calcularTiempoPromedioResolucionPorTipo(TipoSolicitud.INSTALACION), 
-                        "Días Promedio", "Instalación");
-        
-        dataset.setValue(Altice.getInstance().calcularTiempoPromedioResolucionPorTipo(TipoSolicitud.SOPORTE), 
-                        "Días Promedio", "Soporte");
-
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Tiempo Promedio de Resolución por Tipo de Solicitud",
-                "Tipo de Solicitud",
-                "Días Promedio",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true, true, false);
-
-        chartPanelActual = new ChartPanel(chart);
-        chartPanelActual.setBounds(350, 30, 750, 500);
-        panel.add(chartPanelActual);
-        if (lblInfoSolicitudes != null) lblInfoSolicitudes.setVisible(false);
-        panel.revalidate();
-        panel.repaint();
-    }
     private void ocultarGraficoActual(JPanel panel) {
         if (chartPanelActual != null) {
             panel.remove(chartPanelActual);
@@ -515,6 +516,7 @@ public class Reportes extends JDialog {
         boton.setFocusPainted(false);
         boton.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
     }
+    
 
     // ====================== OTRAS PESTAÑAS ======================
     private void crearPestanaPlanes() { JPanel panel = crearPanelBase("Planes"); tabbedPane.addTab("Planes", panel); }
