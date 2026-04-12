@@ -1403,4 +1403,31 @@ public class Altice implements Serializable {
         }
         return count;
     }
+    
+    public float[] getIngresosMensualesUltimoAno() {
+        float[] ingresosPorMes = new float[12]; 
+        LocalDate hoy = LocalDate.now();
+        int añoActual = hoy.getYear();
+
+        for (Pago p : misPagos) {
+            if (p.getFechaPago() != null && 
+                p.getFechaPago().getYear() == añoActual && 
+                !p.isPendiente() && p.isActivo()) {
+                
+                int mes = p.getFechaPago().getMonthValue() - 1;
+                ingresosPorMes[mes] += p.getMonto();
+            }
+        }
+        return ingresosPorMes;
+    }    // ====================== MONTO RECAUDADO TOTAL ======================
+    public float calcularMontoRecaudadoTotal() {
+        float total = 0;
+        for (Pago p : misPagos) {
+            if (!p.isPendiente() && p.isActivo() && p.getFechaPago() != null) {
+                total += p.getMonto();
+            }
+        }
+        return total;
+    }
+    
 }
