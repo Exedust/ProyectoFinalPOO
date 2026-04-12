@@ -27,8 +27,9 @@ public class Reportes extends JDialog {
     private final JPanel contentPanel = new JPanel();
     private JTabbedPane tabbedPane;
 
-    // Paneles para gráficos (para poder mostrar/ocultar)
-    private ChartPanel chartPanelClientes = null;
+    // Variables para controlar visibilidad en la pestaña Clientes
+    private ChartPanel chartPanelActual = null;
+    private JLabel lblInfoClientes;
 
     public static void main(String[] args) {
         try {
@@ -91,11 +92,11 @@ public class Reportes extends JDialog {
         panel.setBackground(new Color(0, 0, 51));
         panel.setLayout(null);
 
-        // Panel de botones
+        // Panel de botones a la izquierda
         JPanel panelBotones = new JPanel();
         panelBotones.setBackground(new Color(0, 0, 51));
-        panelBotones.setBounds(30, 30, 280, 350);
-        panelBotones.setLayout(new GridLayout(0, 1, 0, 12));
+        panelBotones.setBounds(30, 30, 280, 400);
+        panelBotones.setLayout(new GridLayout(0, 1, 0, 10));
 
         JButton btnEstadoPago = new JButton("Estado de Pago");
         btnEstadoPago.addActionListener(e -> mostrarGraficoEstadoPago(panel));
@@ -110,22 +111,36 @@ public class Reportes extends JDialog {
         agregarBotonEstilo(btnMesRegistro);
         panelBotones.add(btnMesRegistro);
 
+        // Botón Resumen
+        JButton btnResumen = new JButton("Resumen");
+        btnResumen.addActionListener(e -> mostrarResumen(panel));
+        agregarBotonEstilo(btnResumen);
+        panelBotones.add(btnResumen);
+
         panel.add(panelBotones);
+
+        // Información por defecto (resumen)
+        lblInfoClientes = new JLabel("<html><b>Información General de Clientes:</b><br><br>" +
+                "Total de clientes: " + Altice.getInstance().contarClientesTotal() + "<br>" +
+                "Clientes activos: " + Altice.getInstance().contarClientesActivos() + "<br>" +
+                "Clientes al día: " + Altice.getInstance().contarClientesAlDia() + "<br>" +
+                "Clientes con deuda: " + Altice.getInstance().contarClientesPendientes() + "<br>" +
+                "Deuda total: RD$ " + String.format("%.2f", Altice.getInstance().calcularDeudaTotalClientes()) +
+                "</html>");
+        lblInfoClientes.setForeground(Color.WHITE);
+        lblInfoClientes.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        lblInfoClientes.setBounds(350, 30, 550, 220);
+        panel.add(lblInfoClientes);
 
         tabbedPane.addTab("Clientes", panel);
     }
 
     private void mostrarGraficoEstadoPago(JPanel panel) {
-        // Si ya existe, lo removemos (toggle)
-        if (chartPanelClientes != null) {
-            panel.remove(chartPanelClientes);
-            chartPanelClientes = null;
-            panel.revalidate();
-            panel.repaint();
-            return;
+        if (chartPanelActual != null) {
+            panel.remove(chartPanelActual);
+            chartPanelActual = null;
         }
 
-        // Crear dataset
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         int alDia = Altice.getInstance().contarClientesAlDia();
         int pendientes = Altice.getInstance().contarClientesPendientes();
@@ -133,7 +148,6 @@ public class Reportes extends JDialog {
         dataset.setValue(alDia, "Estado", "Al Día");
         dataset.setValue(pendientes, "Estado", "Pendientes");
 
-        // Crear gráfico 
         JFreeChart chart = ChartFactory.createBarChart(
                 "Estado de Pago de Clientes",
                 "Estado",
@@ -142,9 +156,21 @@ public class Reportes extends JDialog {
                 PlotOrientation.VERTICAL,
                 true, true, false);
 
-        chartPanelClientes = new ChartPanel(chart);
-        chartPanelClientes.setBounds(350, 30, 750, 500);
-        panel.add(chartPanelClientes);
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+
+        panel.add(chartPanelActual);
+        lblInfoClientes.setVisible(false);   // Ocultar resumen
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void mostrarResumen(JPanel panel) {
+        if (chartPanelActual != null) {
+            panel.remove(chartPanelActual);
+            chartPanelActual = null;
+        }
+        lblInfoClientes.setVisible(true);   // Mostrar resumen
         panel.revalidate();
         panel.repaint();
     }
@@ -157,7 +183,7 @@ public class Reportes extends JDialog {
         boton.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
     }
 
-    // ====================== OTRAS PESTAÑAS (por ahora placeholders) ======================
+    // ====================== OTRAS PESTAÑAS ======================
     private void crearPestanaContratos() {
         JPanel panel = crearPanelBase("Contratos");
         tabbedPane.addTab("Contratos", panel);
