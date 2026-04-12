@@ -5,17 +5,22 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -23,6 +28,8 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 import logico.Altice;
 import logico.EstadoSolicitud;
@@ -40,6 +47,9 @@ public class Reportes extends JDialog {
     private JLabel lblInfoPagos;
     private JLabel lblInfoSolicitudes;
     private JLabel lblInfoPlanes;
+    private JTable tablaNomina;
+    private DefaultTableModel modeloNomina;
+    private JComboBox<String> comboPeriodo;
 
     public static void main(String[] args) {
         try {
@@ -431,9 +441,95 @@ public class Reportes extends JDialog {
     }
 
     // ====================== OTRAS PESTAÑAS ======================
+    // ====================== PESTAÑA NÓMINA ======================
     private void crearPestanaNomina() {
-        JPanel panel = crearPanelBase("Nómina");
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(0, 0, 51));
+        panel.setLayout(null);
+
+        // Panel de filtro
+        JPanel panelFiltro = new JPanel();
+        panelFiltro.setBackground(new Color(0, 0, 51));
+        panelFiltro.setBounds(30, 30, 800, 50);
+        panelFiltro.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 15));
+
+        JLabel lblPeriodo = new JLabel("Período:");
+        lblPeriodo.setForeground(Color.WHITE);
+        lblPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        panelFiltro.add(lblPeriodo);
+
+        comboPeriodo = new JComboBox<>(new String[]{
+                "Último mes", "Últimos 3 meses", "Últimos 6 meses", "Último año"
+        });
+        comboPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        panelFiltro.add(comboPeriodo);
+
+        JButton btnFiltrar = new JButton("Filtrar");
+        btnFiltrar.setForeground(Color.WHITE);
+        btnFiltrar.setBackground(new Color(0, 102, 0));
+        btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        btnFiltrar.addActionListener(e -> cargarTablaNomina());
+        panelFiltro.add(btnFiltrar);
+
+        panel.add(panelFiltro);
+
+        // Tabla de Nómina
+        String[] columnas = {"Cédula", "Nombre", "Rol", "Sueldo", "Comisión", "Total"};
+        modeloNomina = new DefaultTableModel(columnas, 0);
+        tablaNomina = new JTable(modeloNomina);
+        tablaNomina.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tablaNomina.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        tablaNomina.setRowHeight(30);
+
+        JScrollPane scroll = new JScrollPane(tablaNomina);
+        scroll.setBounds(30, 100, 1150, 500);
+        panel.add(scroll);
+
+        // Cargar datos iniciales
+        cargarTablaNomina();
+
         tabbedPane.addTab("Nómina", panel);
+    }
+
+    private void cargarTablaNomina() {
+        modeloNomina.setRowCount(0);
+
+        String periodo = (String) comboPeriodo.getSelectedItem();
+        int meses = 1;
+
+        switch (periodo) {
+            case "Último mes":
+                meses = 1;
+                break;
+            case "Últimos 3 meses":
+                meses = 3;
+                break;
+            case "Últimos 6 meses":
+                meses = 6;
+                break;
+            case "Último año":
+                meses = 12;
+                break;
+        }
+
+        ArrayList<logico.Empleado> empleados = Altice.getInstance().getTodosLosEmpleados();
+
+        for (logico.Empleado emp : empleados) {
+            if (!emp.isActivo()) continue;
+
+            int numContratos = Altice.getInstance().contarContratosEmpleadoEnPeriodo(emp.getCodigo(), meses);
+            float comision = (emp.getRol() == logico.Rol.COMERCIAL) ? numContratos * 200f : 0f;
+            float total = emp.getSalario() + comision;
+
+            modeloNomina.addRow(new Object[]{
+                emp.getCedula(),
+                emp.getNombre(),
+                emp.getRol().toString(),
+                String.format("RD$ %.2f", emp.getSalario()),
+                String.format("RD$ %.2f", comision),
+                String.format("RD$ %.2f", total)
+            });
+        }
     }
 
     private JPanel crearPanelBase(String titulo) {
