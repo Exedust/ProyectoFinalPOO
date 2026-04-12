@@ -16,7 +16,7 @@ public class Cliente extends Persona implements Serializable {
 	private ArrayList<Contrato> contratos;
 	private ArrayList<Pago> pagos;
 	
-	float deuda;
+	private float deuda;
 
 	public ArrayList<Contrato> getContratos() {
 		return contratos;

@@ -538,27 +538,40 @@ public class PrincipalAdmin extends JFrame {
         dashboardPanel.add(cardPagos, gbcPagos);
 
         // Tarjeta Reportes
+        // ====================== TARJETA REPORTES ======================
         GridBagConstraints gbcReportes = new GridBagConstraints();
         gbcReportes.ipadx = 20;
         gbcReportes.gridx = 5;
         gbcReportes.gridy = 0;
         gbcReportes.insets = new Insets(20, 20, 20, 20);
         gbcReportes.fill = GridBagConstraints.BOTH;
+
         JPanel cardReportes = new JPanel(new BorderLayout());
         cardReportes.setBackground(new Color(102, 102, 204));
-        cardReportes.setBorder(new TitledBorder(null, "Reportes", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+        cardReportes.setBorder(new TitledBorder(null, "Reportes", TitledBorder.LEADING, TitledBorder.TOP, 
+                new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
         cardReportes.setPreferredSize(new Dimension(220, 200));
+
         JLabel iconReportes = new JLabel();
         iconReportes.setHorizontalAlignment(SwingConstants.CENTER);
         ImageIcon reportesIcon = new ImageIcon(PrincipalAdmin.class.getResource("/img/reporte.png"));
         Image reportesImage = reportesIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         iconReportes.setIcon(new ImageIcon(reportesImage));
         cardReportes.add(iconReportes, BorderLayout.CENTER);
+
         JButton btnGestionarReportes = new JButton("Gestionar");
         btnGestionarReportes.setForeground(Color.WHITE);
         btnGestionarReportes.setBackground(new Color(0, 0, 51));
         btnGestionarReportes.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        btnGestionarReportes.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Reportes reportes = new Reportes();
+                reportes.setModal(true);
+                reportes.setVisible(true);
+            }
+        });
         cardReportes.add(btnGestionarReportes, BorderLayout.SOUTH);
+
         dashboardPanel.add(cardReportes, gbcReportes);
 
 		ImageIcon icon = new ImageIcon(PrincipalAdmin.class.getResource("/img/alticeblanco.png"));
