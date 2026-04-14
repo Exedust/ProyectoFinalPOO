@@ -56,16 +56,6 @@ public class GestionClientes extends JDialog {
     private JLabel lblClientesActivos;
     private JLabel lblClientesRegistrados;
 
-    public static void main(String[] args) {
-        try {
-            GestionClientes dialog = new GestionClientes();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public GestionClientes() {
         setTitle("Gestionar Clientes");
         setResizable(false);

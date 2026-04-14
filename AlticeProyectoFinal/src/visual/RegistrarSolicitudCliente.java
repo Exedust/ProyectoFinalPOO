@@ -31,9 +31,7 @@ public class RegistrarSolicitudCliente extends JDialog {
     private JTextPane txtDescripcion;
     private JComboBox<TipoSolicitud> comboTipo;
 
-    /**
-     * Create the dialog.
-     */
+
     public RegistrarSolicitudCliente() {
         setBackground(new Color(0, 0, 51));
         setTitle("Registrar Solicitud de Soporte");

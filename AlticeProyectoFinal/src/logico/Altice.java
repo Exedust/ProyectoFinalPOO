@@ -2,6 +2,7 @@ package logico;
 
 import java.io.*;
 import java.io.Serializable;
+import java.net.Socket;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +114,56 @@ public class Altice implements Serializable {
 		genPagoid = ois.readInt();
 		genServicioid = ois.readInt();
 	}
+	
+	private void enviarLog(String mensaje) {
+	    try {
+	        Socket nsfd = new Socket("localhost", 7000);
+	        DataOutputStream salida = new DataOutputStream(nsfd.getOutputStream());
 
+	        salida.writeUTF("LOG");
+	        
+	        salida.writeUTF(mensaje);
+
+	        salida.close();
+	        nsfd.close();
+
+	        System.out.println("Log enviado: " + mensaje);
+
+	    } catch (Exception e) {
+	        System.out.println("No se pudo enviar el log: " + e.getMessage());
+	    }
+	}
+	
+	private void registrarLog(Persona persona, String accion) {
+	    if (persona == null || accion == null || accion.trim().isEmpty()) {
+	        return;
+	    }
+
+	    String codigo = persona.getCodigo() != null ? persona.getCodigo() : "SIN_CODIGO";
+	    String nombre = persona.getNombre() != null ? persona.getNombre() : "Sin nombre";
+
+	    String linea = String.format("[%s] %s - %s - %s",
+	            java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+	            codigo,
+	            nombre,
+	            accion);
+
+	    enviarLog(linea);
+	}
+	
+	private Persona getPersonaActual() {
+	    if (getSesion() == null) return null;
+	    
+	    String codigoSesion = getSesion().getCodigo();
+	    if (codigoSesion == null) return null;
+
+	    Persona persona = buscarEmpleadoById(codigoSesion);
+	    if (persona != null) return persona;
+
+	    persona = buscarClienteById(codigoSesion);
+	    return persona;
+	}
+	
 	public ArrayList<Plan> getMisPlanes() {
 		return misPlanes;
 	}
@@ -194,6 +244,38 @@ public class Altice implements Serializable {
 	        }
 	    }
 	    return false;
+	}
+	
+	public boolean tieneSolicitudEnProceso(String codigoTecnico) {
+	    if (codigoTecnico == null || codigoTecnico.trim().isEmpty()) {
+	        return false;
+	    }
+
+	    for (Solicitud s : misSolicitudes) {
+	        if (s.getEmpleado() != null && 
+	            s.getEmpleado().getCodigo() != null &&
+	            s.getEmpleado().getCodigo().equalsIgnoreCase(codigoTecnico) &&
+	            s.isEnProceso()) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
+	public Solicitud buscarSolicitudEnProceso(String codigoTecnico) {
+	    if (codigoTecnico == null || codigoTecnico.trim().isEmpty()) {
+	        return null;
+	    }
+
+	    for (Solicitud s : misSolicitudes) {
+	        if (s.getEmpleado() != null && 
+	            s.getEmpleado().getCodigo() != null &&
+	            s.getEmpleado().getCodigo().equalsIgnoreCase(codigoTecnico) &&
+	            s.isEnProceso()) {
+	            return s;
+	        }
+	    }
+	    return null;
 	}
 	
 	public String buscarCedulaById(String codigoUsuario) {
@@ -292,6 +374,11 @@ public class Altice implements Serializable {
 		misUsuarios.add(empleado.getUsuario());
 		genEmpleadoid++;
 
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Registró empleado " + empleado.getCodigo() + " (" + empleado.getNombre() + ")");
+	    }
+	    
 		return true;
 	}
 
@@ -313,6 +400,11 @@ public class Altice implements Serializable {
 				misUsuarios.set(indiceUsuario, empleadoActualizado.getUsuario());
 			}
 		}
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Modificó empleado " + empleadoActualizado.getCodigo() + " (" + empleadoActualizado.getNombre() + ")");
+	    }
 
 		return true;
 	}
@@ -334,6 +426,11 @@ public class Altice implements Serializable {
 
 		cancelarPagosPendientesDePersona(empleado.getCedula());
 
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Desactivó empleado " + codigo + " (" + empleado.getNombre() + ")");
+	    }
+	    
 		return true;
 	}
 
@@ -361,6 +458,11 @@ public class Altice implements Serializable {
 		}
 
 		genClienteid++;
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Registró cliente " + cliente.getCodigo() + " (" + cliente.getNombre() + ")");
+	    }
 		return true;
 	}
 
@@ -382,6 +484,11 @@ public class Altice implements Serializable {
 				misUsuarios.set(indiceUsuario, nuevo.getUsuario());
 			}
 		}
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Modificó cliente " + nuevo.getCodigo() + " (" + nuevo.getNombre() + ")");
+	    }
 
 		return true;
 	}
@@ -402,6 +509,11 @@ public class Altice implements Serializable {
 		}
 		cancelarPagosPendientesDePersona(cliente.getCedula());
 
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Desactivó cliente " + codigo + " (" + cliente.getNombre() + ")");
+	    }
+	    
 		return true;
 	}
 
@@ -416,6 +528,12 @@ public class Altice implements Serializable {
 
 		misPlanes.add(plan);
 		genPlanid++;
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Registró plan " + plan.getCodigo() + " (" + plan.getNombre() + ")");
+	    }
+	    
 		return true;
 	}
 
@@ -430,6 +548,12 @@ public class Altice implements Serializable {
 		}
 
 		misPlanes.set(indice, nuevoPlan);
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Modificó plan " + nuevoPlan.getCodigo() + " (" + nuevoPlan.getNombre() + ")");
+	    }
+	    
 		return true;
 	}
 
@@ -444,6 +568,11 @@ public class Altice implements Serializable {
 
 		Plan plan = misPlanes.get(indice);
 		plan.setActivo(false);
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Desactivó plan " + codigo + " (" + plan.getNombre() + ")");
+	    }
 
 		return true;
 	}
@@ -465,6 +594,12 @@ public class Altice implements Serializable {
 
 		misServicios.add(servicio);
 		genServicioid++;
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Registró servicio " + servicio.getCodigo() + " (" + servicio.getTipo() + ")");
+	    }
+	    
 		return true;
 	}
 
@@ -477,6 +612,12 @@ public class Altice implements Serializable {
 			return false;
 
 		misServicios.set(indice, servicioActualizado);
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Modificó servicio " + servicioActualizado.getCodigo());
+	    }
+	    
 		return true;
 	}
 
@@ -493,6 +634,12 @@ public class Altice implements Serializable {
 			return false;
 
 		servicio.setActivo(false);
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Desactivó servicio " + codigo);
+	    }
+	    
 		return true;
 	}
 
@@ -508,6 +655,12 @@ public class Altice implements Serializable {
 
 		misSolicitudes.add(solicitud);
 		genSolicitudid++;
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Registró solicitud " + solicitud.getCodigo() + " (" + solicitud.getTipo() + ")");
+	    }
+	    
 		return true;
 	}
 
@@ -519,6 +672,11 @@ public class Altice implements Serializable {
 			return false;
 
 		misSolicitudes.set(indice, solicitudActualizada);
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Modificó solicitud " + solicitudActualizada.getCodigo());
+	    }
 		return true;
 	}
 
@@ -539,9 +697,15 @@ public class Altice implements Serializable {
 		}
 
 		solicitud.cancelar();
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Canceló solicitud " + codigoSolicitud);
+	    }
+	    
 		return true;
 	}
-	//====================== SOLICITUDES ======================
+
 
 	public boolean completarSolicitud(String codigoSolicitud) {
 		if (codigoSolicitud == null || codigoSolicitud.trim().isEmpty()) {
@@ -560,6 +724,12 @@ public class Altice implements Serializable {
 
 		solicitud.completar();
 		solicitud.getEmpleado().getSolicitudes().add(solicitud);
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Completó solicitud " + codigoSolicitud);
+	    }
+	    
 		return true;
 	}
 
@@ -586,6 +756,11 @@ public class Altice implements Serializable {
 			return false;
 		}
 		solicitud.asignarEmpleado(tecnico);
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Asignó técnico " + codigoTecnico + " a la solicitud " + codigoSolicitud);
+	    }
 		return true;
 	}
 
@@ -930,11 +1105,16 @@ public class Altice implements Serializable {
 		if (cliente instanceof Cliente) {
 			((Cliente) cliente).agregarPago(pago);
 		}
+		
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Registró pago " + pago.getCodigo() + 
+	                    " del contrato " + (contrato != null ? contrato.getCodigo() : "N/A"));
+	    }
 
 		return true;
 	}
 
-	// ====================== GENERACIÓN DE PAGOS MENSUALES ======================
 	public void producirPagos() {
 		LocalDate hoy = LocalDate.now();
 		int diaActual = hoy.getDayOfMonth();
@@ -992,6 +1172,10 @@ public class Altice implements Serializable {
 		pago.setPendiente(false);
 		pago.setFechaPago(LocalDate.now());
 
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Realizó el pago " + codigoPago);
+	    }
 		return true;
 	}
 
@@ -1009,6 +1193,11 @@ public class Altice implements Serializable {
 		pago.setActivo(false);
 		pago.setFechaPago(LocalDate.now());
 
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Canceló pago " + codigoPago);
+	    }
+	    
 		return true;
 	}
 
@@ -1059,6 +1248,13 @@ public class Altice implements Serializable {
 			contrato.getEmpleado().getContratos().add(contrato);
 		}
 
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, 
+	            "Registró contrato " + contrato.getCodigo() + 
+	            " (" + (contrato.getPlan() != null ? contrato.getPlan().getNombre() : "Sin plan") + ")");
+	    }
+	    
 		return true;
 	}
 
@@ -1075,6 +1271,11 @@ public class Altice implements Serializable {
 		contrato.setActivo(false);
 		contrato.setFechaCierre(LocalDate.now());
 
+		Persona personaActual = getPersonaActual();
+	    if (personaActual != null) {
+	        registrarLog(personaActual, "Cerró contrato " + codigo);
+	    }
+	    
 		return true;
 	}
 
@@ -1615,24 +1816,40 @@ public class Altice implements Serializable {
     
     // ====================== REPORTES - NÓMINA ======================
 
-    /**
-     * Retorna el número de contratos realizados por un empleado en los últimos N meses
-     */
     public int contarContratosEmpleadoEnPeriodo(String codigoEmpleado, int mesesAtras) {
-        if (codigoEmpleado == null || mesesAtras < 1) return 0;
+        if (codigoEmpleado == null || codigoEmpleado.trim().isEmpty()) {
+            return 0;
+        }
 
         Empleado emp = buscarEmpleadoById(codigoEmpleado);
-        if (emp == null || emp.getContratos() == null) return 0;
+        if (emp == null) {
+            return 0;
+        }
 
         LocalDate hoy = LocalDate.now();
-        LocalDate fechaLimite = hoy.minusMonths(mesesAtras);
+        LocalDate fechaInicioPeriodo;
+
+        if (mesesAtras == 0) {
+            fechaInicioPeriodo = hoy.withDayOfMonth(1);
+        } else {
+            fechaInicioPeriodo = hoy.minusMonths(mesesAtras);
+        }
 
         int count = 0;
-        for (Contrato c : emp.getContratos()) {
-            if (c.getFechaInicio() != null && !c.getFechaInicio().isBefore(fechaLimite)) {
-                count++;
+
+        for (Contrato c : getMisContratos()) {
+            if (c.getEmpleado() == null || c.getFechaInicio() == null) {
+                continue;
+            }
+            if (c.getEmpleado().getCodigo() != null && 
+                c.getEmpleado().getCodigo().equalsIgnoreCase(codigoEmpleado)) {
+
+                if (!c.getFechaInicio().isBefore(fechaInicioPeriodo)) {
+                    count++;
+                }
             }
         }
+
         return count;
     }
     

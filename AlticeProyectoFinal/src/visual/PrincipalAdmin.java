@@ -72,26 +72,8 @@ public class PrincipalAdmin extends JFrame {
 	private JLabel lblMes;
 	private JPanel panelInformacionGeneral;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PrincipalAdmin frame = new PrincipalAdmin();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public PrincipalAdmin() {
+		try {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -801,7 +783,15 @@ public class PrincipalAdmin extends JFrame {
 		Image image = icon.getImage();
 		actualizarDashboard();
 
+	} catch (Exception e) {
+        JOptionPane.showMessageDialog(this,
+                "Ocurrió un error al cargar la pantalla principal de administrador.\n\n" +
+                "Detalles: " + e.getMessage(),
+                "Error al abrir Altice",
+                JOptionPane.ERROR_MESSAGE);
+        }
 	}
+	
 	private void actualizarDashboard() {
 	    String filtro = (String) comboFiltros.getSelectedItem();
 	    if (filtro == null) filtro = "Mes Actual";

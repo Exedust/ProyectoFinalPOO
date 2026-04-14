@@ -59,26 +59,9 @@ public class PrincipalCliente extends JFrame {
 	private JComboBox<String> comboPagosPendientes;
 	private JButton btnPagar;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PrincipalCliente frame = new PrincipalCliente();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
+	
 	public PrincipalCliente() {
+		try {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -298,6 +281,14 @@ public class PrincipalCliente extends JFrame {
 		txtPagosPendientes.setBounds(424, 35, 91, 37);
 		panelDeuda.add(txtPagosPendientes);
 		comprobarDeuda();
+	} catch (Exception e) {
+        JOptionPane.showMessageDialog(this,
+                "Ocurrió un error al cargar la pantalla principal de administrador.\n\n" +
+                "Detalles: " + e.getMessage(),
+                "Error al abrir Altice",
+                JOptionPane.ERROR_MESSAGE);
+            
+        }
 	}
 	
 	private void cerrarSesion()

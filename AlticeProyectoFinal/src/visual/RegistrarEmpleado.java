@@ -57,16 +57,6 @@ public class RegistrarEmpleado extends JDialog {
     private JTextField txtConfirmarVisible;
     private JTextField txtContraVisible;
 
-    public static void main(String[] args) {
-        try {
-            RegistrarEmpleado dialog = new RegistrarEmpleado(null);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public RegistrarEmpleado(Empleado emp) {
         miEmpleado = emp;
         setTitle("Registrar Empleado");

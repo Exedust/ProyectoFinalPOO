@@ -48,16 +48,6 @@ public class DetallesPlan extends JDialog {
     private JPanel panelMovil;
     private JButton cancelButton;
 
-    public static void main(String[] args) {
-        try {
-            DetallesPlan dialog = new DetallesPlan(null);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public DetallesPlan(Plan plan) {
         setTitle("Detalles del Plan");
         miPlan = plan;

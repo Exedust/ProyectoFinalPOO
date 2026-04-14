@@ -41,7 +41,11 @@ public class Login extends JFrame {
             Login frame = new Login();
             frame.setVisible(true);
         } catch (Exception e) {
-            e.printStackTrace();
+        	JOptionPane.showMessageDialog(null,
+                    "Ocurrió un error inesperado al iniciar la aplicación.\n" +
+                    "Por favor contacte al administrador.",
+                    "Error de Inicio",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 

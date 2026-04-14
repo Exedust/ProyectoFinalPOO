@@ -51,16 +51,6 @@ public class GestionPlanes extends JDialog {
     private JLabel lblCodigo;
     private JLabel lblNombre;
 
-    public static void main(String[] args) {
-        try {
-            GestionPlanes dialog = new GestionPlanes();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public GestionPlanes() {
         setTitle("Gestionar Planes");
         setResizable(false);

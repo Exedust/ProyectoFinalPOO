@@ -51,16 +51,6 @@ public class GestionPagos extends JDialog {
     private JButton btnCedula;
     private JLabel lblCedula;
 
-    public static void main(String[] args) {
-        try {
-            GestionPagos dialog = new GestionPagos();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public GestionPagos() {
         setTitle("Gestionar Pagos");
         setResizable(false);

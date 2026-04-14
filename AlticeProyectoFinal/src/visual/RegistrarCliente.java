@@ -49,16 +49,6 @@ public class RegistrarCliente extends JDialog {
     private JTextField txtContraVisible;
     private JTextField txtConfirmarVisible;
 
-    public static void main(String[] args) {
-        try {
-            RegistrarCliente dialog = new RegistrarCliente(null, false);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public RegistrarCliente(Cliente client, boolean cerrarAlRegistrar) {
         miCliente = client;
         cerrar = cerrarAlRegistrar;

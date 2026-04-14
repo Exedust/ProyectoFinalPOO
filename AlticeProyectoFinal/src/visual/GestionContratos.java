@@ -51,16 +51,6 @@ public class GestionContratos extends JDialog {
     private JButton btnBuscar;
     private JButton btnCedula;
 
-    public static void main(String[] args) {
-        try {
-            GestionContratos dialog = new GestionContratos();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public GestionContratos() {
         setTitle("Gestionar Contratos");
         setResizable(false);

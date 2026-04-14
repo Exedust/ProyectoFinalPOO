@@ -62,22 +62,6 @@ public class DetallesComercial extends JDialog {
     private DefaultTableModel model;
     private Object[] row;
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        try {
-            DetallesComercial dialog = new DetallesComercial(null);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Create the dialog.
-     */
     public DetallesComercial(Empleado emp) {
         setResizable(false);
         miEmpleado = emp;
