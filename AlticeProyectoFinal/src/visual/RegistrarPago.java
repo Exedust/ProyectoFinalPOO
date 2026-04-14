@@ -33,16 +33,6 @@ public class RegistrarPago extends JDialog {
     private JButton btnRealizar;
     private JButton btnCancelar;
 
-    public static void main(String[] args) {
-        try {
-            RegistrarPago dialog = new RegistrarPago();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public RegistrarPago() {
         setTitle("Registrar Pago");
         setResizable(false);

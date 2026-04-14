@@ -32,6 +32,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import java.awt.Component;
 
 import logico.Altice;
+import logico.Empleado;
 import logico.EstadoSolicitud;
 import logico.TipoSolicitud;
 
@@ -200,7 +201,7 @@ public class Reportes extends JDialog {
         lblPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         panelFiltro.add(lblPeriodo);
 
-        comboPeriodoContratos = new JComboBox<>(new String[]{
+        comboPeriodoContratos = new JComboBox<String>(new String[]{
                 "Todos los tiempos",
                 "Último mes",
                 "Últimos 3 meses",
@@ -281,7 +282,7 @@ public class Reportes extends JDialog {
         lblPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         panelFiltro.add(lblPeriodo);
 
-        comboPeriodoPagos = new JComboBox<>(new String[]{
+        comboPeriodoPagos = new JComboBox<String>(new String[]{
                 "Todos los tiempos",
                 "Último mes",
                 "Últimos 3 meses",
@@ -511,7 +512,7 @@ public class Reportes extends JDialog {
         lblPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         panelFiltro.add(lblPeriodo);
 
-        comboPeriodo = new JComboBox<>(new String[]{
+        comboPeriodo = new JComboBox<String>(new String[]{
                 "Último mes", "Últimos 3 meses", "Últimos 6 meses", "Último año"
         });
         comboPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -548,30 +549,29 @@ public class Reportes extends JDialog {
         modeloNomina.setRowCount(0);
 
         String periodo = (String) comboPeriodo.getSelectedItem();
-        int meses = 1;
+        int mesesAtras = 0;   // Por defecto = mes actual
 
-        switch (periodo) {
-            case "Último mes":
-                meses = 1;
-                break;
-            case "Últimos 3 meses":
-                meses = 3;
-                break;
-            case "Últimos 6 meses":
-                meses = 6;
-                break;
-            case "Último año":
-                meses = 12;
-                break;
+        if (periodo != null) {
+            switch (periodo) {
+                case "Último mes":      mesesAtras = 0; break;
+                case "Últimos 3 meses": mesesAtras = 3; break;
+                case "Últimos 6 meses": mesesAtras = 6; break;
+                case "Último año":      mesesAtras = 12; break;
+            }
         }
 
-        ArrayList<logico.Empleado> empleados = Altice.getInstance().getTodosLosEmpleados();
+        ArrayList<Empleado> empleados = Altice.getInstance().getTodosLosEmpleados();
 
-        for (logico.Empleado emp : empleados) {
+        for (Empleado emp : empleados) {
             if (!emp.isActivo()) continue;
 
-            int numContratos = Altice.getInstance().contarContratosEmpleadoEnPeriodo(emp.getCodigo(), meses);
-            float comision = (emp.getRol() == logico.Rol.COMERCIAL) ? numContratos * 200f : 0f;
+            int numContratos = Altice.getInstance().contarContratosEmpleadoEnPeriodo(emp.getCodigo(), mesesAtras);
+            
+            float comision = 0f;
+            if (emp.getRol() == logico.Rol.COMERCIAL && emp.getComision() != null) {
+                comision = numContratos * emp.getComision();
+            }
+
             float total = emp.getSalario() + comision;
 
             modeloNomina.addRow(new Object[]{

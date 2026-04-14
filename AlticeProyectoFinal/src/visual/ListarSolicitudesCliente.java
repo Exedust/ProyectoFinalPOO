@@ -51,16 +51,6 @@ public class ListarSolicitudesCliente extends JDialog {
     private JLabel lblPendientes;
     private JLabel lblCompletadas;
 
-    public static void main(String[] args) {
-        try {
-            ListarSolicitudesCliente dialog = new ListarSolicitudesCliente();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public ListarSolicitudesCliente() {
         setTitle("Ver mis solicitudes");
         setResizable(false);

@@ -41,17 +41,7 @@ public class GestionServicios extends JDialog {
     private JButton btnSalir;
     private static JComboBox<String> comboFiltrar;
     private static JLabel lblServiciosRegistrados;
-
-    public static void main(String[] args) {
-        try {
-            GestionServicios dialog = new GestionServicios();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     public GestionServicios() {
         setTitle("Gestionar Servicios");
         setResizable(false);

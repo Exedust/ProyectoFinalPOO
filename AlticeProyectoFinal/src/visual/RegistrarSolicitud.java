@@ -41,15 +41,6 @@ public class RegistrarSolicitud extends JDialog {
     private JButton btnBuscar;
     private JButton btnLimpiar;
 
-    public static void main(String[] args) {
-        try {
-            RegistrarSolicitud dialog = new RegistrarSolicitud(null, false);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public RegistrarSolicitud(Solicitud solicitud, boolean cerrarAlRegistrar) {
         this.miSolicitud = solicitud;

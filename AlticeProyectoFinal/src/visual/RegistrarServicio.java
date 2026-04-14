@@ -35,15 +35,6 @@ public class RegistrarServicio extends JDialog {
     private JButton cancelButton;
     private JTextField txtTipo;
 
-    public static void main(String[] args) {
-        try {
-            RegistrarServicio dialog = new RegistrarServicio(null, false);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public RegistrarServicio(Servicio servicio, boolean cerrarAlRegistrar) {
         this.miServicio = servicio;

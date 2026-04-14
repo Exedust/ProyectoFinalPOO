@@ -62,22 +62,6 @@ public class DetallesTecnico extends JDialog {
 	private Object[] row;
 	private JPanel panel_2;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			DetallesTecnico dialog = new DetallesTecnico(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Create the dialog.
-	 */
 	public DetallesTecnico(Empleado emp) {
 		setResizable(false);
 		miEmpleado = emp;

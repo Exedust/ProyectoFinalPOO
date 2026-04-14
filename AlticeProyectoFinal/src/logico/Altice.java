@@ -1784,24 +1784,40 @@ public class Altice implements Serializable {
     
     // ====================== REPORTES - NÓMINA ======================
 
-    /**
-     * Retorna el número de contratos realizados por un empleado en los últimos N meses
-     */
     public int contarContratosEmpleadoEnPeriodo(String codigoEmpleado, int mesesAtras) {
-        if (codigoEmpleado == null || mesesAtras < 1) return 0;
+        if (codigoEmpleado == null || codigoEmpleado.trim().isEmpty()) {
+            return 0;
+        }
 
         Empleado emp = buscarEmpleadoById(codigoEmpleado);
-        if (emp == null || emp.getContratos() == null) return 0;
+        if (emp == null) {
+            return 0;
+        }
 
         LocalDate hoy = LocalDate.now();
-        LocalDate fechaLimite = hoy.minusMonths(mesesAtras);
+        LocalDate fechaInicioPeriodo;
+
+        if (mesesAtras == 0) {
+            fechaInicioPeriodo = hoy.withDayOfMonth(1);
+        } else {
+            fechaInicioPeriodo = hoy.minusMonths(mesesAtras);
+        }
 
         int count = 0;
-        for (Contrato c : emp.getContratos()) {
-            if (c.getFechaInicio() != null && !c.getFechaInicio().isBefore(fechaLimite)) {
-                count++;
+
+        for (Contrato c : getMisContratos()) {
+            if (c.getEmpleado() == null || c.getFechaInicio() == null) {
+                continue;
+            }
+            if (c.getEmpleado().getCodigo() != null && 
+                c.getEmpleado().getCodigo().equalsIgnoreCase(codigoEmpleado)) {
+
+                if (!c.getFechaInicio().isBefore(fechaInicioPeriodo)) {
+                    count++;
+                }
             }
         }
+
         return count;
     }
     

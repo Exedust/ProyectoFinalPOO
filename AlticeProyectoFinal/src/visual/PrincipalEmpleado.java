@@ -62,26 +62,8 @@ public class PrincipalEmpleado extends JFrame {
 	private JComboBox<String> comboPagosPendientes;
 	private JButton btnPagar;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PrincipalEmpleado frame = new PrincipalEmpleado();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public PrincipalEmpleado() {
+		try {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -399,6 +381,14 @@ public class PrincipalEmpleado extends JFrame {
 		panelDeuda.add(txtPagosPendientes);
 		comprobarRol();
 		comprobarDeuda();
+	} catch (Exception e) {
+        JOptionPane.showMessageDialog(this,
+                "Ocurrió un error al cargar la pantalla principal de administrador.\n\n" +
+                "Detalles: " + e.getMessage(),
+                "Error al abrir Altice",
+                JOptionPane.ERROR_MESSAGE);
+            
+        }
 	}
 	
 	private void cerrarSesion()

@@ -59,16 +59,6 @@ public class RegistrarPlan extends JDialog {
     private JLabel label;
     private JTextField txtCodigo;
 
-    public static void main(String[] args) {
-        try {
-            RegistrarPlan dialog = new RegistrarPlan(null);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public RegistrarPlan(Plan plan) {
     	miPlan = plan;
     	

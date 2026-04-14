@@ -63,16 +63,6 @@ public class DetallesContrato extends JDialog {
     private JLabel lblPagosPendientes;
     private JLabel lblMontoPendiente;
 
-    public static void main(String[] args) {
-        try {
-            DetallesContrato dialog = new DetallesContrato(null);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public DetallesContrato(Contrato contrato) {
         miContrato = contrato;
 

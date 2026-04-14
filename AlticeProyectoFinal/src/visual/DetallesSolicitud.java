@@ -39,16 +39,6 @@ public class DetallesSolicitud extends JDialog {
     private JTextField txtTelefono;
     private JTextField txtDireccion;
 
-    public static void main(String[] args) {
-        try {
-            DetallesSolicitud dialog = new DetallesSolicitud(null);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public DetallesSolicitud(Solicitud solicitud) {
         this.miSolicitud = solicitud;
 

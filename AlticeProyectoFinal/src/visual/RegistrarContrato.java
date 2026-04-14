@@ -43,15 +43,6 @@ public class RegistrarContrato extends JDialog {
     private JButton btnAceptar;
     private JButton cancelButton;
 
-    public static void main(String[] args) {
-        try {
-            RegistrarContrato dialog = new RegistrarContrato();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public RegistrarContrato() {
         setResizable(false);
