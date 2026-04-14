@@ -573,7 +573,7 @@ public class Reportes extends JDialog {
             }
 
             float total = emp.getSalario() + comision;
-
+            
             modeloNomina.addRow(new Object[]{
                 emp.getCedula(),
                 emp.getNombre(),

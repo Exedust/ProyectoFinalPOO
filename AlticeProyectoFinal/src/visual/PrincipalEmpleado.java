@@ -171,6 +171,7 @@ public class PrincipalEmpleado extends JFrame {
 		panelSolicitudTomada.setBorder(new TitledBorder(null, "Solicitud Tomada", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
 		panelSolicitudTomada.setBackground(new Color(102, 102, 204));
 		GridBagConstraints gbc_panelSolicitudTomada = new GridBagConstraints();
+		gbc_panelSolicitudTomada.ipadx = 20;
 		gbc_panelSolicitudTomada.insets = new Insets(20, 20, 20, 20);
 		gbc_panelSolicitudTomada.fill = GridBagConstraints.BOTH;
 		gbc_panelSolicitudTomada.gridx = 1;
@@ -191,13 +192,13 @@ public class PrincipalEmpleado extends JFrame {
 		txtCodigoSolicitud.setCaretColor(Color.WHITE);
 		txtCodigoSolicitud.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
 		txtCodigoSolicitud.setBackground(new Color(0, 0, 51));
-		txtCodigoSolicitud.setBounds(12, 44, 184, 37);
+		txtCodigoSolicitud.setBounds(22, 44, 184, 37);
 		panel_3.add(txtCodigoSolicitud);
 		
 		JLabel lblCdigo = new JLabel("C\u00F3digo:");
 		lblCdigo.setForeground(Color.WHITE);
 		lblCdigo.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblCdigo.setBounds(70, 13, 73, 22);
+		lblCdigo.setBounds(77, 13, 73, 22);
 		panel_3.add(lblCdigo);
 		
 		JButton btnCompletar = new JButton("Completar");
@@ -211,7 +212,7 @@ public class PrincipalEmpleado extends JFrame {
 		btnCompletar.setFocusPainted(false);
 		btnCompletar.setEnabled(true);
 		btnCompletar.setBackground(new Color(0, 0, 51));
-		btnCompletar.setBounds(40, 128, 128, 28);
+		btnCompletar.setBounds(50, 128, 128, 28);
 		panel_3.add(btnCompletar);
 		btnGestionarClientes.setForeground(Color.WHITE);
 		btnGestionarClientes.setBackground(new Color(0, 0, 51));
@@ -246,6 +247,7 @@ public class PrincipalEmpleado extends JFrame {
 				gestion.setModal(true);
 				gestion.setVisible(true);
 				comprobarDeuda();
+				comprobarRol();
 			}
 		});
 		btnGestionarContratos.setForeground(Color.WHITE);
@@ -303,6 +305,7 @@ public class PrincipalEmpleado extends JFrame {
         		GestionSolicitudes gestion = new GestionSolicitudes();
         		gestion.setModal(true);
         		gestion.setVisible(true);
+        		comprobarRol();
         	}
         });
         button.setForeground(Color.WHITE);
@@ -354,6 +357,7 @@ public class PrincipalEmpleado extends JFrame {
 					nuevo.setVisible(true);
 				}
 				comprobarDeuda();
+				comprobarRol();
 			}
 		});
 		btnVerDetalles.setForeground(Color.WHITE);
@@ -434,27 +438,47 @@ public class PrincipalEmpleado extends JFrame {
 		comprobarDeuda();
 	} catch (Exception e) {
         JOptionPane.showMessageDialog(this,
-                "Ocurrió un error al cargar la pantalla principal de administrador.\n\n" +
+                "Ocurrió un error.\n\n" +
                 "Detalles: " + e.getMessage(),
                 "Error al abrir Altice",
                 JOptionPane.ERROR_MESSAGE);
             
         }
 	}
-    private void completarSolicitud() {
-    	Solicitud selected = Altice.getInstance().buscarSolicitudEnProceso(Altice.getSesion().getCodigo());
-    	
-        int opcion = JOptionPane.showConfirmDialog(this, "¿Desea marcar esta solicitud como completada?", 
-                "Completar Solicitud", JOptionPane.YES_NO_OPTION);
+	private void completarSolicitud() {
+	    Solicitud selected = Altice.getInstance().buscarSolicitudEnProceso(
+	        Altice.getSesion().getCodigo()
+	    );
 
-        if (opcion == JOptionPane.YES_OPTION) {
-            if (Altice.getInstance().completarSolicitud(selected.getCodigo())) {
-                JOptionPane.showMessageDialog(this, "Solicitud completada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-        
-        comprobarRol();
-    }
+	    if (selected == null) {
+	        JOptionPane.showMessageDialog(this, 
+	            "No hay ninguna solicitud en proceso para completar.",
+	            "Información", JOptionPane.INFORMATION_MESSAGE);
+	        return;
+	    }
+
+	    int opcion = JOptionPane.showConfirmDialog(this, 
+	        "¿Desea marcar esta solicitud como completada?\n\nCódigo: " + selected.getCodigo(),
+	        "Completar Solicitud", 
+	        JOptionPane.YES_NO_OPTION);
+
+	    if (opcion == JOptionPane.YES_OPTION) {
+	        if (Altice.getInstance().completarSolicitud(selected.getCodigo())) {
+	            JOptionPane.showMessageDialog(this, 
+	                "Solicitud completada correctamente", 
+	                "Éxito", 
+	                JOptionPane.INFORMATION_MESSAGE);
+	            
+	            // Actualizar interfaz después de completar
+	            comprobarRol();
+	        } else {
+	            JOptionPane.showMessageDialog(this, 
+	                "No se pudo completar la solicitud", 
+	                "Error", 
+	                JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
+	}
 	private void cerrarSesion()
 	{
 		if(Altice.getSesion() == null)
@@ -475,25 +499,36 @@ public class PrincipalEmpleado extends JFrame {
         log.setVisible(true);
         Altice.getInstance().guardarDatos();
 	}
-	private void comprobarRol()
-	{
-		if(Altice.getInstance().getRolUsuarioLogueado() == Rol.TECNICO)
-		{
-			cardClientes.setVisible(false);
-			cardContratos.setVisible(false);
-			cardPagos.setVisible(false);
-			
-			if(Altice.getInstance().tieneSolicitudEnProceso(Altice.getSesion().getCodigo()))
-			{
-				panelSolicitudTomada.setVisible(false);
-			}
-			else
-			{
-				panelSolicitudTomada.setVisible(true);
-				txtCodigoSolicitud.setText(Altice.getInstance().buscarSolicitudEnProceso(Altice.getSesion().getCodigo()).getCodigo());
-				
-			}
-		}
+	private void comprobarRol() {
+	    if (Altice.getInstance().getRolUsuarioLogueado() == Rol.TECNICO) {
+	        
+	        cardClientes.setVisible(false);
+	        cardContratos.setVisible(false);
+	        cardPagos.setVisible(false);
+
+	        boolean tieneSolicitud = Altice.getInstance().tieneSolicitudEnProceso(
+	            Altice.getSesion().getCodigo()
+	        );
+
+	        if (tieneSolicitud) {
+	            panelSolicitudTomada.setVisible(true);
+	            
+	            Solicitud sol = Altice.getInstance().buscarSolicitudEnProceso(
+	                Altice.getSesion().getCodigo()
+	            );
+	            
+	            if (sol != null && sol.getCodigo() != null) {
+	                txtCodigoSolicitud.setText(sol.getCodigo());
+	            } else {
+	                txtCodigoSolicitud.setText("Sin código");
+	            }
+	        } else {
+	            panelSolicitudTomada.setVisible(false);
+	        }
+	    } else {
+	        // Para Comerciales o si no es técnico
+	        panelSolicitudTomada.setVisible(false);
+	    }
 	}
 	private void comprobarDeuda() {
 	    String cedula = Altice.getInstance().buscarCedulaById(Altice.getSesion().getCodigo());
