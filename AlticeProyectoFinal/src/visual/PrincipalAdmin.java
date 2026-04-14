@@ -344,6 +344,19 @@ public class PrincipalAdmin extends JFrame {
 		btnGuardar.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		btnGuardar.setBackground(new Color(0, 0, 102));
 		mnNewMenu.add(btnGuardar);
+		
+		JMenuItem mntmReportes = new JMenuItem("Reportes");
+		mntmReportes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                Reportes reportes = new Reportes();
+                reportes.setModal(true);
+                reportes.setVisible(true);
+			}
+		});
+		mntmReportes.setForeground(Color.WHITE);
+		mntmReportes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmReportes.setBackground(new Color(0, 0, 102));
+		mnNewMenu.add(mntmReportes);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(0, 0, 51));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
