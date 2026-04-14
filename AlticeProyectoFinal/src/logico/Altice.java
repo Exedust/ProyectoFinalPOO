@@ -4,6 +4,8 @@ import java.io.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Altice implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -833,42 +835,6 @@ public class Altice implements Serializable {
 		return false;
 	}
 	
-    /**
-     * Calcula los ingresos REALIZADOS (pagos completados) en un período específico.
-     */
-    public float calcularIngresosPagosPorPeriodo(int mesesAtras) {
-        float total = 0f;
-        LocalDate fechaLimite = (mesesAtras > 0) ? LocalDate.now().minusMonths(mesesAtras) : null;
-
-        for (Pago pago : misPagos) {
-            if (pago.isActivo() && !pago.isPendiente() && pago.getFechaPago() != null) {
-                if (fechaLimite != null && pago.getFechaPago().isBefore(fechaLimite)) {
-                    continue;
-                }
-                total += pago.getMonto();
-            }
-        }
-        return total;
-    }
-
-    /**
-     * Calcula el monto pendiente en un período específico.
-     */
-    public float calcularMontoPendientePorPeriodo(int mesesAtras) {
-        float total = 0f;
-        LocalDate fechaLimite = (mesesAtras > 0) ? LocalDate.now().minusMonths(mesesAtras) : null;
-
-        for (Pago pago : misPagos) {
-            if (pago.isActivo() && pago.isPendiente()) {
-                if (fechaLimite != null && pago.getFechaRegistro() != null 
-                    && pago.getFechaRegistro().isBefore(fechaLimite)) {
-                    continue;
-                }
-                total += pago.getMonto();
-            }
-        }
-        return total;
-    }
 
 	public static int getGenClienteid() {
 		return genClienteid;
@@ -1281,8 +1247,8 @@ public class Altice implements Serializable {
 		return count;
 	}
 
-	public double calcularMontoPendienteTotal() {
-		double total = 0;
+	public float calcularMontoPendienteTotal() {
+		float total = 0;
 		for (Pago p : misPagos) {
 			if (p.isPendiente() && p.isActivo()) {
 				total += p.getMonto();
@@ -1291,8 +1257,8 @@ public class Altice implements Serializable {
 		return total;
 	}
 
-	public double calcularIngresosMensuales(int mes, int año) {
-		double total = 0;
+	public float calcularIngresosMensuales(int mes, int año) {
+		float total = 0;
 		for (Pago p : misPagos) {
 			if (p.getFechaPago() != null && 
 					p.getFechaPago().getMonthValue() == mes && 
@@ -1342,9 +1308,9 @@ public class Altice implements Serializable {
 		return count;
 	}
 
-	public double calcularDeudaCliente(Cliente cli) {
-		if (cli == null || cli.getPagos() == null) return 0.0;
-		double deuda = 0.0;
+	public float calcularDeudaCliente(Cliente cli) {
+		if (cli == null || cli.getPagos() == null) return 0f;
+		float deuda = 0f;
 		for (Pago p : cli.getPagos()) {
 			if (p.isPendiente() && p.isActivo()) {
 				deuda += p.getMonto();
@@ -1352,6 +1318,39 @@ public class Altice implements Serializable {
 		}
 		return deuda;
 	}
+	
+    public float calcularIngresosPagosPorPeriodo(int mesesAtras) {
+        float total = 0f;
+        LocalDate fechaLimite = (mesesAtras > 0) ? LocalDate.now().minusMonths(mesesAtras) : null;
+
+        for (Pago pago : misPagos) {
+            if (pago.isActivo() && !pago.isPendiente() && pago.getFechaPago() != null) {
+                if (fechaLimite != null && pago.getFechaPago().isBefore(fechaLimite)) {
+                    continue;
+                }
+                total += pago.getMonto();
+            }
+        }
+        return total;
+    }
+
+    
+    public float calcularMontoPendientePorPeriodo(int mesesAtras) {
+        float total = 0f;
+        LocalDate fechaLimite = (mesesAtras > 0) ? LocalDate.now().minusMonths(mesesAtras) : null;
+
+        for (Pago pago : misPagos) {
+            if (pago.isActivo() && pago.isPendiente()) {
+                // Para pagos pendientes, usamos la fecha de registro
+                if (fechaLimite != null && pago.getFechaRegistro() != null 
+                    && pago.getFechaRegistro().isBefore(fechaLimite)) {
+                    continue;
+                }
+                total += pago.getMonto();
+            }
+        }
+        return total;
+    }
 
 	public float calcularDeudaCedula(String cedula) {
 	    if (cedula == null || cedula.trim().isEmpty()) {
@@ -1408,7 +1407,7 @@ public class Altice implements Serializable {
 	public int contarClientesDeudaBaja() {
 		int count = 0;
 		for (Cliente c : misClientes) {
-			double deuda = calcularDeudaCliente(c);
+			float deuda = calcularDeudaCliente(c);
 			if (c.isActivo() && deuda > 0 && deuda <= 5000) {
 				count++;
 			}
@@ -1419,7 +1418,7 @@ public class Altice implements Serializable {
 	public int contarClientesDeudaMedia() {
 		int count = 0;
 		for (Cliente c : misClientes) {
-			double deuda = calcularDeudaCliente(c);
+			float deuda = calcularDeudaCliente(c);
 			if (c.isActivo() && deuda > 5000 && deuda <= 15000) {
 				count++;
 			}
@@ -1449,7 +1448,7 @@ public class Altice implements Serializable {
 	public int contarClientesDeudaAlta() {
 		int count = 0;
 		for (Cliente c : misClientes) {
-			double deuda = calcularDeudaCliente(c);
+			float deuda = calcularDeudaCliente(c);
 			if (c.isActivo() && deuda > 15000) {
 				count++;
 			}
@@ -1569,7 +1568,7 @@ public class Altice implements Serializable {
      * Tiempo promedio de resolución en días (solo para solicitudes RESUELTO)
      * Retorna 0 si no hay datos suficientes
      */
-    public double calcularTiempoPromedioResolucion() {
+    public float calcularTiempoPromedioResolucion() {
         int count = 0;
         long totalDias = 0;
 
@@ -1585,14 +1584,14 @@ public class Altice implements Serializable {
             }
         }
 
-        return (count > 0) ? (double) totalDias / count : 0.0;
+        return (count > 0) ? (float) totalDias / count : 0f;
     }
 
     /**
      * Tiempo promedio de resolución por tipo de solicitud
      */
-    public double calcularTiempoPromedioResolucionPorTipo(TipoSolicitud tipo) {
-        if (tipo == null) return 0.0;
+    public float calcularTiempoPromedioResolucionPorTipo(TipoSolicitud tipo) {
+        if (tipo == null) return 0f;
 
         int count = 0;
         long totalDias = 0;
@@ -1611,7 +1610,7 @@ public class Altice implements Serializable {
             }
         }
 
-        return (count > 0) ? (double) totalDias / count : 0.0;
+        return (count > 0) ? (float) totalDias / count : 0f;
     }
     
     // ====================== REPORTES - NÓMINA ======================
@@ -1681,4 +1680,51 @@ public class Altice implements Serializable {
         }
         return ingresosPorMes;
     }
+  
+    public Map<String, Integer> contarContratosActivosPorPlan() {
+        Map<String, Integer> contratosPorPlan = new HashMap<>();
+
+        for (Contrato contrato : misContratos) {
+            if (contrato.isActivo() && contrato.getPlan() != null) {
+                String nombrePlan = contrato.getPlan().getNombre();
+                contratosPorPlan.put(nombrePlan, 
+                    contratosPorPlan.getOrDefault(nombrePlan, 0) + 1);
+            }
+        }
+
+        return contratosPorPlan;
+    }
+    
+    /**
+     * Calcula los ingresos reales por cada Plan.
+     * Incluye TODOS los planes activos, aunque no tengan pagos aún (muestra 0).
+     */
+    public Map<String, Float> calcularIngresosPorPlan() {
+        Map<String, Float> ingresosPorPlan = new HashMap<>();
+
+        // Primero registramos todos los planes activos
+        for (Plan plan : misPlanes) {
+            if (plan.isActivo()) {
+                ingresosPorPlan.put(plan.getNombre(), 0f);
+            }
+        }
+
+        // Ahora sumamos los pagos completados de todos los contratos
+        for (Contrato contrato : misContratos) {
+            if (!contrato.isActivo() || contrato.getPlan() == null) continue;
+
+            String nombrePlan = contrato.getPlan().getNombre();
+
+            for (Pago pago : contrato.getPagos()) {
+                if (pago.isActivo() && !pago.isPendiente() && pago.getFechaPago() != null) {
+                    ingresosPorPlan.merge(nombrePlan, pago.getMonto(), Float::sum);
+                }
+            }
+        }
+
+        return ingresosPorPlan;
+    }
+    
+    
+   
 }
