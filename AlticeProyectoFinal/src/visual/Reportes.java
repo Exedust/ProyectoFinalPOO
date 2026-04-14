@@ -29,7 +29,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+import java.awt.Component;
 
 import logico.Altice;
 import logico.EstadoSolicitud;
@@ -50,6 +50,7 @@ public class Reportes extends JDialog {
     private JTable tablaNomina;
     private DefaultTableModel modeloNomina;
     private JComboBox<String> comboPeriodo;
+    private JComboBox<String> comboPeriodoContratos;  
 
     public static void main(String[] args) {
         try {
@@ -159,9 +160,10 @@ public class Reportes extends JDialog {
         panel.setBackground(new Color(0, 0, 51));
         panel.setLayout(null);
 
+        // Panel de botones a la izquierda
         JPanel panelBotones = new JPanel();
         panelBotones.setBackground(new Color(0, 0, 51));
-        panelBotones.setBounds(30, 30, 280, 420);
+        panelBotones.setBounds(30, 30, 280, 380);
         panelBotones.setLayout(new GridLayout(0, 1, 0, 10));
 
         JButton btnEstado = new JButton("Contratos por Estado");
@@ -174,10 +176,10 @@ public class Reportes extends JDialog {
         agregarBotonEstilo(btnPorPlan);
         panelBotones.add(btnPorPlan);
 
-        JButton btnMontoDeuda = new JButton("Monto Total de Deuda");
-        btnMontoDeuda.addActionListener(e -> mostrarGraficoMontoDeudaPorMes(panel));
-        agregarBotonEstilo(btnMontoDeuda);
-        panelBotones.add(btnMontoDeuda);
+        JButton btnIngresosContratos = new JButton("Ingresos por Mes");
+        btnIngresosContratos.addActionListener(e -> mostrarGraficoIngresosContratosPorMes(panel));
+        agregarBotonEstilo(btnIngresosContratos);
+        panelBotones.add(btnIngresosContratos);
 
         JButton btnResumen = new JButton("Resumen");
         btnResumen.addActionListener(e -> mostrarResumenContratos(panel));
@@ -186,20 +188,58 @@ public class Reportes extends JDialog {
 
         panel.add(panelBotones);
 
+        // ==================== COMBOBOX GLOBAL + BOTÓN MOSTRAR ====================
+        JPanel panelFiltro = new JPanel();
+        panelFiltro.setBackground(new Color(0, 0, 51));
+        panelFiltro.setBounds(30, 430, 280, 50);
+        panelFiltro.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 15));
+
+        JLabel lblPeriodo = new JLabel("Período:");
+        lblPeriodo.setForeground(Color.WHITE);
+        lblPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        panelFiltro.add(lblPeriodo);
+
+        comboPeriodoContratos = new JComboBox<>(new String[]{
+                "Todos los tiempos",
+                "Último mes",
+                "Últimos 3 meses",
+                "Últimos 6 meses",
+                "Último año"
+        });
+        comboPeriodoContratos.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        panelFiltro.add(comboPeriodoContratos);
+
+        // BOTÓN MOSTRAR
+        JButton btnMostrar = new JButton("Mostrar");
+        btnMostrar.setForeground(Color.WHITE);
+        btnMostrar.setBackground(new Color(0, 102, 0));
+        btnMostrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btnMostrar.setFocusPainted(false);
+        btnMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        btnMostrar.addActionListener(e -> actualizarGraficoActualContratos(panel));
+        panelFiltro.add(btnMostrar);
+
+        panel.add(panelFiltro);
+
+        // Label de información general
         lblInfoContratos = new JLabel("<html><b>Información General de Contratos:</b><br><br>" +
                 "Total de contratos: " + Altice.getInstance().contarContratosTotal() + "<br>" +
                 "Contratos activos: " + Altice.getInstance().contarContratosActivos() + "<br>" +
                 "Contratos cerrados: " + Altice.getInstance().contarContratosCerrados() + "<br>" +
                 "Deuda total: RD$ " + String.format("%.2f", Altice.getInstance().calcularDeudaTotalClientes()) +
                 "</html>");
+
         lblInfoContratos.setForeground(Color.WHITE);
         lblInfoContratos.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         lblInfoContratos.setBounds(350, 30, 550, 220);
         panel.add(lblInfoContratos);
 
+        // Mostrar resumen por defecto al entrar a la pestaña
+        mostrarResumenContratos(panel);
+
         tabbedPane.addTab("Contratos", panel);
     }
-
+    
     // ====================== PESTAÑA PAGOS ======================
     private void crearPestanaPagos() {
         JPanel panel = new JPanel();
@@ -235,10 +275,14 @@ public class Reportes extends JDialog {
                 "Pagos cancelados: " + Altice.getInstance().contarPagosCancelados() + "<br>" +
                 "Monto pendiente total: RD$ " + String.format("%.2f", Altice.getInstance().calcularMontoPendienteTotal()) +
                 "</html>");
+
         lblInfoPagos.setForeground(Color.WHITE);
         lblInfoPagos.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         lblInfoPagos.setBounds(350, 30, 550, 220);
         panel.add(lblInfoPagos);
+
+        // Mostrar resumen por defecto al entrar a la pestaña
+        mostrarResumenPagos(panel);
 
         tabbedPane.addTab("Pagos", panel);
     }
@@ -391,19 +435,7 @@ public class Reportes extends JDialog {
     }
 
     // ====================== MÉTODOS AUXILIARES ======================
-    private void ocultarGraficoActual(JPanel panel) {
-        if (chartPanelActual != null) {
-            panel.remove(chartPanelActual);
-            chartPanelActual = null;
-        }
-        // Ocultar todos los labels
-        if (lblInfoClientes != null) lblInfoClientes.setVisible(false);
-        if (lblInfoContratos != null) lblInfoContratos.setVisible(false);
-        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
-        if (lblInfoSolicitudes != null) lblInfoSolicitudes.setVisible(false);
-        if (lblInfoPlanes != null) lblInfoPlanes.setVisible(false);
-    }
-
+    
     private void mostrarResumen(JPanel panel) {
         ocultarGraficoActual(panel);
         if (lblInfoClientes != null) lblInfoClientes.setVisible(true);
@@ -412,12 +444,13 @@ public class Reportes extends JDialog {
     }
 
     private void mostrarResumenContratos(JPanel panel) {
-        ocultarGraficoActual(panel);
-        if (lblInfoContratos != null) lblInfoContratos.setVisible(true);
+        ocultarGraficoActual(panel);        	
+        if (lblInfoContratos != null) {
+            lblInfoContratos.setVisible(true);
+        }
         panel.revalidate();
         panel.repaint();
     }
-
     private void mostrarResumenPagos(JPanel panel) {
         ocultarGraficoActual(panel);
         if (lblInfoPagos != null) lblInfoPagos.setVisible(true);
@@ -531,18 +564,26 @@ public class Reportes extends JDialog {
             });
         }
     }
+    
+    private void ocultarGraficoActual(JPanel panel) {
+        Component[] componentes = panel.getComponents();
+        for (Component comp : componentes) {
+            if (comp instanceof ChartPanel) {
+                panel.remove(comp);
+            }
+        }
+        chartPanelActual = null;
 
-    private JPanel crearPanelBase(String titulo) {
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(0, 0, 51));
-        panel.setLayout(null);
-        JLabel lbl = new JLabel("Reportes de " + titulo + " - En desarrollo");
-        lbl.setForeground(Color.WHITE);
-        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        lbl.setBounds(100, 100, 600, 40);
-        panel.add(lbl);
-        return panel;
+        if (lblInfoClientes != null) lblInfoClientes.setVisible(false);
+        if (lblInfoContratos != null) lblInfoContratos.setVisible(false);
+        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
+        if (lblInfoSolicitudes != null) lblInfoSolicitudes.setVisible(false);
+        if (lblInfoPlanes != null) lblInfoPlanes.setVisible(false);
+
+        panel.revalidate();
+        panel.repaint();
     }
+
 
     // ====================== GRÁFICOS ANTERIORES (resumidos) ======================
     private void mostrarGraficoEstadoPago(JPanel panel) {
@@ -595,16 +636,21 @@ public class Reportes extends JDialog {
         panel.repaint();
     }
 
+   
     private void mostrarGraficoContratosPorEstado(JPanel panel) {
         ocultarGraficoActual(panel);
         DefaultPieDataset dataset = new DefaultPieDataset();
         dataset.setValue("Activos", Altice.getInstance().contarContratosActivos());
         dataset.setValue("Cerrados", Altice.getInstance().contarContratosCerrados());
-        JFreeChart chart = ChartFactory.createPieChart("Distribución de Contratos por Estado",
+
+        JFreeChart chart = ChartFactory.createPieChart(
+                "Distribución de Contratos por Estado",
                 dataset, true, true, false);
+
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
         panel.add(chartPanelActual);
+
         if (lblInfoContratos != null) lblInfoContratos.setVisible(false);
         panel.revalidate();
         panel.repaint();
@@ -612,39 +658,31 @@ public class Reportes extends JDialog {
 
     private void mostrarGraficoContratosPorPlan(JPanel panel) {
         ocultarGraficoActual(panel);
+
         Map<String, Integer> contratosPorPlan = Altice.getInstance().contarContratosPorPlan();
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
         for (Map.Entry<String, Integer> entry : contratosPorPlan.entrySet()) {
             dataset.setValue(entry.getValue(), "Contratos", entry.getKey());
         }
-        JFreeChart chart = ChartFactory.createBarChart("Cantidad de Contratos por Plan",
-                "Plan", "Número de Contratos", dataset, PlotOrientation.VERTICAL, true, true, false);
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Cantidad de Contratos por Plan",
+                "Plan", 
+                "Número de Contratos", 
+                dataset, 
+                PlotOrientation.VERTICAL, 
+                true, true, false);
+
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
         panel.add(chartPanelActual);
+
         if (lblInfoContratos != null) lblInfoContratos.setVisible(false);
         panel.revalidate();
         panel.repaint();
     }
-
-    private void mostrarGraficoMontoDeudaPorMes(JPanel panel) {
-        ocultarGraficoActual(panel);
-        float[] deudaPorMes = Altice.getInstance().getDeudaTotalPorMesUltimoAno();
-        String[] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (int i = 0; i < 12; i++) {
-            dataset.setValue(deudaPorMes[i], "Deuda", meses[i]);
-        }
-        JFreeChart chart = ChartFactory.createLineChart("Monto Total de Deuda por Mes (Último Año)",
-                "Mes", "Monto de Deuda (RD$)", dataset, PlotOrientation.VERTICAL, true, true, false);
-        chartPanelActual = new ChartPanel(chart);
-        chartPanelActual.setBounds(350, 30, 750, 500);
-        panel.add(chartPanelActual);
-        if (lblInfoContratos != null) lblInfoContratos.setVisible(false);
-        panel.revalidate();
-        panel.repaint();
-    }
-
+    
     private void mostrarGraficoIngresosMensuales(JPanel panel) {
         ocultarGraficoActual(panel);
         float[] ingresosPorMes = Altice.getInstance().getIngresosMensualesUltimoAno();
@@ -693,7 +731,78 @@ public class Reportes extends JDialog {
         panel.revalidate();
         panel.repaint();
     }
+    
+    private void mostrarGraficoIngresosContratosPorMes(JPanel panel) {
+        ocultarGraficoActual(panel);
 
+        // Obtener el período seleccionado del ComboBox global
+        int meses = 0;
+        String seleccion = (String) comboPeriodoContratos.getSelectedItem();
+
+        switch (seleccion) {
+            case "Último mes":      meses = 1; break;
+            case "Últimos 3 meses": meses = 3; break;
+            case "Últimos 6 meses": meses = 6; break;
+            case "Último año":      meses = 12; break;
+            default:                meses = 0; // Todos los tiempos
+        }
+
+        double ingresos = Altice.getInstance().calcularIngresosContratosPorPeriodo(meses);
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        dataset.setValue(ingresos, "Ingresos Generados", "Contratos");
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Ingresos Generados por Contratos - " + seleccion,
+                "Período",
+                "Monto Total (RD$)",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+
+        panel.add(chartPanelActual);
+
+        if (lblInfoContratos != null) lblInfoContratos.setVisible(false);
+
+        panel.revalidate();
+        panel.repaint();
+    }
+    
+    private void actualizarGraficoActualContratos(JPanel panel) {
+        // Si no hay gráfico visible, mostramos el resumen
+        if (chartPanelActual == null || chartPanelActual.getChart() == null) {
+            mostrarResumenContratos(panel);
+            return;
+        }
+
+        // Obtenemos el título del gráfico actual antes de ocultarlo
+        JFreeChart chartActual = chartPanelActual.getChart();
+        String titulo = (chartActual != null && chartActual.getTitle() != null) 
+                        ? chartActual.getTitle().getText().toLowerCase() 
+                        : "";
+
+        // Ocultamos el gráfico actual
+        ocultarGraficoActual(panel);
+
+        // Decidimos qué gráfico volver a mostrar según su título
+        if (titulo.contains("ingresos generados por contratos")) {
+            mostrarGraficoIngresosContratosPorMes(panel);
+        }
+        else if (titulo.contains("cantidad de contratos por plan")) {
+            mostrarGraficoContratosPorPlan(panel);
+        }
+        else if (titulo.contains("distribución de contratos por estado")) {
+            mostrarGraficoContratosPorEstado(panel);
+        }
+        else {
+            // Por defecto, mostramos Ingresos por Mes (el más importante)
+            mostrarGraficoIngresosContratosPorMes(panel);
+        }
+    }
+    
     private void mostrarGraficoEstado(JPanel panel) {
         ocultarGraficoActual(panel);
         DefaultPieDataset dataset = new DefaultPieDataset();
