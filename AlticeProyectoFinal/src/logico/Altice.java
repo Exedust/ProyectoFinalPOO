@@ -1305,7 +1305,6 @@ public class Altice implements Serializable {
 		return count;
 	}
 
-	/** Calcula la deuda real del cliente sumando pagos pendientes */
 	public double calcularDeudaCliente(Cliente cli) {
 		if (cli == null || cli.getPagos() == null) return 0.0;
 		double deuda = 0.0;
@@ -1316,6 +1315,28 @@ public class Altice implements Serializable {
 		}
 		return deuda;
 	}
+
+	public float calcularDeudaCedula(String cedula) {
+	    if (cedula == null || cedula.trim().isEmpty()) {
+	        return 0.0f;
+	    }
+
+	    float deudaTotal = 0.0f;
+
+	    for (Pago p : misPagos) {
+	        if (p.isPendiente() && p.isActivo()) {
+	            Persona cliente = p.getCliente();
+	            if (cliente != null && cliente.getCedula() != null &&
+	                cliente.getCedula().equalsIgnoreCase(cedula)) {
+	                
+	                deudaTotal += p.getMonto();
+	            }
+	        }
+	    }
+
+	    return deudaTotal;
+	}
+
 	// ====================== DISTRIBUCIÓN POR DEUDA ======================
 
 	public int contarClientesSinDeuda() {

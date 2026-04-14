@@ -55,8 +55,10 @@ public class PrincipalEmpleado extends JFrame {
 	private JPanel cardPagos;
 	private JPanel cardSolicitudes;
 	private JTextField txtMontoDeuda;
-	private JTextField textField_1;
+	private JTextField txtPagosAtrasados;
 	private JPanel panelDeuda;
+	private JComboBox<String> comboPagosPendientes;
+	private JButton btnPagar;
 
 	/**
 	 * Launch the application.
@@ -353,20 +355,20 @@ public class PrincipalEmpleado extends JFrame {
 		label.setBounds(190, 85, 200, 28);
 		panelDeuda.add(label);
 		
-		JComboBox<String> comboBox = new JComboBox<String>();
-		comboBox.setForeground(Color.WHITE);
-		comboBox.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		comboBox.setBackground(new Color(0, 0, 51));
-		comboBox.setBounds(24, 126, 536, 40);
-		panelDeuda.add(comboBox);
+		comboPagosPendientes = new JComboBox<String>();
+		comboPagosPendientes.setForeground(Color.WHITE);
+		comboPagosPendientes.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		comboPagosPendientes.setBackground(new Color(0, 0, 51));
+		comboPagosPendientes.setBounds(24, 126, 536, 40);
+		panelDeuda.add(comboPagosPendientes);
 		
-		JButton button_1 = new JButton("Realizar Pago");
-		button_1.setForeground(Color.WHITE);
-		button_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		button_1.setFocusPainted(false);
-		button_1.setBackground(new Color(0, 0, 51));
-		button_1.setBounds(432, 179, 128, 28);
-		panelDeuda.add(button_1);
+		btnPagar = new JButton("Realizar Pago");
+		btnPagar.setForeground(Color.WHITE);
+		btnPagar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		btnPagar.setFocusPainted(false);
+		btnPagar.setBackground(new Color(0, 0, 51));
+		btnPagar.setBounds(432, 179, 128, 28);
+		panelDeuda.add(btnPagar);
 		
 		JLabel lblPagosAtrasados = new JLabel("Pagos Atrasados:");
 		lblPagosAtrasados.setForeground(Color.WHITE);
@@ -374,15 +376,15 @@ public class PrincipalEmpleado extends JFrame {
 		lblPagosAtrasados.setBounds(279, 39, 147, 22);
 		panelDeuda.add(lblPagosAtrasados);
 		
-		textField_1 = new JTextField();
-		textField_1.setForeground(Color.WHITE);
-		textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-		textField_1.setEditable(false);
-		textField_1.setCaretColor(Color.WHITE);
-		textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-		textField_1.setBackground(new Color(0, 0, 51));
-		textField_1.setBounds(424, 35, 91, 37);
-		panelDeuda.add(textField_1);
+		txtPagosAtrasados = new JTextField();
+		txtPagosAtrasados.setForeground(Color.WHITE);
+		txtPagosAtrasados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		txtPagosAtrasados.setEditable(false);
+		txtPagosAtrasados.setCaretColor(Color.WHITE);
+		txtPagosAtrasados.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+		txtPagosAtrasados.setBackground(new Color(0, 0, 51));
+		txtPagosAtrasados.setBounds(424, 35, 91, 37);
+		panelDeuda.add(txtPagosAtrasados);
 		comprobarRol();
 	}
 	
@@ -426,7 +428,8 @@ public class PrincipalEmpleado extends JFrame {
 		}
 		else
 			panelDeuda.setVisible(true);
-		
+		String deuda = String.format("RD$ %.2f", Altice.getInstance().calcularDeudaCedula(cedula));
+		txtMontoDeuda.setText(deuda);
 		
 	}
 }
