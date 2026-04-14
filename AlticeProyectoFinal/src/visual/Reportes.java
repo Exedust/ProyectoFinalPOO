@@ -408,45 +408,27 @@ public class Reportes extends JDialog {
 
         tabbedPane.addTab("Planes", panel);
     }
-
-    // ====================== GRÁFICOS DE PLANES ======================
-    private void mostrarGraficoDistribucionPlanes(JPanel panel) {
-        ocultarGraficoActual(panel);
-        int activos = Altice.getInstance().contarPlanesActivos();
-        int inactivos = Altice.getInstance().contarPlanesTotal() - activos;
-
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.setValue(activos, "Cantidad", "Activos");
-        dataset.setValue(inactivos, "Cantidad", "Inactivos");
-
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Distribución de Planes: Activos vs Inactivos",
-                "Estado del Plan",
-                "Cantidad de Planes",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true, true, false);
-
-        chartPanelActual = new ChartPanel(chart);
-        chartPanelActual.setBounds(350, 30, 750, 500);
-        panel.add(chartPanelActual);
-        if (lblInfoPlanes != null) lblInfoPlanes.setVisible(false);
-        panel.revalidate();
-        panel.repaint();
-    }
-
+    
     private void mostrarGraficoIngresosPorPlan(JPanel panel) {
         ocultarGraficoActual(panel);
 
+        Map<String, Float> ingresosPorPlan = Altice.getInstance().calcularIngresosPorPlan();
+
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.setValue(1250000, "Ingresos (RD$)", "Plan Básico");
-        dataset.setValue(980000,  "Ingresos (RD$)", "Plan Estándar");
-        dataset.setValue(2150000, "Ingresos (RD$)", "Plan Premium");
-        dataset.setValue(750000,  "Ingresos (RD$)", "Plan Fibra 500");
-        dataset.setValue(450000,  "Ingresos (RD$)", "Plan Empresarial");
+
+        // Ordenamos los planes alfabéticamente para mejor visualización
+        ingresosPorPlan.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(entry -> {
+                    dataset.setValue(entry.getValue(), "Ingresos (RD$)", entry.getKey());
+                });
+
+        String titulo = ingresosPorPlan.isEmpty() 
+                ? "Ingresos por Plan (Sin datos aún)" 
+                : "Ingresos Generados por Plan";
 
         JFreeChart chart = ChartFactory.createBarChart(
-                "Ingresos Generados por Plan",
+                titulo,
                 "Plan",
                 "Ingresos (RD$)",
                 dataset,
@@ -455,13 +437,17 @@ public class Reportes extends JDialog {
 
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
+
         panel.add(chartPanelActual);
         if (lblInfoPlanes != null) lblInfoPlanes.setVisible(false);
+
         panel.revalidate();
         panel.repaint();
     }
 
-    private void mostrarResumenPlanes(JPanel panel) {
+    // ====================== GRÁFICOS DE PLANES ======================
+ 
+        private void mostrarResumenPlanes(JPanel panel) {
         ocultarGraficoActual(panel);
         if (lblInfoPlanes != null) lblInfoPlanes.setVisible(true);
         panel.revalidate();
@@ -831,46 +817,12 @@ public class Reportes extends JDialog {
     
     // ====================== GRÁFICOS DE PAGOS ======================
 
-    private void mostrarGraficoIngresosMensuales(JPanel panel) {
-        ocultarGraficoActual(panel);
-
-        int meses = obtenerMesesDelFiltroPagos();
-        float[] ingresosPorMes = Altice.getInstance().getIngresosMensualesUltimoAno(); // ya existe
-
-        // Si se seleccionó un período específico, podemos filtrar más, pero por ahora usamos el array completo
-        String titulo = "Ingresos Mensuales";
-        if (meses > 0) {
-            titulo += " - Últimos " + meses + " meses";
-        }
-
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        String[] nombresMeses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
-
-        for (int i = 0; i < 12; i++) {
-            dataset.setValue(ingresosPorMes[i], "Ingresos", nombresMeses[i]);
-        }
-
-        JFreeChart chart = ChartFactory.createLineChart(
-                titulo,
-                "Mes", 
-                "Monto de Ingresos (RD$)", 
-                dataset, 
-                PlotOrientation.VERTICAL, 
-                true, true, false);
-
-        chartPanelActual = new ChartPanel(chart);
-        chartPanelActual.setBounds(350, 30, 750, 500);
-        panel.add(chartPanelActual);
-
-        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
-        panel.revalidate();
-        panel.repaint();
-    }
-
+    
     private void mostrarGraficoMontoPendienteVsRecaudado(JPanel panel) {
         ocultarGraficoActual(panel);
 
         int meses = obtenerMesesDelFiltroPagos();
+        String tituloPeriodo = getTextoPeriodo(meses);
 
         double montoPendiente = Altice.getInstance().calcularMontoPendientePorPeriodo(meses);
         double montoRecaudado = Altice.getInstance().calcularIngresosPagosPorPeriodo(meses);
@@ -880,22 +832,57 @@ public class Reportes extends JDialog {
         dataset.setValue(montoPendiente, "Monto", "Pendiente");
 
         JFreeChart chart = ChartFactory.createBarChart(
-                "Monto Pendiente vs Recaudado - " + getTextoPeriodo(meses),
-                "Categoría", 
-                "Monto (RD$)", 
-                dataset, 
-                PlotOrientation.VERTICAL, 
+                "Pendiente vs Recaudado - " + tituloPeriodo,
+                "Categoría",
+                "Monto (RD$)",
+                dataset,
+                PlotOrientation.VERTICAL,
                 true, true, false);
 
         chartPanelActual = new ChartPanel(chart);
         chartPanelActual.setBounds(350, 30, 750, 500);
-        panel.add(chartPanelActual);
 
+        panel.add(chartPanelActual);
         if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
+
         panel.revalidate();
         panel.repaint();
     }
     
+     private void mostrarGraficoIngresosMensuales(JPanel panel) {
+        ocultarGraficoActual(panel);
+
+        int mesesFiltro = obtenerMesesDelFiltroPagos();
+        String tituloPeriodo = getTextoPeriodo(mesesFiltro);
+
+        // Obtenemos los ingresos mensuales del último año
+        float[] ingresosPorMes = Altice.getInstance().getIngresosMensualesUltimoAno();
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        String[] nombresMeses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
+
+        // Llenamos el dataset con los 12 meses
+        for (int i = 0; i < 12; i++) {
+            dataset.setValue(ingresosPorMes[i], "Ingresos", nombresMeses[i]);
+        }
+
+        JFreeChart chart = ChartFactory.createLineChart(
+                "Ingresos Mensuales - " + tituloPeriodo,
+                "Mes",
+                "Monto (RD$)",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+
+        panel.add(chartPanelActual);
+        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
+
+        panel.revalidate();
+        panel.repaint();
+    }
     private void actualizarGraficoActualPagos(JPanel panel) {
         if (chartPanelActual == null || chartPanelActual.getChart() == null) {
             mostrarResumenPagos(panel);
@@ -909,13 +896,44 @@ public class Reportes extends JDialog {
         if (titulo.contains("ingresos mensuales")) {
             mostrarGraficoIngresosMensuales(panel);
         } 
-        else if (titulo.contains("monto pendiente total vs recaudado")) {
+        else if (titulo.contains("pendiente vs recaudado") || titulo.contains("monto pendiente")) {
             mostrarGraficoMontoPendienteVsRecaudado(panel);
         } 
         else {
             mostrarGraficoIngresosMensuales(panel); // por defecto
         }
     }
+    
+    
+    private void mostrarGraficoDistribucionPlanes(JPanel panel) {
+        ocultarGraficoActual(panel);
+
+        Map<String, Integer> contratosPorPlan = Altice.getInstance().contarContratosActivosPorPlan();
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (Map.Entry<String, Integer> entry : contratosPorPlan.entrySet()) {
+            dataset.setValue(entry.getValue(), "Cantidad", entry.getKey());
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                contratosPorPlan.isEmpty() ? "Contratos Activos por Plan (Sin datos)" : "Contratos Activos por Plan",
+                "Plan",
+                "Cantidad de Contratos",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+
+        panel.add(chartPanelActual);
+        if (lblInfoPlanes != null) lblInfoPlanes.setVisible(false);
+
+        panel.revalidate();
+        panel.repaint();
+    }
+    
     
     private void mostrarGraficoEstado(JPanel panel) {
         ocultarGraficoActual(panel);
