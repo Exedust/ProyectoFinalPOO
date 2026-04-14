@@ -156,6 +156,7 @@ public class Reportes extends JDialog {
     }
 
     // ====================== PESTAÑA CONTRATOS ======================
+    // ====================== PESTAÑA CONTRATOS ======================
     private void crearPestanaContratos() {
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 51));
@@ -177,11 +178,7 @@ public class Reportes extends JDialog {
         agregarBotonEstilo(btnPorPlan);
         panelBotones.add(btnPorPlan);
 
-        JButton btnIngresosContratos = new JButton("Ingresos por Mes");
-        btnIngresosContratos.addActionListener(e -> mostrarGraficoIngresosContratosPorMes(panel));
-        agregarBotonEstilo(btnIngresosContratos);
-        panelBotones.add(btnIngresosContratos);
-
+        // Botón Resumen movido al lugar donde estaba "Ingresos por Mes"
         JButton btnResumen = new JButton("Resumen");
         btnResumen.addActionListener(e -> mostrarResumenContratos(panel));
         agregarBotonEstilo(btnResumen);
@@ -198,8 +195,7 @@ public class Reportes extends JDialog {
         JLabel lblPeriodo = new JLabel("Período:");
         lblPeriodo.setForeground(Color.WHITE);
         lblPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        panelFiltro.add(lblPeriodo);
-
+        
         comboPeriodoContratos = new JComboBox<>(new String[]{
                 "Todos los tiempos",
                 "Último mes",
@@ -208,9 +204,8 @@ public class Reportes extends JDialog {
                 "Último año"
         });
         comboPeriodoContratos.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        panelFiltro.add(comboPeriodoContratos);
+        
 
-        // BOTÓN MOSTRAR
         JButton btnMostrar = new JButton("Mostrar");
         btnMostrar.setForeground(Color.WHITE);
         btnMostrar.setBackground(new Color(0, 102, 0));
@@ -218,7 +213,7 @@ public class Reportes extends JDialog {
         btnMostrar.setFocusPainted(false);
         btnMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
         btnMostrar.addActionListener(e -> actualizarGraficoActualContratos(panel));
-        panelFiltro.add(btnMostrar);
+       
 
         panel.add(panelFiltro);
 
@@ -240,7 +235,6 @@ public class Reportes extends JDialog {
 
         tabbedPane.addTab("Contratos", panel);
     }
-    
     // ====================== PESTAÑA PAGOS ======================
     private void crearPestanaPagos() {
         JPanel panel = new JPanel();
@@ -279,7 +273,7 @@ public class Reportes extends JDialog {
         JLabel lblPeriodo = new JLabel("Período:");
         lblPeriodo.setForeground(Color.WHITE);
         lblPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        panelFiltro.add(lblPeriodo);
+        
 
         comboPeriodoPagos = new JComboBox<>(new String[]{
                 "Todos los tiempos",
@@ -289,7 +283,7 @@ public class Reportes extends JDialog {
                 "Último año"
         });
         comboPeriodoPagos.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        panelFiltro.add(comboPeriodoPagos);
+        
 
         JButton btnMostrar = new JButton("Mostrar");
         btnMostrar.setForeground(Color.WHITE);
@@ -298,8 +292,7 @@ public class Reportes extends JDialog {
         btnMostrar.setFocusPainted(false);
         btnMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
         btnMostrar.addActionListener(e -> actualizarGraficoActualPagos(panel));
-        panelFiltro.add(btnMostrar);
-
+        
         panel.add(panelFiltro);
 
         // Label de información general
@@ -571,9 +564,12 @@ public class Reportes extends JDialog {
             if (!emp.isActivo()) continue;
 
             int numContratos = Altice.getInstance().contarContratosEmpleadoEnPeriodo(emp.getCodigo(), meses);
-            float comision = (emp.getRol() == logico.Rol.COMERCIAL) ? numContratos * 200f : 0f;
+            
+            float comision = 0f;
+            if (emp.getRol() == logico.Rol.COMERCIAL && emp.getComision() != null) {
+                comision = numContratos * emp.getComision();
+            }
             float total = emp.getSalario() + comision;
-
             modeloNomina.addRow(new Object[]{
                 emp.getCedula(),
                 emp.getNombre(),
@@ -624,10 +620,10 @@ public class Reportes extends JDialog {
     private void mostrarGraficoDistribucionDeuda(JPanel panel) {
         ocultarGraficoActual(panel);
         DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Sin Deuda", Altice.getInstance().contarClientesSinDeuda());
-        dataset.setValue("Deuda Baja", Altice.getInstance().contarClientesDeudaBaja());
-        dataset.setValue("Deuda Media", Altice.getInstance().contarClientesDeudaMedia());
-        dataset.setValue("Deuda Alta", Altice.getInstance().contarClientesDeudaAlta());
+        dataset.setValue("Sin Deuda: "+ Altice.getInstance().contarClientesSinDeuda(), Altice.getInstance().contarClientesSinDeuda());
+        dataset.setValue("(<= 5000): " + Altice.getInstance().contarClientesDeudaBaja()+" Clientes", Altice.getInstance().contarClientesDeudaBaja());
+        dataset.setValue("(<= 15000): " + Altice.getInstance().contarClientesDeudaMedia()+" Clientes", Altice.getInstance().contarClientesDeudaMedia());
+        dataset.setValue("(> 15000): " + Altice.getInstance().contarClientesDeudaAlta()+" Clientes",Altice.getInstance().contarClientesDeudaAlta());
         JFreeChart chart = ChartFactory.createPieChart("Distribución de Clientes por Nivel de Deuda",
                 dataset, true, true, false);
         chartPanelActual = new ChartPanel(chart);
