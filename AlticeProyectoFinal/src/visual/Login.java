@@ -37,6 +37,7 @@ public class Login extends JFrame {
             Altice.getInstance().cargarDatos();
             if (Altice.getInstance().getMisUsuarios().isEmpty()) {
                 crearUsuarioAdminPorDefecto();
+               
             }
             Login frame = new Login();
             frame.setVisible(true);
