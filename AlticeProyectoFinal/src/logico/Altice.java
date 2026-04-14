@@ -246,6 +246,38 @@ public class Altice implements Serializable {
 	    return false;
 	}
 	
+	public boolean tieneSolicitudEnProceso(String codigoTecnico) {
+	    if (codigoTecnico == null || codigoTecnico.trim().isEmpty()) {
+	        return false;
+	    }
+
+	    for (Solicitud s : misSolicitudes) {
+	        if (s.getEmpleado() != null && 
+	            s.getEmpleado().getCodigo() != null &&
+	            s.getEmpleado().getCodigo().equalsIgnoreCase(codigoTecnico) &&
+	            s.isEnProceso()) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
+	public Solicitud buscarSolicitudEnProceso(String codigoTecnico) {
+	    if (codigoTecnico == null || codigoTecnico.trim().isEmpty()) {
+	        return null;
+	    }
+
+	    for (Solicitud s : misSolicitudes) {
+	        if (s.getEmpleado() != null && 
+	            s.getEmpleado().getCodigo() != null &&
+	            s.getEmpleado().getCodigo().equalsIgnoreCase(codigoTecnico) &&
+	            s.isEnProceso()) {
+	            return s;
+	        }
+	    }
+	    return null;
+	}
+	
 	public String buscarCedulaById(String codigoUsuario) {
 	    if (codigoUsuario == null || codigoUsuario.trim().isEmpty()) {
 	        return null;

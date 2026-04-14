@@ -19,6 +19,7 @@ import javax.swing.border.TitledBorder;
 import logico.Altice;
 import logico.Pago;
 import logico.Rol;
+import logico.Solicitud;
 
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
@@ -61,6 +62,8 @@ public class PrincipalEmpleado extends JFrame {
 	private JPanel panelDeuda;
 	private JComboBox<String> comboPagosPendientes;
 	private JButton btnPagar;
+	private JTextField txtCodigoSolicitud;
+	private JPanel panelSolicitudTomada;
 
 	public PrincipalEmpleado() {
 		try {
@@ -127,7 +130,7 @@ public class PrincipalEmpleado extends JFrame {
 		dashboardPanel.setBackground(new Color(0, 0, 51));
 		GridBagLayout gbl_dashboardPanel = new GridBagLayout();
 		gbl_dashboardPanel.rowWeights = new double[]{1.0};
-		gbl_dashboardPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+		gbl_dashboardPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		dashboardPanel.setLayout(gbl_dashboardPanel);
 		panel.add(dashboardPanel);
 
@@ -139,7 +142,7 @@ public class PrincipalEmpleado extends JFrame {
 		gbc_cardClientes.ipadx = 20;
 		gbc_cardClientes.insets = new Insets(20, 20, 20, 20);
 		gbc_cardClientes.fill = GridBagConstraints.BOTH;
-		gbc_cardClientes.gridx = 1;
+		gbc_cardClientes.gridx = 2;
 		gbc_cardClientes.gridy = 0;
 
 		cardClientes = new JPanel(new BorderLayout());
@@ -162,6 +165,54 @@ public class PrincipalEmpleado extends JFrame {
 				gestion.setVisible(true);
 			}
 		});
+		
+		panelSolicitudTomada = new JPanel((LayoutManager) null);
+		panelSolicitudTomada.setPreferredSize(new Dimension(220, 200));
+		panelSolicitudTomada.setBorder(new TitledBorder(null, "Solicitud Tomada", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+		panelSolicitudTomada.setBackground(new Color(102, 102, 204));
+		GridBagConstraints gbc_panelSolicitudTomada = new GridBagConstraints();
+		gbc_panelSolicitudTomada.insets = new Insets(20, 20, 20, 20);
+		gbc_panelSolicitudTomada.fill = GridBagConstraints.BOTH;
+		gbc_panelSolicitudTomada.gridx = 1;
+		gbc_panelSolicitudTomada.gridy = 0;
+		dashboardPanel.add(panelSolicitudTomada, gbc_panelSolicitudTomada);
+		panelSolicitudTomada.setLayout(new BorderLayout());
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBackground(new Color(102, 102, 204));
+		panelSolicitudTomada.add(panel_3, BorderLayout.CENTER);
+		panel_3.setLayout(null);
+		
+		txtCodigoSolicitud = new JTextField();
+		txtCodigoSolicitud.setHorizontalAlignment(SwingConstants.CENTER);
+		txtCodigoSolicitud.setForeground(Color.WHITE);
+		txtCodigoSolicitud.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+		txtCodigoSolicitud.setEditable(false);
+		txtCodigoSolicitud.setCaretColor(Color.WHITE);
+		txtCodigoSolicitud.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+		txtCodigoSolicitud.setBackground(new Color(0, 0, 51));
+		txtCodigoSolicitud.setBounds(12, 44, 184, 37);
+		panel_3.add(txtCodigoSolicitud);
+		
+		JLabel lblCdigo = new JLabel("C\u00F3digo:");
+		lblCdigo.setForeground(Color.WHITE);
+		lblCdigo.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblCdigo.setBounds(70, 13, 73, 22);
+		panel_3.add(lblCdigo);
+		
+		JButton btnCompletar = new JButton("Completar");
+		btnCompletar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				completarSolicitud();
+			}
+		});
+		btnCompletar.setForeground(Color.WHITE);
+		btnCompletar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		btnCompletar.setFocusPainted(false);
+		btnCompletar.setEnabled(true);
+		btnCompletar.setBackground(new Color(0, 0, 51));
+		btnCompletar.setBounds(40, 128, 128, 28);
+		panel_3.add(btnCompletar);
 		btnGestionarClientes.setForeground(Color.WHITE);
 		btnGestionarClientes.setBackground(new Color(0, 0, 51));
 		btnGestionarClientes.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -173,7 +224,7 @@ public class PrincipalEmpleado extends JFrame {
 		gbc_cardContratos.ipadx = 20;
 		gbc_cardContratos.insets = new Insets(20, 20, 20, 20);
 		gbc_cardContratos.fill = GridBagConstraints.BOTH;
-		gbc_cardContratos.gridx = 2;
+		gbc_cardContratos.gridx = 3;
 		gbc_cardContratos.gridy = 0;
 
 		cardContratos = new JPanel(new BorderLayout());
@@ -205,7 +256,7 @@ public class PrincipalEmpleado extends JFrame {
 		dashboardPanel.add(cardContratos, gbc_cardContratos);
 		GridBagConstraints gbc_cardPagos = new GridBagConstraints();
 		gbc_cardPagos.ipadx = 20;
-        gbc_cardPagos.gridx = 3;
+        gbc_cardPagos.gridx = 4;
         gbc_cardPagos.gridy = 0;
         gbc_cardPagos.insets = new Insets(20, 20, 20, 20);
         gbc_cardPagos.fill = GridBagConstraints.BOTH;
@@ -241,7 +292,7 @@ public class PrincipalEmpleado extends JFrame {
         gbc_cardSolicitudes.ipadx = 20;
         gbc_cardSolicitudes.insets = new Insets(20, 20, 20, 20);
         gbc_cardSolicitudes.fill = GridBagConstraints.BOTH;
-        gbc_cardSolicitudes.gridx = 4;
+        gbc_cardSolicitudes.gridx = 5;
         gbc_cardSolicitudes.gridy = 0;
         dashboardPanel.add(cardSolicitudes, gbc_cardSolicitudes);
         cardSolicitudes.setLayout(new BorderLayout());
@@ -275,7 +326,7 @@ public class PrincipalEmpleado extends JFrame {
 		gbc_panel_1.ipadx = 20;
 		gbc_panel_1.insets = new Insets(20, 20, 20, 20);
 		gbc_panel_1.fill = GridBagConstraints.BOTH;
-		gbc_panel_1.gridx = 5;
+		gbc_panel_1.gridx = 6;
 		gbc_panel_1.gridy = 0;
 		dashboardPanel.add(panel_1, gbc_panel_1);
 		
@@ -390,7 +441,20 @@ public class PrincipalEmpleado extends JFrame {
             
         }
 	}
-	
+    private void completarSolicitud() {
+    	Solicitud selected = Altice.getInstance().buscarSolicitudEnProceso(Altice.getSesion().getCodigo());
+    	
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Desea marcar esta solicitud como completada?", 
+                "Completar Solicitud", JOptionPane.YES_NO_OPTION);
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            if (Altice.getInstance().completarSolicitud(selected.getCodigo())) {
+                JOptionPane.showMessageDialog(this, "Solicitud completada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        
+        comprobarRol();
+    }
 	private void cerrarSesion()
 	{
 		if(Altice.getSesion() == null)
@@ -419,6 +483,16 @@ public class PrincipalEmpleado extends JFrame {
 			cardContratos.setVisible(false);
 			cardPagos.setVisible(false);
 			
+			if(Altice.getInstance().tieneSolicitudEnProceso(Altice.getSesion().getCodigo()))
+			{
+				panelSolicitudTomada.setVisible(false);
+			}
+			else
+			{
+				panelSolicitudTomada.setVisible(true);
+				txtCodigoSolicitud.setText(Altice.getInstance().buscarSolicitudEnProceso(Altice.getSesion().getCodigo()).getCodigo());
+				
+			}
 		}
 	}
 	private void comprobarDeuda() {
