@@ -81,7 +81,7 @@ public class Altice implements Serializable {
 			return true;
 
 		} catch (FileNotFoundException e) {
-			System.out.println("No se encontró el archivo altice.dat. Se iniciará con datos vacíos.");
+			System.out.println("No se encontrÃ³ el archivo altice.dat. Se iniciarÃ¡ con datos vacÃ­os.");
 			return false;
 		} catch (IOException | ClassNotFoundException e) {
 			System.out.println("Error al cargar los datos.");
@@ -931,12 +931,12 @@ public class Altice implements Serializable {
 		return true;
 	}
 
-	// ====================== GENERACIÓN DE PAGOS MENSUALES ======================
+	// ====================== GENERACIÃ“N DE PAGOS MENSUALES ======================
 	public void producirPagos() {
 		LocalDate hoy = LocalDate.now();
 		int diaActual = hoy.getDayOfMonth();
 		int mesActual = hoy.getMonthValue();
-		int añoActual = hoy.getYear();
+		int aÃ±oActual = hoy.getYear();
 
 		for (Contrato contrato : misContratos) {
 			if (!contrato.isActivo())
@@ -952,7 +952,7 @@ public class Altice implements Serializable {
 			for (Pago pago : contrato.getPagos()) {
 				if (pago.getFechaRegistro() != null && pago.getFechaRegistro().getDayOfMonth() == diaDePago
 						&& pago.getFechaRegistro().getMonthValue() == mesActual
-						&& pago.getFechaRegistro().getYear() == añoActual) {
+						&& pago.getFechaRegistro().getYear() == aÃ±oActual) {
 
 					yaTienePagoEsteMes = true;
 					break;
@@ -964,7 +964,7 @@ public class Altice implements Serializable {
 
 				Pago nuevoPago = new Pago(codigoPago, contrato.getCliente(), contrato, monto);
 
-				LocalDate fechaCorrecta = LocalDate.of(añoActual, mesActual, diaDePago);
+				LocalDate fechaCorrecta = LocalDate.of(aÃ±oActual, mesActual, diaDePago);
 				nuevoPago.setFechaRegistro(fechaCorrecta);
 
 				registrarPago(nuevoPago);
@@ -1254,12 +1254,12 @@ public class Altice implements Serializable {
 		return total;
 	}
 
-	public double calcularIngresosMensuales(int mes, int año) {
+	public double calcularIngresosMensuales(int mes, int aÃ±o) {
 		double total = 0;
 		for (Pago p : misPagos) {
 			if (p.getFechaPago() != null && 
 					p.getFechaPago().getMonthValue() == mes && 
-					p.getFechaPago().getYear() == año && 
+					p.getFechaPago().getYear() == aÃ±o && 
 					!p.isPendiente() && p.isActivo()) {
 				total += p.getMonto();
 			}
@@ -1337,7 +1337,7 @@ public class Altice implements Serializable {
 	    return deudaTotal;
 	}
 
-	// ====================== DISTRIBUCIÓN POR DEUDA ======================
+	// ====================== DISTRIBUCIÃ“N POR DEUDA ======================
 
 	public int contarClientesSinDeuda() {
 		int count = 0;
@@ -1375,12 +1375,12 @@ public class Altice implements Serializable {
 		int[] clientesPorMes = new int[12]; // 12 meses
 
 		LocalDate hoy = LocalDate.now();
-		int añoActual = hoy.getYear();
+		int aÃ±oActual = hoy.getYear();
 
 		for (Cliente c : misClientes) {
 			if (c.getUsuario() != null && c.getUsuario().getFechaRegistro() != null) {
 				LocalDate fechaReg = c.getUsuario().getFechaRegistro();
-				if (fechaReg.getYear() == añoActual) {
+				if (fechaReg.getYear() == aÃ±oActual) {
 					int mes = fechaReg.getMonthValue() - 1; // 0 = Enero, 11 = Diciembre
 					clientesPorMes[mes]++;
 				}
@@ -1427,12 +1427,12 @@ public class Altice implements Serializable {
     public float[] getDeudaTotalPorMesUltimoAno() {
         float[] deudaPorMes = new float[12];
         LocalDate hoy = LocalDate.now();
-        int añoActual = hoy.getYear();
+        int aÃ±oActual = hoy.getYear();
 
         for (Contrato c : misContratos) {
             if (!c.isActivo()) continue;
             LocalDate fechaInicio = c.getFechaInicio();
-            if (fechaInicio.getYear() == añoActual) {
+            if (fechaInicio.getYear() == aÃ±oActual) {
                 int mes = fechaInicio.getMonthValue() - 1;
                 deudaPorMes[mes] += c.getDeuda();
             }
@@ -1456,11 +1456,11 @@ public class Altice implements Serializable {
     public float[] getIngresosMensualesUltimoAno() {
         float[] ingresosPorMes = new float[12]; 
         LocalDate hoy = LocalDate.now();
-        int añoActual = hoy.getYear();
+        int aÃ±oActual = hoy.getYear();
 
         for (Pago p : misPagos) {
             if (p.getFechaPago() != null && 
-                p.getFechaPago().getYear() == añoActual && 
+                p.getFechaPago().getYear() == aÃ±oActual && 
                 !p.isPendiente() && p.isActivo()) {
                 
                 int mes = p.getFechaPago().getMonthValue() - 1;
@@ -1510,7 +1510,7 @@ public class Altice implements Serializable {
     }
 
     /**
-     * Tiempo promedio de resolución en días (solo para solicitudes RESUELTO)
+     * Tiempo promedio de resoluciÃ³n en dÃ­as (solo para solicitudes RESUELTO)
      * Retorna 0 si no hay datos suficientes
      */
     public double calcularTiempoPromedioResolucion() {
@@ -1533,7 +1533,7 @@ public class Altice implements Serializable {
     }
 
     /**
-     * Tiempo promedio de resolución por tipo de solicitud
+     * Tiempo promedio de resoluciÃ³n por tipo de solicitud
      */
     public double calcularTiempoPromedioResolucionPorTipo(TipoSolicitud tipo) {
         if (tipo == null) return 0.0;
@@ -1558,10 +1558,10 @@ public class Altice implements Serializable {
         return (count > 0) ? (double) totalDias / count : 0.0;
     }
     
-    // ====================== REPORTES - NÓMINA ======================
+    // ====================== REPORTES - NÃ“MINA ======================
 
     /**
-     * Retorna el número de contratos realizados por un empleado en los últimos N meses
+     * Retorna el nÃºmero de contratos realizados por un empleado en los Ãºltimos N meses
      */
     public int contarContratosEmpleadoEnPeriodo(String codigoEmpleado, int mesesAtras) {
         if (codigoEmpleado == null || mesesAtras < 1) return 0;
@@ -1583,5 +1583,46 @@ public class Altice implements Serializable {
     
     public ArrayList<Empleado> getTodosLosEmpleados() {
         return new ArrayList<>(misEmpleados);
+    }
+
+    public float calcularIngresosContratosPorPeriodo(int mesesAtras) {
+        float total = 0f;
+        LocalDate fechaLimite = (mesesAtras > 0) ? LocalDate.now().minusMonths(mesesAtras) : null;
+
+        for (Contrato contrato : misContratos) {
+            if (contrato.getPagos() != null) {
+                for (Pago pago : contrato.getPagos()) {
+                    if (pago.isActivo() && !pago.isPendiente() && pago.getFechaPago() != null) {
+                        if (fechaLimite != null && pago.getFechaPago().isBefore(fechaLimite)) {
+                            continue;
+                        }
+                        total += pago.getMonto();
+                    }
+                }
+            }
+        }
+        return total;
+    }
+
+    
+    
+    public float[] getIngresosContratosPorMesUltimoAno() {
+        float[] ingresosPorMes = new float[12];
+        LocalDate hoy = LocalDate.now();
+        int aÃ±oActual = hoy.getYear();
+
+        for (Contrato contrato : misContratos) {
+            if (contrato.getPagos() != null) {
+                for (Pago pago : contrato.getPagos()) {
+                    if (pago.isActivo() && !pago.isPendiente() && pago.getFechaPago() != null) {
+                        if (pago.getFechaPago().getYear() == aÃ±oActual) {
+                            int mes = pago.getFechaPago().getMonthValue() - 1; // 0 = Enero
+                            ingresosPorMes[mes] += pago.getMonto();
+                        }
+                    }
+                }
+            }
+        }
+        return ingresosPorMes;
     }
 }
