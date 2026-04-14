@@ -43,6 +43,9 @@ import javax.swing.JOptionPane;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.net.Socket;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -330,10 +333,11 @@ public class PrincipalAdmin extends JFrame {
 		mnNewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		menuBar.add(mnNewMenu);
 		
-		btnGuardar = new JMenuItem("Guardar");
+		btnGuardar = new JMenuItem("Respaldar");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Altice.getInstance().guardarDatos();
+				enviarBackup();
+				
 			}
 		});
 		btnGuardar.setForeground(Color.WHITE);
@@ -882,5 +886,35 @@ public class PrincipalAdmin extends JFrame {
         dispose();
         log.setVisible(true);
         Altice.getInstance().guardarDatos();
+	}
+	private void enviarBackup() {
+	    try {
+	        Socket nsfd = new Socket("localhost", 7000);
+	        DataOutputStream salida = new DataOutputStream(nsfd.getOutputStream());
+
+	        // Enviar comando para que el servidor sepa que es un respaldo
+	        salida.writeUTF("BACKUP");
+
+	        // Leer el archivo altice.dat y enviarlo byte por byte
+	        FileInputStream fis = new FileInputStream("altice.dat");
+	        int unByte;
+	        while ((unByte = fis.read()) != -1) {
+	            salida.write(unByte);
+	        }
+
+	        fis.close();
+	        salida.close();
+	        nsfd.close();
+
+	        JOptionPane.showMessageDialog(this, 
+	            "Respaldo enviado correctamente al servidor", 
+	            "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, 
+	            "Error al enviar el respaldo.\n" + e.getMessage(), 
+	            "Error", JOptionPane.ERROR_MESSAGE);
+	        e.printStackTrace();
+	    }
 	}
 }
