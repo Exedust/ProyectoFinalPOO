@@ -65,7 +65,6 @@ public class GestionPlanes extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL PRINCIPAL DE TABLA ======================
         {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
@@ -112,7 +111,6 @@ public class GestionPlanes extends JDialog {
             });
         }
 
-        // ====================== CAMPO DE BÚSQUEDA ======================
         {
             txtCodigoPlan = new JTextField();
             txtCodigoPlan.setBackground(new Color(0, 0, 51));
@@ -139,7 +137,6 @@ public class GestionPlanes extends JDialog {
             contentPanel.add(btnBuscarCodigo);
         }
 
-        // ====================== FILTRO ======================
         {
             comboFiltrar = new JComboBox<>();
             comboFiltrar.setBackground(new Color(0, 0, 51));
@@ -163,7 +160,6 @@ public class GestionPlanes extends JDialog {
             contentPanel.add(btnFiltrar);
         }
 
-        // ====================== CONTADOR ======================
         {
             lblPlanesRegistrados = new JLabel("Planes registrados: 00");
             lblPlanesRegistrados.setForeground(Color.WHITE);
@@ -172,7 +168,6 @@ public class GestionPlanes extends JDialog {
             contentPanel.add(lblPlanesRegistrados);
         }
 
-        // ====================== BOTONES LATERALES ======================
         {
             btnAgregar = new JButton("Agregar");
             btnAgregar.addActionListener(new ActionListener() {
@@ -305,7 +300,6 @@ public class GestionPlanes extends JDialog {
         	contentPanel.add(lblNombre);
         }
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));

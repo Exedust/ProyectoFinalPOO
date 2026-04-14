@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import logico.Altice;
 import logico.EstadoSolicitud;
@@ -43,14 +44,20 @@ import javax.swing.JOptionPane;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.awt.LayoutManager;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 
 public class PrincipalAdmin extends JFrame {
 
@@ -278,7 +285,6 @@ public class PrincipalAdmin extends JFrame {
 		    }
 		});
 		mnServicios.add(mntmListarServicio);
-        // ====================== SOLICITUDES ======================
         JMenu mnSolicitudes = new JMenu("Solicitudes");
         mnSolicitudes.setForeground(Color.WHITE);
         mnSolicitudes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -335,6 +341,17 @@ public class PrincipalAdmin extends JFrame {
                 reportes.setVisible(true);
 			}
 		});
+		
+		JMenuItem mntmCargarRespaldo = new JMenuItem("Cargar Respaldo");
+		mntmCargarRespaldo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargarRespaldo();
+			}
+		});
+		mntmCargarRespaldo.setForeground(Color.WHITE);
+		mntmCargarRespaldo.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		mntmCargarRespaldo.setBackground(new Color(0, 0, 102));
+		mnNewMenu.add(mntmCargarRespaldo);
 		mntmReportes.setForeground(Color.WHITE);
 		mntmReportes.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		mntmReportes.setBackground(new Color(0, 0, 102));
@@ -374,13 +391,11 @@ public class PrincipalAdmin extends JFrame {
 
 		contentPane.add(topPanel, BorderLayout.NORTH);
 		
-		// Panel central (ya lo tienes creado)
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 51));
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 
-		// Panel interno para el dashboard
 		JPanel dashboardPanel = new JPanel();
 		dashboardPanel.setBounds(0, 0, 1904, 240);
 		dashboardPanel.setBackground(new Color(0, 0, 51));
@@ -557,8 +572,6 @@ public class PrincipalAdmin extends JFrame {
         cardPagos.add(btnGestionarPagos, BorderLayout.SOUTH);
         dashboardPanel.add(cardPagos, gbcPagos);
 
-        // Tarjeta Reportes
-        // ====================== TARJETA REPORTES ======================
         GridBagConstraints gbcReportes = new GridBagConstraints();
         gbcReportes.ipadx = 20;
         gbcReportes.gridx = 5;
@@ -895,10 +908,8 @@ public class PrincipalAdmin extends JFrame {
 	        Socket nsfd = new Socket("localhost", 7000);
 	        DataOutputStream salida = new DataOutputStream(nsfd.getOutputStream());
 
-	        // Enviar comando para que el servidor sepa que es un respaldo
 	        salida.writeUTF("BACKUP");
 
-	        // Leer el archivo altice.dat y enviarlo byte por byte
 	        FileInputStream fis = new FileInputStream("altice.dat");
 	        int unByte;
 	        while ((unByte = fis.read()) != -1) {
@@ -916,6 +927,61 @@ public class PrincipalAdmin extends JFrame {
 	    } catch (Exception e) {
 	        JOptionPane.showMessageDialog(this, 
 	            "Error al enviar el respaldo.\n" + e.getMessage(), 
+	            "Error", JOptionPane.ERROR_MESSAGE);
+	        e.printStackTrace();
+	    }
+	}
+	
+	private void cargarRespaldo() {
+	    int confirm = JOptionPane.showConfirmDialog(this,
+	        "¡ADVERTENCIA!\n\n" +
+	        "Se va a cargar el ÚLTIMO respaldo guardado.\n" +
+	        "Esto BORRARÁ todos los datos actuales del sistema.\n\n" +
+	        "¿Desea continuar?",
+	        "Cargar Respaldo", 
+	        JOptionPane.YES_NO_OPTION, 
+	        JOptionPane.WARNING_MESSAGE);
+
+	    if (confirm != JOptionPane.YES_OPTION) return;
+
+	    try (Socket nsfd = new Socket("localhost", 7000);
+	         DataOutputStream salida = new DataOutputStream(nsfd.getOutputStream());
+	         DataInputStream entrada = new DataInputStream(nsfd.getInputStream())) {
+
+	        salida.writeUTF("RESTORE");
+
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        int unByte;
+	        while ((unByte = entrada.read()) != -1) {
+	            baos.write(unByte);
+	        }
+
+	        byte[] datos = baos.toByteArray();
+
+	        if (datos.length == 0) {
+	            JOptionPane.showMessageDialog(this, "No se recibió ningún dato del servidor.", 
+	                "Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+
+	        try (ByteArrayInputStream bais = new ByteArrayInputStream(datos);
+	             ObjectInputStream ois = new ObjectInputStream(bais)) {
+
+	            Altice respaldo = (Altice) ois.readObject();
+
+	            Altice.cargarDesdeRespaldo(respaldo);
+
+	            JOptionPane.showMessageDialog(this,
+	                "Respaldo cargado correctamente.\nLa aplicación se reiniciará.",
+	                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+	            dispose();
+	            new Login().setVisible(true);
+	        }
+
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this,
+	            "Error al cargar el respaldo:\n" + e.getMessage(),
 	            "Error", JOptionPane.ERROR_MESSAGE);
 	        e.printStackTrace();
 	    }

@@ -93,6 +93,25 @@ public class Altice implements Serializable {
 		}
 	}
 
+	public static void cargarDesdeRespaldo(Altice respaldo) {
+	    if (respaldo == null) {
+	        System.out.println("Error: Respaldo recibido es null");
+	        return;
+	    }
+
+	    altice = respaldo;
+
+	    genClienteid = respaldo.genClienteid;
+	    genEmpleadoid = respaldo.genEmpleadoid;
+	    genContratoid = respaldo.genContratoid;
+	    genPlanid = respaldo.genPlanid;
+	    genSolicitudid = respaldo.genSolicitudid;
+	    genPagoid = respaldo.genPagoid;
+	    genServicioid = respaldo.genServicioid;
+
+	    System.out.println("Respaldo cargado correctamente. Nueva instancia asignada.");
+	}
+
 	private void writeObject(ObjectOutputStream oos) throws IOException {
 		oos.defaultWriteObject();
 		oos.writeInt(genClienteid);
@@ -113,6 +132,10 @@ public class Altice implements Serializable {
 		genSolicitudid = ois.readInt();
 		genPagoid = ois.readInt();
 		genServicioid = ois.readInt();
+	}
+	
+	public static void setInstance(Altice nuevaInstancia) {
+	    altice = nuevaInstancia;
 	}
 	
 	private void enviarLog(String mensaje) {
@@ -1407,7 +1430,7 @@ public class Altice implements Serializable {
 		return count;
 	}
 
-	// ====================== REPORTES - PLANES ======================
+	//REPORTES PLANES
 
 	public int contarPlanesTotal() {
 		return misPlanes.size();
@@ -1471,7 +1494,7 @@ public class Altice implements Serializable {
 		return total;
 	}
 
-	// ====================== REPORTES - CLIENTES ======================
+	//REPORTES CLIENTES
 
 	public int contarClientesTotal() {
 		return misClientes.size();
@@ -1542,7 +1565,6 @@ public class Altice implements Serializable {
 
         for (Pago pago : misPagos) {
             if (pago.isActivo() && pago.isPendiente()) {
-                // Para pagos pendientes, usamos la fecha de registro
                 if (fechaLimite != null && pago.getFechaRegistro() != null 
                     && pago.getFechaRegistro().isBefore(fechaLimite)) {
                     continue;
@@ -1593,8 +1615,6 @@ public class Altice implements Serializable {
 	    return cantidad;
 	}
 
-	// ====================== DISTRIBUCIÓN POR DEUDA ======================
-
 	public int contarClientesSinDeuda() {
 		int count = 0;
 		for (Cliente c : misClientes) {
@@ -1628,7 +1648,7 @@ public class Altice implements Serializable {
 	}
 
 	public int[] getClientesPorMesUltimoAno() {
-		int[] clientesPorMes = new int[12]; // 12 meses
+		int[] clientesPorMes = new int[12];
 
 		LocalDate hoy = LocalDate.now();
 		int añoActual = hoy.getYear();
@@ -1637,7 +1657,7 @@ public class Altice implements Serializable {
 			if (c.getUsuario() != null && c.getUsuario().getFechaRegistro() != null) {
 				LocalDate fechaReg = c.getUsuario().getFechaRegistro();
 				if (fechaReg.getYear() == añoActual) {
-					int mes = fechaReg.getMonthValue() - 1; // 0 = Enero, 11 = Diciembre
+					int mes = fechaReg.getMonthValue() - 1;
 					clientesPorMes[mes]++;
 				}
 			}
@@ -1724,7 +1744,8 @@ public class Altice implements Serializable {
             }
         }
         return ingresosPorMes;
-    }    // ====================== MONTO RECAUDADO TOTAL ======================
+    }
+    
     public float calcularMontoRecaudadoTotal() {
         float total = 0;
         for (Pago p : misPagos) {
@@ -1735,11 +1756,8 @@ public class Altice implements Serializable {
         return total;
     }
     
-    // ====================== REPORTES - SOLICITUDES ======================
+    // REPORTES SOLICITUDES
 
-    /**
-     * Cuenta solicitudes por tipo (corregido para que coincida con tu enum)
-     */
     public int contarSolicitudesPorTipo(TipoSolicitud tipo) {
         if (tipo == null) return 0;
         int count = 0;
@@ -1751,9 +1769,6 @@ public class Altice implements Serializable {
         return count;
     }
 
-    /**
-     * Cuenta solicitudes por estado (corregido para que coincida con tu enum)
-     */
     public int contarSolicitudesPorEstado(EstadoSolicitud estado) {
         if (estado == null) return 0;
         int count = 0;
@@ -1765,10 +1780,7 @@ public class Altice implements Serializable {
         return count;
     }
 
-    /**
-     * Tiempo promedio de resolución en días (solo para solicitudes RESUELTO)
-     * Retorna 0 si no hay datos suficientes
-     */
+
     public float calcularTiempoPromedioResolucion() {
         int count = 0;
         long totalDias = 0;
@@ -1788,9 +1800,7 @@ public class Altice implements Serializable {
         return (count > 0) ? (float) totalDias / count : 0f;
     }
 
-    /**
-     * Tiempo promedio de resolución por tipo de solicitud
-     */
+ 
     public float calcularTiempoPromedioResolucionPorTipo(TipoSolicitud tipo) {
         if (tipo == null) return 0f;
 
@@ -1814,7 +1824,7 @@ public class Altice implements Serializable {
         return (count > 0) ? (float) totalDias / count : 0f;
     }
     
-    // ====================== REPORTES - NÓMINA ======================
+    //REPORTES NOMINA
 
     public int contarContratosEmpleadoEnPeriodo(String codigoEmpleado, int mesesAtras) {
         if (codigoEmpleado == null || codigoEmpleado.trim().isEmpty()) {
@@ -1888,7 +1898,7 @@ public class Altice implements Serializable {
                 for (Pago pago : contrato.getPagos()) {
                     if (pago.isActivo() && !pago.isPendiente() && pago.getFechaPago() != null) {
                         if (pago.getFechaPago().getYear() == añoActual) {
-                            int mes = pago.getFechaPago().getMonthValue() - 1; // 0 = Enero
+                            int mes = pago.getFechaPago().getMonthValue() - 1;
                             ingresosPorMes[mes] += pago.getMonto();
                         }
                     }
@@ -1911,22 +1921,17 @@ public class Altice implements Serializable {
 
         return contratosPorPlan;
     }
-    
-    /**
-     * Calcula los ingresos reales por cada Plan.
-     * Incluye TODOS los planes activos, aunque no tengan pagos aún (muestra 0).
-     */
+
+    //Victor, que diablo e eto?
     public Map<String, Float> calcularIngresosPorPlan() {
         Map<String, Float> ingresosPorPlan = new HashMap<>();
 
-        // Primero registramos todos los planes activos
         for (Plan plan : misPlanes) {
             if (plan.isActivo()) {
                 ingresosPorPlan.put(plan.getNombre(), 0f);
             }
         }
 
-        // Ahora sumamos los pagos completados de todos los contratos
         for (Contrato contrato : misContratos) {
             if (!contrato.isActivo() || contrato.getPlan() == null) continue;
 

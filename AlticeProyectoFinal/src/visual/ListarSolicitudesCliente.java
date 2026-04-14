@@ -65,7 +65,6 @@ public class ListarSolicitudesCliente extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL DE LA TABLA ======================
         {
             JPanel panelTabla = new JPanel();
             panelTabla.setBackground(new Color(102, 102, 204));
@@ -144,7 +143,6 @@ public class ListarSolicitudesCliente extends JDialog {
             contentPanel.add(btnFiltrar);
         }
 
-        // ====================== ETIQUETAS DE CONTEO ======================
         {
             lblTotal = new JLabel("Solicitudes Registradas: 00");
             lblTotal.setForeground(Color.WHITE);
@@ -167,7 +165,6 @@ public class ListarSolicitudesCliente extends JDialog {
             contentPanel.add(lblCompletadas);
         }
 
-        // ====================== BOTONES LATERALES ======================
         {
             btnAgregar = new JButton("Agregar");
             btnAgregar.addActionListener(new ActionListener() {
@@ -245,7 +242,7 @@ public class ListarSolicitudesCliente extends JDialog {
         }
 
         loadSolicitudes();
-        desactivarBotones();   // Estado inicial
+        desactivarBotones();
     }
 
     public void loadSolicitudes() {

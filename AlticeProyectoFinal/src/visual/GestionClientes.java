@@ -70,7 +70,6 @@ public class GestionClientes extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL PRINCIPAL DE TABLA ======================
         {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
@@ -120,7 +119,6 @@ public class GestionClientes extends JDialog {
             });
         }
 
-        // ====================== CAMPOS DE BÚSQUEDA ======================
         {
             txtCedula = new JTextField();
             txtCedula.setBackground(new Color(0, 0, 51));
@@ -181,7 +179,6 @@ public class GestionClientes extends JDialog {
             contentPanel.add(btnFiltrar);
         }
 
-        // ====================== ETIQUETAS ======================
         {
             lblCedula = new JLabel("Cedula/RNC");
             lblCedula.setForeground(Color.WHITE);
@@ -225,7 +222,6 @@ public class GestionClientes extends JDialog {
             contentPanel.add(lblClientesPendientes);
         }
 
-        // ====================== BOTONES LATERALES ======================
         {
             btnAgregar = new JButton("Agregar");
             btnAgregar.addActionListener(new ActionListener() {
@@ -327,8 +323,6 @@ public class GestionClientes extends JDialog {
             btnCedula.setBounds(256, 110, 97, 25);
             contentPanel.add(btnCedula);
         }
-
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -370,7 +364,6 @@ public class GestionClientes extends JDialog {
         for (Cliente cli : Altice.getInstance().getMisClientes()) {
             boolean incluir = false;
 
-            // Filtro general (Todos, Personas, Empresas, Inactivos)
             switch (filtroGeneral) {
                 case "Todos":
                     incluir = cli.getUsuario() != null;

@@ -82,7 +82,6 @@ public class RegistrarEmpleado extends JDialog {
             contentPanel.add(panel, BorderLayout.CENTER);
             panel.setLayout(null);
 
-            // ====================== PANEL DATOS PERSONALES ======================
             {
                 JPanel panelDatos = new JPanel();
                 panelDatos.setLayout(null);
@@ -232,7 +231,6 @@ public class RegistrarEmpleado extends JDialog {
                     panelDatos.add(txtConfirmContra);
                 }
 
-                // Botón Mostrar Contraseña
                 {
                     btnMostrar = new JButton("Mostrar Contraseña");
                     btnMostrar.addActionListener(e -> {
@@ -283,7 +281,6 @@ public class RegistrarEmpleado extends JDialog {
                 }
             }
 
-            // ====================== PANEL TIPO EMPLEADO ======================
             {
                 JPanel panelTipo = new JPanel();
                 panelTipo.setBackground(new Color(102, 102, 204));
@@ -381,7 +378,6 @@ public class RegistrarEmpleado extends JDialog {
             }
         }
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -576,7 +572,6 @@ public class RegistrarEmpleado extends JDialog {
 
         txtCodigo.setText(String.format("E-%05d", Altice.getGenEmpleadoid()));
 
-        // Forzar estado inicial: contraseñas ocultas
         txtContra.setVisible(true);
         txtConfirmContra.setVisible(true);
         txtContraVisible.setVisible(false);
@@ -616,7 +611,6 @@ public class RegistrarEmpleado extends JDialog {
         lblComision.setVisible(!rdbtnTecnico.isSelected());
         spinnerComision.setVisible(!rdbtnTecnico.isSelected());
 
-        // Forzar contraseñas ocultas en modo modificar
         txtContra.setVisible(true);
         txtConfirmContra.setVisible(true);
         txtContraVisible.setVisible(false);

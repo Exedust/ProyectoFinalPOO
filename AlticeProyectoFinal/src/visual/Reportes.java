@@ -84,7 +84,6 @@ public class Reportes extends JDialog {
         tabbedPane.setForeground(Color.WHITE);
         contentPanel.add(tabbedPane, BorderLayout.CENTER);
 
-        // === Todas las pestañas ===
         crearPestanaClientes();
         crearPestanaContratos();
         crearPestanaPagos();

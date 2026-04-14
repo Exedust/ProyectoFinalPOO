@@ -24,7 +24,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Component;   // ← Importante para corregir el error
+import java.awt.Component;
 
 public class GestionServicios extends JDialog {
 
@@ -55,7 +55,6 @@ public class GestionServicios extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL PRINCIPAL DE TABLA ======================
         {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
@@ -104,7 +103,6 @@ public class GestionServicios extends JDialog {
             });
         }
 
-        // Filtro
         {
             comboFiltrar = new JComboBox<>();
             comboFiltrar.setBackground(new Color(0, 0, 51));
@@ -140,7 +138,6 @@ public class GestionServicios extends JDialog {
             contentPanel.add(lblServiciosRegistrados);
         }
 
-        // ====================== BOTONES LATERALES ======================
         {
             btnAgregar = new JButton("Agregar");
             btnAgregar.setForeground(Color.WHITE);
@@ -195,7 +192,6 @@ public class GestionServicios extends JDialog {
             contentPanel.add(btnDesactivar);
         }
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));

@@ -44,7 +44,7 @@ public class DetallesSolicitud extends JDialog {
 
         setResizable(false);
         setTitle("Detalles de Solicitud");
-        setBounds(100, 100, 650, 780);   // Aumentado un poco la altura
+        setBounds(100, 100, 650, 780);
         setLocationRelativeTo(null);
 
         getContentPane().setBackground(new Color(0, 0, 51));
@@ -63,7 +63,6 @@ public class DetallesSolicitud extends JDialog {
             contentPanel.add(panel, BorderLayout.CENTER);
             panel.setLayout(null);
 
-            // ====================== PANEL INFORMACIÓN GENERAL ======================
             {
                 JPanel panelInfo = new JPanel();
                 panelInfo.setLayout(null);
@@ -164,7 +163,6 @@ public class DetallesSolicitud extends JDialog {
                 }
             }
 
-            // ====================== PANEL CLIENTE ======================
             {
                 JPanel panelClienteInfo = new JPanel();
                 panelClienteInfo.setLayout(null);
@@ -243,7 +241,6 @@ public class DetallesSolicitud extends JDialog {
                 panelClienteInfo.add(txtDireccion);
             }
 
-            // ====================== PANEL EMPLEADO ASIGNADO ======================
             {
                 JPanel panelEmpleado = new JPanel();
                 panelEmpleado.setLayout(null);
@@ -272,7 +269,6 @@ public class DetallesSolicitud extends JDialog {
                 }
             }
 
-            // ====================== PANEL DESCRIPCIÓN (NUEVO) ======================
             {
                 JPanel panelDescripcion = new JPanel();
                 panelDescripcion.setLayout(null);
@@ -301,7 +297,6 @@ public class DetallesSolicitud extends JDialog {
             }
         }
 
-        // ====================== BOTÓN CERRAR ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));

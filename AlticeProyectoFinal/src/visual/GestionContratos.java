@@ -65,7 +65,6 @@ public class GestionContratos extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL PRINCIPAL DE TABLA ======================
         {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
@@ -137,7 +136,6 @@ public class GestionContratos extends JDialog {
             contentPanel.add(btnBuscar);
         }
 
-        // ====================== FILTRO ======================
         {
             comboFiltrar = new JComboBox<>();
             comboFiltrar.setBackground(new Color(0, 0, 51));
@@ -165,7 +163,6 @@ public class GestionContratos extends JDialog {
             contentPanel.add(btnFiltrar);
         }
 
-        // ====================== CONTADORES ======================
         {
             lblContratosRegistrados = new JLabel("Contratos registrados: 00");
             lblContratosRegistrados.setForeground(Color.WHITE);
@@ -181,7 +178,6 @@ public class GestionContratos extends JDialog {
             contentPanel.add(lblContratosActivos);
         }
 
-        // ====================== BOTONES LATERALES ======================
         {
             btnAgregar = new JButton("Agregar");
             btnAgregar.addActionListener(new ActionListener() {
@@ -288,7 +284,6 @@ public class GestionContratos extends JDialog {
         	contentPanel.add(lblContratosPendientes);
         }
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));

@@ -70,7 +70,6 @@ public class RegistrarContrato extends JDialog {
         label.setBounds(12, 86, 53, 16);
         panel.add(label);
 
-        // Panel de búsqueda
         JPanel panelExistente = new JPanel();
         panelExistente.setLayout(null);
         panelExistente.setBackground(new Color(102, 102, 204));
@@ -123,7 +122,6 @@ public class RegistrarContrato extends JDialog {
         btnLimpiar.setBounds(498, 42, 97, 25);
         panelExistente.add(btnLimpiar);
 
-        // Panel del plan
         JPanel panel_1 = new JPanel();
         panel_1.setBackground(new Color(102, 102, 204));
         panel_1.setBorder(new LineBorder(new Color(255, 255, 255)));
@@ -188,7 +186,6 @@ public class RegistrarContrato extends JDialog {
         checkInstalacion.setBounds(248, 477, 174, 25);
         panel.add(checkInstalacion);
 
-        // Botones inferiores
         JPanel buttonPane = new JPanel();
         buttonPane.setBorder(new TitledBorder(new LineBorder(new Color(150, 150, 220), 1, true), "", 
                 TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
@@ -217,7 +214,6 @@ public class RegistrarContrato extends JDialog {
         cargarPlanes();
     }
 
-    // ====================== VALIDACIÓN PRINCIPAL ======================
     private void registrarContrato() {
         if (selected == null) {
             JOptionPane.showMessageDialog(this, "Debe buscar y seleccionar una persona primero.", 
@@ -270,7 +266,6 @@ public class RegistrarContrato extends JDialog {
         }
     }
 
-    // ====================== MÉTODOS AUXILIARES ======================
     private boolean registrar() {
         if (!validar()) return false;
 

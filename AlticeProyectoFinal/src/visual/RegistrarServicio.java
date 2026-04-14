@@ -181,7 +181,6 @@ public class RegistrarServicio extends JDialog {
             return;
         }
 
-        // ==================== MODO MODIFICAR ====================
         if (miServicio != null) {
             miServicio.setDescripcion(txtDescripcion.getText().trim());
             miServicio.setActivo(checkActivo.isSelected());
@@ -195,7 +194,6 @@ public class RegistrarServicio extends JDialog {
             return;
         }
 
-        // ==================== MODO REGISTRAR ====================
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Desea registrar este servicio?",
                 "Confirmar Registro",

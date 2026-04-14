@@ -54,7 +54,6 @@ public class GestionSolicitudes extends JDialog {
 
     private static JComboBox<String> comboFiltrar;
 
-    // Etiquetas de conteo
     private JLabel lblTotal;
     private JLabel lblPendientes;
     private JLabel lblEnProceso;
@@ -77,7 +76,6 @@ public class GestionSolicitudes extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL DE LA TABLA ======================
         {
             JPanel panelTabla = new JPanel();
             panelTabla.setBackground(new Color(102, 102, 204));
@@ -127,7 +125,7 @@ public class GestionSolicitudes extends JDialog {
                             btnModificar.setEnabled(puedeModificar);
                             btnCancelar.setEnabled(puedeCancelar);
                             btnVerDetalles.setEnabled(true);
-                            btnAsignar.setEnabled(puedeAsignar);           // Visible para todos
+                            btnAsignar.setEnabled(puedeAsignar);          
                             btnCompletar.setEnabled(selected.isEnProceso());
                         }
                     } else {
@@ -137,7 +135,6 @@ public class GestionSolicitudes extends JDialog {
             });
         }
 
-        // ====================== CAMPOS DE BÚSQUEDA ======================
         {
             txtCedula = new JTextField();
             txtCedula.setBackground(new Color(0, 0, 51));
@@ -182,7 +179,6 @@ public class GestionSolicitudes extends JDialog {
             contentPanel.add(btnBuscarNombre);
         }
 
-        // Filtro por Estado
         {
             comboFiltrar = new JComboBox<>();
             comboFiltrar.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -207,7 +203,6 @@ public class GestionSolicitudes extends JDialog {
             contentPanel.add(btnFiltrar);
         }
 
-        // ====================== ETIQUETAS DE CONTEO ======================
         {
             lblTotal = new JLabel("Solicitudes Registradas: 00");
             lblTotal.setForeground(Color.WHITE);
@@ -244,7 +239,6 @@ public class GestionSolicitudes extends JDialog {
             contentPanel.add(lblCanceladas);
         }
 
-        // ====================== BOTONES LATERALES ======================
         {
             btnAgregar = new JButton("Agregar");
             btnAgregar.setForeground(Color.WHITE);
@@ -358,7 +352,6 @@ public class GestionSolicitudes extends JDialog {
             contentPanel.add(btnCompletar);
         }
 
-        // Etiquetas
         {
             lblCedula = new JLabel("Cedula");
             lblCedula.setForeground(Color.WHITE);
@@ -374,7 +367,6 @@ public class GestionSolicitudes extends JDialog {
             contentPanel.add(lblNombre);
         }
 
-        // Botón Salir
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -393,10 +385,8 @@ public class GestionSolicitudes extends JDialog {
         }
 
         loadSolicitudes();
-        desactivarBotones();   // Estado inicial
+        desactivarBotones();
     }
-
-    // ====================== MÉTODOS ======================
 
     public void loadSolicitudes() {
         model.setRowCount(0);
@@ -474,7 +464,6 @@ public class GestionSolicitudes extends JDialog {
         }
     }
 
-    // ====================== ASIGNAR SOLICITUD ======================
     private void asignarSolicitud() {
         if (selected == null) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar una solicitud primero.", 
@@ -497,7 +486,6 @@ public class GestionSolicitudes extends JDialog {
             return;
         }
 
-        // Si es Técnico → asignación automática
         if (Altice.getInstance().getRolUsuarioLogueado() == Rol.TECNICO) {
             if (!Altice.getInstance().estaDisponibleTecnico(Altice.getSesion().getCodigo())) {
                 JOptionPane.showMessageDialog(this,
@@ -525,7 +513,6 @@ public class GestionSolicitudes extends JDialog {
                     "Error", JOptionPane.ERROR_MESSAGE);
             }
         } 
-        // Si es Comercial o Administrador → abrir ventana de asignación
         else {
             AsignarSolicitud asignar = new AsignarSolicitud(selected);
             asignar.setModal(true);
@@ -535,7 +522,6 @@ public class GestionSolicitudes extends JDialog {
         }
     }
 
-    // ====================== COMPLETAR SOLICITUD ======================
     private void completarSolicitudTecnico() {
         if (selected == null || !selected.isEnProceso()) return;
 

@@ -339,7 +339,6 @@ public class RegistrarCliente extends JDialog {
         groupTipoCliente.add(rbPersona);
         groupTipoCliente.add(rbEmpresa);
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -377,7 +376,6 @@ public class RegistrarCliente extends JDialog {
             loadCliente();
         }
 
-        // Estado inicial de contraseñas ocultas
         txtContra.setVisible(true);
         txtConfirmar.setVisible(true);
         txtContraVisible.setVisible(false);
@@ -441,7 +439,6 @@ public class RegistrarCliente extends JDialog {
     }
 
     private boolean validar() {
-        // (tu método validar actual está bien, lo mantengo igual)
         String nombre = txtNombre.getText().trim();
         String cedula = txtCedula.getText().trim();
         String telefono = txtTelefono.getText().trim();
@@ -538,7 +535,6 @@ public class RegistrarCliente extends JDialog {
 
         txtCodigo.setText(String.format("CL-%05d", Altice.getGenClienteid()));
 
-        // Forzar estado inicial de contraseñas ocultas
         txtContra.setVisible(true);
         txtConfirmar.setVisible(true);
         txtContraVisible.setVisible(false);
@@ -569,7 +565,6 @@ public class RegistrarCliente extends JDialog {
             lblCedula.setText("RNC");
         }
 
-        // Forzar contraseñas ocultas
         txtContra.setVisible(true);
         txtConfirmar.setVisible(true);
         txtContraVisible.setVisible(false);

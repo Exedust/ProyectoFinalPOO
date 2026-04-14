@@ -65,7 +65,6 @@ public class GestionPagos extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL PRINCIPAL DE TABLA ======================
         {
             JPanel panel = new JPanel();
             panel.setBackground(new Color(102, 102, 204));
@@ -122,7 +121,6 @@ public class GestionPagos extends JDialog {
             });
         }
 
-        // ====================== CAMPOS DE BÚSQUEDA ======================
         {
             txtCedula = new JTextField();
             txtCedula.setBackground(new Color(0, 0, 51));
@@ -189,7 +187,6 @@ public class GestionPagos extends JDialog {
             contentPanel.add(btnFiltrar);
         }
 
-        // ====================== CONTADORES ======================
         {
             JLabel lblPagosRegistrados = new JLabel("Pagos registrados: 00");
             lblPagosRegistrados.setForeground(Color.WHITE);
@@ -219,7 +216,6 @@ public class GestionPagos extends JDialog {
             contentPanel.add(lblMontoPendiente);
         }
 
-        // ====================== BOTONES LATERALES ======================
         {
             btnRealizarPago = new JButton("Realizar Pago");
             btnRealizarPago.addActionListener(new ActionListener() {
@@ -325,7 +321,6 @@ public class GestionPagos extends JDialog {
         	contentPanel.add(lblCedula);
         }
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -498,7 +493,6 @@ public class GestionPagos extends JDialog {
             }
         }
 
-        // Actualizar labels
         for (Component c : contentPanel.getComponents()) {
             if (c instanceof JLabel) {
                 JLabel label = (JLabel) c;

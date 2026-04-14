@@ -66,7 +66,6 @@ public class RegistrarSolicitud extends JDialog {
             contentPanel.add(panel, BorderLayout.CENTER);
             panel.setLayout(null);
 
-            // ====================== PANEL DATOS DEL CLIENTE ======================
             {
                 JPanel panelCliente = new JPanel();
                 panelCliente.setBackground(new Color(102, 102, 204));
@@ -134,8 +133,6 @@ public class RegistrarSolicitud extends JDialog {
                     panelCliente.add(btnLimpiar);
                 }
             }
-
-            // ====================== PANEL DATOS DE LA SOLICITUD ======================
             {
                 JPanel panelSolicitud = new JPanel();
                 panelSolicitud.setLayout(null);
@@ -318,7 +315,6 @@ public class RegistrarSolicitud extends JDialog {
         String descripcion = txtDescripcion.getText().trim();
 
         if (miSolicitud != null) {
-            // Modo Modificar
             miSolicitud.setDescripcion(descripcion);
             if (Altice.getInstance().modificarSolicitud(miSolicitud)) {
                 JOptionPane.showMessageDialog(this, "Solicitud modificada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -329,7 +325,6 @@ public class RegistrarSolicitud extends JDialog {
             return;
         }
 
-        // Modo Registrar
         String itemCliente = (String) comboClientes.getSelectedItem();
         String cedula = itemCliente.substring(0, itemCliente.indexOf(" - ")).trim();
 

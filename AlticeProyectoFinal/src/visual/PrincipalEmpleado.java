@@ -469,7 +469,6 @@ public class PrincipalEmpleado extends JFrame {
 	                "Éxito", 
 	                JOptionPane.INFORMATION_MESSAGE);
 	            
-	            // Actualizar interfaz después de completar
 	            comprobarRol();
 	        } else {
 	            JOptionPane.showMessageDialog(this, 
@@ -526,7 +525,6 @@ public class PrincipalEmpleado extends JFrame {
 	            panelSolicitudTomada.setVisible(false);
 	        }
 	    } else {
-	        // Para Comerciales o si no es técnico
 	        panelSolicitudTomada.setVisible(false);
 	    }
 	}

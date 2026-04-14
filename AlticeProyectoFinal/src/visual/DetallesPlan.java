@@ -70,7 +70,6 @@ public class DetallesPlan extends JDialog {
             contentPanel.add(panel, BorderLayout.CENTER);
             panel.setLayout(null);
 
-            // ====================== INFORMACIÓN GENERAL ======================
             {
                 JPanel panelGeneral = new JPanel();
                 panelGeneral.setLayout(null);
@@ -118,7 +117,6 @@ public class DetallesPlan extends JDialog {
                 }
             }
 
-            // ====================== SERVICIOS INCLUIDOS ======================
             {
                 JPanel panelServicios = new JPanel();
                 panelServicios.setLayout(null);
@@ -157,7 +155,6 @@ public class DetallesPlan extends JDialog {
                 }
             }
 
-            // ====================== PANEL INTERNET ======================
             {
                 panelInternet = new JPanel();
                 panelInternet.setLayout(null);
@@ -223,7 +220,6 @@ public class DetallesPlan extends JDialog {
                 }
             }
 
-            // ====================== PANEL CABLE ======================
             {
                 panelCable = new JPanel();
                 panelCable.setLayout(null);
@@ -271,7 +267,6 @@ public class DetallesPlan extends JDialog {
                 }
             }
 
-            // ====================== PANEL MOVIL ======================
             {
                 panelMovil = new JPanel();
                 panelMovil.setLayout(null);
@@ -337,7 +332,6 @@ public class DetallesPlan extends JDialog {
                 }
             }
 
-            // ====================== COSTO TOTAL ======================
             {
                 JPanel panelCosto = new JPanel();
                 panelCosto.setLayout(null);
@@ -380,7 +374,6 @@ public class DetallesPlan extends JDialog {
             }
         }
 
-        // ====================== BOTONES OK / CANCEL ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));

@@ -57,7 +57,6 @@ public class AsignarSolicitud extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL DATOS DE LA SOLICITUD ======================
         {
             JPanel panel = new JPanel();
             panel.setLayout(null);
@@ -163,7 +162,6 @@ public class AsignarSolicitud extends JDialog {
             panel.add(txtTelefono);
         }
 
-        // ====================== PANEL DESCRIPCIÓN ======================
         {
             JPanel panel_2 = new JPanel();
             panel_2.setLayout(null);
@@ -183,7 +181,6 @@ public class AsignarSolicitud extends JDialog {
             panel_2.add(txtDescripcion);
         }
 
-        // ====================== PANEL ASIGNACIÓN TÉCNICO ======================
         {
             JPanel panel_1 = new JPanel();
             panel_1.setLayout(null);
@@ -207,7 +204,6 @@ public class AsignarSolicitud extends JDialog {
             panel_1.add(comboTecnicos);
         }
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));

@@ -35,14 +35,14 @@ public class DetallesComercial extends JDialog {
     private final JPanel contentPanel = new JPanel();
     private Empleado miEmpleado;
     
-    private JTextField txtNombre;          // Nombre
-    private JTextField txtCedula;        // Cedula
-    private JTextField txtTelefono;        // Telefono
-    private JTextField txtDireccion;        // Direccion
-    private JTextField txtCorreo;        // Correo
-    private JPasswordField txtContra;  // Contraseña oculta
-    private JTextField txtCodigo;        // Código
-    private JTextField passwordMostrar;    // Contraseña visible
+    private JTextField txtNombre;       
+    private JTextField txtCedula;       
+    private JTextField txtTelefono;       
+    private JTextField txtDireccion;       
+    private JTextField txtCorreo;        
+    private JPasswordField txtContra; 
+    private JTextField txtCodigo;      
+    private JTextField passwordMostrar;  
     private JTextField txtSalario;
     private JTextField txtComision;
     private JButton btnMostrar;
@@ -241,7 +241,7 @@ public class DetallesComercial extends JDialog {
                     passwordMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
                     passwordMostrar.setBounds(287, 237, 263, 24);
                     panel_1.add(passwordMostrar);
-                    passwordMostrar.setVisible(false); // Oculto por defecto
+                    passwordMostrar.setVisible(false);
                 }
 
                 // Botón Mostrar Contraseña
@@ -327,7 +327,6 @@ public class DetallesComercial extends JDialog {
                 }
             }
 
-            // ====================== PANEL HISTORIAL DE CONTRATOS ======================
             {
                 JPanel panel_2 = new JPanel();
                 panel_2.setLayout(null);
@@ -337,7 +336,6 @@ public class DetallesComercial extends JDialog {
                 panel_2.setBounds(12, 499, 567, 318);
                 panel.add(panel_2);
 
-                // Combo de filtro
                 comboFiltrar = new JComboBox<>();
                 comboFiltrar.setForeground(Color.WHITE);
                 comboFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -357,7 +355,6 @@ public class DetallesComercial extends JDialog {
                 btnFiltrar.setBounds(230, 27, 97, 25);
                 panel_2.add(btnFiltrar);
 
-                // Panel de la tabla
                 {
                     JPanel panel_3 = new JPanel();
                     panel_3.setBackground(new Color(0, 0, 51));
@@ -381,7 +378,6 @@ public class DetallesComercial extends JDialog {
                     });
                 }
 
-                // Botón Ver Detalles
                 {
                     btnDetalles = new JButton("Ver Detalles");
                     btnDetalles.setBounds(438, 280, 117, 25);
@@ -390,7 +386,7 @@ public class DetallesComercial extends JDialog {
                     btnDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 13));
                     btnDetalles.setFocusPainted(false);
                     btnDetalles.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
-                    btnDetalles.setEnabled(false);   // Inicialmente deshabilitado
+                    btnDetalles.setEnabled(false); 
                     panel_2.add(btnDetalles);
 
                     btnDetalles.addActionListener(new ActionListener() {
@@ -411,7 +407,6 @@ public class DetallesComercial extends JDialog {
                     });
                 }
 
-                // Acción del botón Filtrar
                 btnFiltrar.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         loadContratosEmpleado();
@@ -560,12 +555,11 @@ public class DetallesComercial extends JDialog {
         }
 
         model.setRowCount(0);
-        row = new Object[6];   // 6 columnas
+        row = new Object[6];   
 
         String filtro = (comboFiltrar.getSelectedItem() != null) 
                         ? comboFiltrar.getSelectedItem().toString() : "Todos";
 
-        // Headers completos
         String[] headers = {"Código", "Plan", "Fecha Inicio", "Fecha Cierre", "Estado", "Cliente"};
         model.setColumnIdentifiers(headers);
 
@@ -573,17 +567,14 @@ public class DetallesComercial extends JDialog {
         int totalActivos = 0;
         int totalCerrados = 0;
 
-        // Recorremos TODOS los contratos del sistema
         for (Contrato c : Altice.getInstance().getMisContratos()) {
             boolean esDelEmpleado = false;
 
-            // Caso 1: El empleado fue quien registró el contrato
             if (c.getEmpleado() != null && c.getEmpleado().getCodigo() != null &&
                 c.getEmpleado().getCodigo().equals(miEmpleado.getCodigo())) {
                 esDelEmpleado = true;
             }
 
-            // Caso 2: El empleado es el cliente del contrato (contrato propio)
             if (!esDelEmpleado && c.getCliente() != null && c.getCliente().getCedula() != null &&
                 c.getCliente().getCedula().equals(miEmpleado.getCedula())) {
                 esDelEmpleado = true;
@@ -591,7 +582,6 @@ public class DetallesComercial extends JDialog {
 
             if (!esDelEmpleado) continue;
 
-            // Aplicar filtro
             boolean incluir = false;
             switch (filtro) {
                 case "Todos":
@@ -621,7 +611,6 @@ public class DetallesComercial extends JDialog {
             }
         }
 
-        // Actualizar contadores
         lblContratosRegistrados.setText("Contratos Registrados: " + String.format("%02d", totalRegistrados));
         lblContratosActivos.setText("Contratos Activos: " + String.format("%02d", totalActivos));
         lblContratosCerrados.setText("Contratos Cerrados: " + String.format("%02d", totalCerrados));

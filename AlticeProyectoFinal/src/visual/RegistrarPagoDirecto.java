@@ -59,7 +59,6 @@ public class RegistrarPagoDirecto extends JDialog {
             contentPanel.add(panel, BorderLayout.CENTER);
             panel.setLayout(null);
 
-            // ====================== PANEL CLIENTE ======================
             {
                 JPanel panelCliente = new JPanel();
                 panelCliente.setLayout(null);
@@ -150,7 +149,6 @@ public class RegistrarPagoDirecto extends JDialog {
                 panelCliente.add(txtDireccion);
             }
 
-            // ====================== PANEL CONTRATO ======================
             {
                 JPanel panelContrato = new JPanel();
                 panelContrato.setLayout(null);
@@ -193,7 +191,6 @@ public class RegistrarPagoDirecto extends JDialog {
                 panelContrato.add(txtPlan);
             }
 
-            // ====================== PANEL MONTO ======================
             {
                 JPanel panelMonto = new JPanel();
                 panelMonto.setLayout(null);
@@ -221,7 +218,6 @@ public class RegistrarPagoDirecto extends JDialog {
             }
         }
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -256,13 +252,11 @@ public class RegistrarPagoDirecto extends JDialog {
             buttonPane.add(btnCancelar);
         }
 
-        // Cargar datos si se pasó un pago
         if (miPago != null) {
             loadPago(miPago);
         }
     }
 
-    // ====================== MÉTODO LOAD PAGO ======================
     private void loadPago(Pago pago) {
         if (pago == null) return;
 
@@ -279,7 +273,6 @@ public class RegistrarPagoDirecto extends JDialog {
         txtMonto.setText(String.format("RD$ %.2f", pago.getMonto()));
     }
 
-    // ====================== REALIZAR PAGO ======================
     private void realizarPago() {
         if (miPago == null) {
             JOptionPane.showMessageDialog(this, "No hay pago seleccionado.", "Error", JOptionPane.ERROR_MESSAGE);

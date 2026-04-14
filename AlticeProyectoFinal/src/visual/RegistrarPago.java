@@ -47,7 +47,6 @@ public class RegistrarPago extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // ====================== PANEL CLIENTE ======================
         {
             JPanel panelCliente = new JPanel();
             panelCliente.setBackground(new Color(102, 102, 204));

@@ -95,7 +95,6 @@ public class DetallesCliente extends JDialog {
             contentPanel.add(panel, BorderLayout.CENTER);
             panel.setLayout(null);
 
-            // ====================== PANEL DATOS DEL CLIENTE ======================
             {
                 JPanel panel_1 = new JPanel();
                 panel_1.setLayout(null);
@@ -289,7 +288,6 @@ public class DetallesCliente extends JDialog {
                 }
             }
 
-            // ====================== PANEL HISTORIAL ======================
             {
                 panelHistorial = new JPanel();
                 panelHistorial.setLayout(null);
@@ -353,7 +351,6 @@ public class DetallesCliente extends JDialog {
                 }
             }
 
-            // ====================== BOTONES DE ACCIÓN ======================
             {
                 btnRealizarPago = new JButton("Realizar Pago");
                 btnRealizarPago.setForeground(Color.WHITE);
@@ -446,7 +443,6 @@ public class DetallesCliente extends JDialog {
             }
         });
 
-        // ====================== BOTÓN CERRAR CONTRATO ======================
         btnCerrarContrato.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int fila = table.getSelectedRow();
@@ -477,7 +473,6 @@ public class DetallesCliente extends JDialog {
             }
         });
 
-        // ====================== BOTÓN VER CONTRATO ======================
         btnVerContrato.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int fila = table.getSelectedRow();
@@ -494,7 +489,6 @@ public class DetallesCliente extends JDialog {
             }
         });
 
-        // ====================== BOTÓN REALIZAR PAGO ======================
         btnRealizarPago.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int fila = table.getSelectedRow();

@@ -37,6 +37,7 @@ public class RegistrarSolicitudCliente extends JDialog {
         setTitle("Registrar Solicitud de Soporte");
         setResizable(false);
         setBounds(100, 100, 480, 340);
+        setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout());
         
         contentPanel.setBackground(new Color(0, 0, 51));
@@ -62,7 +63,7 @@ public class RegistrarSolicitudCliente extends JDialog {
 
             {
                 comboTipo = new JComboBox<>();
-                comboTipo.setEnabled(false);           // No se puede cambiar
+                comboTipo.setEnabled(false);         
                 comboTipo.setForeground(new Color(255, 255, 255));
                 comboTipo.setBackground(new Color(0, 0, 51));
                 comboTipo.setFont(new Font("Segoe UI", Font.PLAIN, 13));

@@ -85,8 +85,6 @@ public class RegistrarPlan extends JDialog {
                     TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
             contentPanel.add(panel, BorderLayout.CENTER);
             panel.setLayout(null);
-
-            // ====================== INFORMACIÓN GENERAL ======================
             {
                 JPanel panelGeneral = new JPanel();
                 panelGeneral.setLayout(null);
@@ -132,7 +130,6 @@ public class RegistrarPlan extends JDialog {
                 }
             }
 
-            // ====================== SERVICIOS INCLUIDOS ======================
             {
                 JPanel panelServicios = new JPanel();
                 panelServicios.setLayout(null);
@@ -168,7 +165,6 @@ public class RegistrarPlan extends JDialog {
                 }
             }
 
-            // ====================== PANEL INTERNET ======================
             {
                 panelInternet = new JPanel();
                 panelInternet.setLayout(null);
@@ -225,7 +221,6 @@ public class RegistrarPlan extends JDialog {
                 }
             }
 
-            // ====================== PANEL CABLE ======================
             {
                 panelCable = new JPanel();
                 panelCable.setLayout(null);
@@ -268,7 +263,6 @@ public class RegistrarPlan extends JDialog {
                 }
             }
 
-            // ====================== PANEL MOVIL ======================
             {
                 panelMovil = new JPanel();
                 panelMovil.setLayout(null);
@@ -324,7 +318,6 @@ public class RegistrarPlan extends JDialog {
                 }
             }
 
-            // ====================== COSTO TOTAL ======================
             {
                 JPanel panelCosto = new JPanel();
                 panelCosto.setLayout(null);
@@ -412,7 +405,6 @@ public class RegistrarPlan extends JDialog {
             btnCancelar.setActionCommand("Cancel");
             buttonPane.add(btnCancelar);
         }
-        // ====================== LISTENERS ======================
         ActionListener servicioListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panelInternet.setVisible(chkbxInternet.isSelected());
@@ -687,7 +679,6 @@ public class RegistrarPlan extends JDialog {
             }
         }
 
-        // ====================== VALIDACIÓN MOVIL ======================
         if (chckbxTelefonia.isSelected()) {
             if ((int) spnMinutos.getValue() <= 0) {
                 JOptionPane.showMessageDialog(this, "La cantidad de minutos debe ser mayor a 0.", "Error", JOptionPane.ERROR_MESSAGE);

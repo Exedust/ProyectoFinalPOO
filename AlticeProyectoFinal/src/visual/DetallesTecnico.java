@@ -241,7 +241,7 @@ public class DetallesTecnico extends JDialog {
 					passwordMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
 					passwordMostrar.setBounds(287, 237, 263, 24);
 					panel_1.add(passwordMostrar);
-					passwordMostrar.setVisible(false); // Oculto por defecto
+					passwordMostrar.setVisible(false);
 				}
 
 				// Botón Mostrar Contraseña
