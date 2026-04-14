@@ -109,7 +109,6 @@ public class Login extends JFrame {
         btnIniciar.setBounds(151, 224, 139, 40);
         panelLogin.add(btnIniciar);
 
-        // Acción del botón
         btnIniciar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 intentarLogin();
@@ -120,7 +119,7 @@ public class Login extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    btnIniciar.doClick();   // Simula clic en el botón
+                    btnIniciar.doClick();
                 }
             }
         });
@@ -156,7 +155,12 @@ public class Login extends JFrame {
             } else if (rol == Rol.TECNICO || rol == Rol.COMERCIAL) {
                  PrincipalEmpleado principal = new PrincipalEmpleado();
                  principal.setVisible(true);
-            } else {
+            }
+            else if(rol == Rol.CLIENTE)
+            {
+            	PrincipalCliente principal = new PrincipalCliente();
+            	principal.setVisible(true);
+            }else {
                 JOptionPane.showMessageDialog(this, "Rol no reconocido.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {

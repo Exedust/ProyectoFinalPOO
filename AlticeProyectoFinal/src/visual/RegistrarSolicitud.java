@@ -235,9 +235,9 @@ public class RegistrarSolicitud extends JDialog {
         cargarClientesActivos();
 
         if (miSolicitud != null) {
-            loadSolicitud();                    // ← Carga el código real de la solicitud
+            loadSolicitud();              
         } else {
-            // Solo generar nuevo código cuando es registro nuevo
+
             int nuevoId = Altice.getGenSolicitudid() + 1;
             txtCodigo.setText("SOL-" + String.format("%05d", nuevoId));
         }
@@ -262,7 +262,6 @@ public class RegistrarSolicitud extends JDialog {
 
         txtDescripcion.setText(miSolicitud.getDescripcion() != null ? miSolicitud.getDescripcion() : "");
 
-        // ← ESTA ES LA LÍNEA CLAVE
         txtCodigo.setText(miSolicitud.getCodigo() != null ? miSolicitud.getCodigo() : "");
     }
 

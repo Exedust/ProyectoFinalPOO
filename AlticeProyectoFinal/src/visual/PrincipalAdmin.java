@@ -17,6 +17,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import logico.Altice;
+import logico.EstadoSolicitud;
+import logico.Pago;
+import logico.Solicitud;
 
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
@@ -40,6 +43,11 @@ import javax.swing.JOptionPane;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
+import java.awt.LayoutManager;
+import javax.swing.JComboBox;
 
 public class PrincipalAdmin extends JFrame {
 
@@ -48,6 +56,18 @@ public class PrincipalAdmin extends JFrame {
 	private JPanel contentPane;
 	private JLabel lblBienvenido;
 	private JMenuItem btnGuardar;
+	private JTextField txtMontoPendiente;
+	private JTextField txtPagosPendientes;
+	private JTextField txtCobrado;
+	private JTextField txtPagosEfectuados;
+	private JTextField txtSoliPendientes;
+	private JTextField txtSoliCompletadas;
+	private JTextField txtContratosActivos;
+	private JTextField txtContratosCerrados;
+	private JComboBox<String> comboFiltros;
+	private JButton btnFiltrar;
+	private JLabel lblMes;
+	private JPanel panelInformacionGeneral;
 
 	/**
 	 * Launch the application.
@@ -359,13 +379,14 @@ public class PrincipalAdmin extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 51));
 		contentPane.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BorderLayout(0, 0));
+		panel.setLayout(null);
 
 		// Panel interno para el dashboard
 		JPanel dashboardPanel = new JPanel();
+		dashboardPanel.setBounds(0, 0, 1904, 240);
 		dashboardPanel.setBackground(new Color(0, 0, 51));
 		dashboardPanel.setLayout(new GridBagLayout());
-		panel.add(dashboardPanel, BorderLayout.NORTH);
+		panel.add(dashboardPanel);
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(20, 20, 20, 20);
@@ -573,12 +594,275 @@ public class PrincipalAdmin extends JFrame {
         cardReportes.add(btnGestionarReportes, BorderLayout.SOUTH);
 
         dashboardPanel.add(cardReportes, gbcReportes);
+        
+        panelInformacionGeneral = new JPanel((LayoutManager) null);
+        panelInformacionGeneral.setPreferredSize(new Dimension(220, 200));
+        panelInformacionGeneral.setBorder(new TitledBorder(null, "Información General", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+        panelInformacionGeneral.setBackground(new Color(102, 102, 204));
+        panelInformacionGeneral.setBounds(524, 253, 848, 332);
+        panel.add(panelInformacionGeneral);
+        panelInformacionGeneral.setLayout(null);
+        
+        JLabel lblMontoPorCobrar = new JLabel("Pendiente:");
+        lblMontoPorCobrar.setForeground(Color.WHITE);
+        lblMontoPorCobrar.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblMontoPorCobrar.setBounds(271, 100, 91, 22);
+        panelInformacionGeneral.add(lblMontoPorCobrar);
+        
+        txtMontoPendiente = new JTextField();
+        txtMontoPendiente.setText("RD$ 0.00");
+        txtMontoPendiente.setHorizontalAlignment(SwingConstants.CENTER);
+        txtMontoPendiente.setForeground(Color.WHITE);
+        txtMontoPendiente.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        txtMontoPendiente.setEditable(false);
+        txtMontoPendiente.setCaretColor(Color.WHITE);
+        txtMontoPendiente.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        txtMontoPendiente.setBackground(new Color(0, 0, 51));
+        txtMontoPendiente.setBounds(253, 135, 124, 37);
+        panelInformacionGeneral.add(txtMontoPendiente);
+        
+        JLabel label_1 = new JLabel("Pagos Pendientes:");
+        label_1.setForeground(Color.WHITE);
+        label_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        label_1.setBounds(452, 100, 147, 22);
+        panelInformacionGeneral.add(label_1);
+        
+        txtPagosPendientes = new JTextField();
+        txtPagosPendientes.setText("00");
+        txtPagosPendientes.setHorizontalAlignment(SwingConstants.CENTER);
+        txtPagosPendientes.setForeground(Color.WHITE);
+        txtPagosPendientes.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        txtPagosPendientes.setEditable(false);
+        txtPagosPendientes.setCaretColor(Color.WHITE);
+        txtPagosPendientes.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        txtPagosPendientes.setBackground(new Color(0, 0, 51));
+        txtPagosPendientes.setBounds(477, 135, 91, 37);
+        panelInformacionGeneral.add(txtPagosPendientes);
+        
+        JLabel lblMontoCobrado = new JLabel("Cobrado:");
+        lblMontoCobrado.setForeground(Color.WHITE);
+        lblMontoCobrado.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblMontoCobrado.setBounds(74, 100, 91, 22);
+        panelInformacionGeneral.add(lblMontoCobrado);
+        
+        txtCobrado = new JTextField();
+        txtCobrado.setText("RD$ 0.00");
+        txtCobrado.setHorizontalAlignment(SwingConstants.CENTER);
+        txtCobrado.setForeground(Color.WHITE);
+        txtCobrado.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        txtCobrado.setEditable(false);
+        txtCobrado.setCaretColor(Color.WHITE);
+        txtCobrado.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        txtCobrado.setBackground(new Color(0, 0, 51));
+        txtCobrado.setBounds(44, 135, 124, 37);
+        panelInformacionGeneral.add(txtCobrado);
+        
+        txtPagosEfectuados = new JTextField();
+        txtPagosEfectuados.setText("00");
+        txtPagosEfectuados.setHorizontalAlignment(SwingConstants.CENTER);
+        txtPagosEfectuados.setForeground(Color.WHITE);
+        txtPagosEfectuados.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        txtPagosEfectuados.setEditable(false);
+        txtPagosEfectuados.setCaretColor(Color.WHITE);
+        txtPagosEfectuados.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        txtPagosEfectuados.setBackground(new Color(0, 0, 51));
+        txtPagosEfectuados.setBounds(666, 135, 91, 37);
+        panelInformacionGeneral.add(txtPagosEfectuados);
+        
+        JLabel lblPagosEfectuados = new JLabel("Pagos Efectuados:");
+        lblPagosEfectuados.setForeground(Color.WHITE);
+        lblPagosEfectuados.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblPagosEfectuados.setBounds(641, 100, 147, 22);
+        panelInformacionGeneral.add(lblPagosEfectuados);
+        
+        lblMes = new JLabel("Abril");
+        lblMes.setForeground(new Color(255, 255, 255));
+        lblMes.setFont(new Font("Tahoma", Font.BOLD, 24));
+        lblMes.setBounds(44, 41, 306, 34);
+        panelInformacionGeneral.add(lblMes);
+        
+        txtSoliPendientes = new JTextField();
+        txtSoliPendientes.setText("00");
+        txtSoliPendientes.setHorizontalAlignment(SwingConstants.CENTER);
+        txtSoliPendientes.setForeground(Color.WHITE);
+        txtSoliPendientes.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        txtSoliPendientes.setEditable(false);
+        txtSoliPendientes.setCaretColor(Color.WHITE);
+        txtSoliPendientes.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        txtSoliPendientes.setBackground(new Color(0, 0, 51));
+        txtSoliPendientes.setBounds(477, 243, 91, 37);
+        panelInformacionGeneral.add(txtSoliPendientes);
+        
+        JLabel lblSolicitudesPendientes = new JLabel("Soli. Pendientes:");
+        lblSolicitudesPendientes.setForeground(Color.WHITE);
+        lblSolicitudesPendientes.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblSolicitudesPendientes.setBounds(455, 211, 140, 22);
+        panelInformacionGeneral.add(lblSolicitudesPendientes);
+        
+        txtSoliCompletadas = new JTextField();
+        txtSoliCompletadas.setText("00");
+        txtSoliCompletadas.setHorizontalAlignment(SwingConstants.CENTER);
+        txtSoliCompletadas.setForeground(Color.WHITE);
+        txtSoliCompletadas.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        txtSoliCompletadas.setEditable(false);
+        txtSoliCompletadas.setCaretColor(Color.WHITE);
+        txtSoliCompletadas.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        txtSoliCompletadas.setBackground(new Color(0, 0, 51));
+        txtSoliCompletadas.setBounds(666, 243, 91, 37);
+        panelInformacionGeneral.add(txtSoliCompletadas);
+        
+        JLabel lblSolicitudesCompletadas = new JLabel("Soli. Completadas:");
+        lblSolicitudesCompletadas.setForeground(Color.WHITE);
+        lblSolicitudesCompletadas.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblSolicitudesCompletadas.setBounds(637, 211, 157, 22);
+        panelInformacionGeneral.add(lblSolicitudesCompletadas);
+        
+        JLabel lblContratosActivos = new JLabel("Contratos Activos:");
+        lblContratosActivos.setForeground(Color.WHITE);
+        lblContratosActivos.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblContratosActivos.setBounds(44, 211, 147, 22);
+        panelInformacionGeneral.add(lblContratosActivos);
+        
+        JLabel lblContratosCerrados = new JLabel("Contratos Cerrados:");
+        lblContratosCerrados.setForeground(Color.WHITE);
+        lblContratosCerrados.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblContratosCerrados.setBounds(235, 211, 157, 22);
+        panelInformacionGeneral.add(lblContratosCerrados);
+        
+        txtContratosActivos = new JTextField();
+        txtContratosActivos.setText("00");
+        txtContratosActivos.setHorizontalAlignment(SwingConstants.CENTER);
+        txtContratosActivos.setForeground(Color.WHITE);
+        txtContratosActivos.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        txtContratosActivos.setEditable(false);
+        txtContratosActivos.setCaretColor(Color.WHITE);
+        txtContratosActivos.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        txtContratosActivos.setBackground(new Color(0, 0, 51));
+        txtContratosActivos.setBounds(72, 243, 91, 37);
+        panelInformacionGeneral.add(txtContratosActivos);
+        
+        txtContratosCerrados = new JTextField();
+        txtContratosCerrados.setText("00");
+        txtContratosCerrados.setHorizontalAlignment(SwingConstants.CENTER);
+        txtContratosCerrados.setForeground(Color.WHITE);
+        txtContratosCerrados.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        txtContratosCerrados.setEditable(false);
+        txtContratosCerrados.setCaretColor(Color.WHITE);
+        txtContratosCerrados.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        txtContratosCerrados.setBackground(new Color(0, 0, 51));
+        txtContratosCerrados.setBounds(271, 243, 91, 37);
+        panelInformacionGeneral.add(txtContratosCerrados);
+        
+        comboFiltros = new JComboBox<String>();
+        comboFiltros.setForeground(Color.WHITE);
+        comboFiltros.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        comboFiltros.setBackground(new Color(0, 0, 51));
+        comboFiltros.setBounds(362, 41, 298, 28);
+        panelInformacionGeneral.add(comboFiltros);
+
+        comboFiltros.addItem("Mes Actual");
+        comboFiltros.addItem("Últimos 3 meses");
+        comboFiltros.addItem("Últimos 6 meses");
+        comboFiltros.addItem("Último año");
+        comboFiltros.addItem("Todos los Tiempos");
+        
+        btnFiltrar = new JButton("Filtrar");
+        btnFiltrar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+		        actualizarDashboard();
+        	}
+        });
+        btnFiltrar.setForeground(Color.WHITE);
+        btnFiltrar.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        btnFiltrar.setFocusPainted(false);
+        btnFiltrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        btnFiltrar.setBackground(new Color(0, 0, 51));
+        btnFiltrar.setBounds(672, 41, 116, 28);
+        panelInformacionGeneral.add(btnFiltrar);
 
 		ImageIcon icon = new ImageIcon(PrincipalAdmin.class.getResource("/img/alticeblanco.png"));
 		Image image = icon.getImage();
+		actualizarDashboard();
 
 	}
-	
+	private void actualizarDashboard() {
+	    String filtro = (String) comboFiltros.getSelectedItem();
+	    if (filtro == null) filtro = "Mes Actual";
+
+	    LocalDate hoy = LocalDate.now();
+	    LocalDate fechaInicioFiltro = null;
+
+	    switch (filtro) {
+	        case "Mes Actual":
+	            fechaInicioFiltro = hoy.withDayOfMonth(1);
+	            break;
+	        case "Últimos 3 meses":
+	            fechaInicioFiltro = hoy.minusMonths(3);
+	            break;
+	        case "Últimos 6 meses":
+	            fechaInicioFiltro = hoy.minusMonths(6);
+	            break;
+	        case "Último año":
+	            fechaInicioFiltro = hoy.minusYears(1);
+	            break;
+	        case "Todos los Tiempos":
+	            fechaInicioFiltro = null;
+	            break;
+	    }
+
+	    float montoPendiente = 0.0f;
+	    int pagosPendientes = 0;
+	    for (Pago p : Altice.getInstance().getMisPagos()) {
+	        if (p.isPendiente() && p.isActivo()) {
+	            montoPendiente += p.getMonto();
+	            pagosPendientes++;
+	        }
+	    }
+
+	    float montoCobrado = 0.0f;
+	    int pagosEfectuados = 0;
+	    for (Pago p : Altice.getInstance().getMisPagos()) {
+	        if (!p.isPendiente() && p.isActivo() && p.getFechaPago() != null) {
+	            if (fechaInicioFiltro == null || 
+	                !p.getFechaPago().isBefore(fechaInicioFiltro)) {
+	                montoCobrado += p.getMonto();
+	                pagosEfectuados++;
+	            }
+	        }
+	    }
+
+	    int soliPendientes = 0;
+	    int soliCompletadas = 0;
+	    for (Solicitud s : Altice.getInstance().getMisSolicitudes()) {
+	        if (s.getEstado() == EstadoSolicitud.PENDIENTE || s.getEstado() == EstadoSolicitud.EN_PROCESO) {
+	            soliPendientes++;
+	        } else if (s.isResuelto()) {
+	            soliCompletadas++;
+	        }
+	    }
+
+	    int contratosActivos = Altice.getInstance().contarContratosActivos();
+	    int contratosCerrados = Altice.getInstance().contarContratosCerrados();
+
+
+	    txtMontoPendiente.setText(String.format("RD$ %.2f", montoPendiente));
+	    txtPagosPendientes.setText(String.format("%02d", pagosPendientes));
+	    txtCobrado.setText(String.format("RD$ %.2f", montoCobrado));
+	    txtPagosEfectuados.setText(String.format("%02d", pagosEfectuados));
+	    txtSoliPendientes.setText(String.format("%02d", soliPendientes));
+	    txtSoliCompletadas.setText(String.format("%02d", soliCompletadas));
+	    txtContratosActivos.setText(String.format("%02d", contratosActivos));
+	    txtContratosCerrados.setText(String.format("%02d", contratosCerrados));
+
+
+	    if (filtro.equals("Mes Actual")) {
+	        lblMes.setText(hoy.getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES")).toUpperCase());
+	    } else if (filtro.equals("Último año")) {
+	        lblMes.setText(String.valueOf(hoy.getYear()));
+	    } else {
+	        lblMes.setText(filtro);
+	    }
+	}
 	private void cerrarSesion()
 	{
 		if(Altice.getSesion() == null)

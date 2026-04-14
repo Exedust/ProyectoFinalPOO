@@ -563,6 +563,7 @@ public class DetallesComercial extends JDialog {
         
         loadContratosEmpleado();
     }
+    
     private void loadContratosEmpleado() {
         if (model == null) {
             model = new DefaultTableModel() {
@@ -575,58 +576,70 @@ public class DetallesComercial extends JDialog {
         }
 
         model.setRowCount(0);
-        row = new Object[5];
+        row = new Object[6];   // 6 columnas
 
-        String filtro = comboFiltrar.getSelectedItem() != null ? 
-                        comboFiltrar.getSelectedItem().toString() : "Todos";
+        String filtro = (comboFiltrar.getSelectedItem() != null) 
+                        ? comboFiltrar.getSelectedItem().toString() : "Todos";
+
+        // Headers completos
+        String[] headers = {"Código", "Plan", "Fecha Inicio", "Fecha Cierre", "Estado", "Cliente"};
+        model.setColumnIdentifiers(headers);
+
         int totalRegistrados = 0;
         int totalActivos = 0;
         int totalCerrados = 0;
-        String[] headers = {"Código", "Plan", "Fecha Inicio", "Fecha Cierre", "Estado"};
-        model.setColumnIdentifiers(headers);
 
-        if (miEmpleado != null && miEmpleado.getContratos() != null) {
-            for (Contrato c : miEmpleado.getContratos()) {
+        // Recorremos TODOS los contratos del sistema
+        for (Contrato c : Altice.getInstance().getMisContratos()) {
+            boolean esDelEmpleado = false;
+
+            // Caso 1: El empleado fue quien registró el contrato
+            if (c.getEmpleado() != null && c.getEmpleado().getCodigo() != null &&
+                c.getEmpleado().getCodigo().equals(miEmpleado.getCodigo())) {
+                esDelEmpleado = true;
+            }
+
+            // Caso 2: El empleado es el cliente del contrato (contrato propio)
+            if (!esDelEmpleado && c.getCliente() != null && c.getCliente().getCedula() != null &&
+                c.getCliente().getCedula().equals(miEmpleado.getCedula())) {
+                esDelEmpleado = true;
+            }
+
+            if (!esDelEmpleado) continue;
+
+            // Aplicar filtro
+            boolean incluir = false;
+            switch (filtro) {
+                case "Todos":
+                    incluir = true;
+                    break;
+                case "Activos":
+                    incluir = c.isActivo();
+                    break;
+                case "Cerrados":
+                    incluir = !c.isActivo();
+                    break;
+            }
+
+            if (incluir) {
+                row[0] = c.getCodigo() != null ? c.getCodigo() : "";
+                row[1] = c.getPlan() != null ? c.getPlan().getNombre() : "N/A";
+                row[2] = c.getFechaInicio() != null ? c.getFechaInicio().toString() : "";
+                row[3] = c.getFechaCierre() != null ? c.getFechaCierre().toString() : "";
+                row[4] = c.isActivo() ? "Activo" : "Cerrado";
+                row[5] = (c.getCliente() != null) ? c.getCliente().getNombre() : "N/A";
+
+                model.addRow(row);
+
                 totalRegistrados++;
-                if (c.isActivo()) {
-                    totalActivos++;
-                } else {
-                    totalCerrados++;
-                }
+                if (c.isActivo()) totalActivos++;
+                else totalCerrados++;
             }
         }
 
+        // Actualizar contadores
         lblContratosRegistrados.setText("Contratos Registrados: " + String.format("%02d", totalRegistrados));
         lblContratosActivos.setText("Contratos Activos: " + String.format("%02d", totalActivos));
         lblContratosCerrados.setText("Contratos Cerrados: " + String.format("%02d", totalCerrados));
-
-        if (miEmpleado != null && miEmpleado.getContratos() != null) {
-            for (Contrato c : miEmpleado.getContratos()) {
-                boolean incluir = false;
-
-                switch (filtro) {
-                    case "Todos":
-                        incluir = true;
-                        break;
-                    case "Activos":
-                        incluir = c.isActivo();
-                        break;
-                    case "Cerrados":
-                        incluir = !c.isActivo();
-                        break;
-                }
-
-                if (incluir) {
-
-                    row[0] = c.getCodigo() != null ? c.getCodigo() : "";
-                    row[1] = c.getPlan() != null ? c.getPlan().getNombre() : "N/A";
-                    row[2] = c.getFechaInicio() != null ? c.getFechaInicio().toString() : "";
-                    row[3] = c.getFechaCierre() != null ? c.getFechaCierre().toString() : "";
-                    row[4] = c.isActivo() ? "Activo" : "Cerrado";
-
-                    model.addRow(row);
-                }
-            }
-        }
     }
 }

@@ -1336,6 +1336,25 @@ public class Altice implements Serializable {
 
 	    return deudaTotal;
 	}
+	
+	public int contarPagosPendientesPorCedula(String cedula) {
+	    if (cedula == null || cedula.trim().isEmpty()) {
+	        return 0;
+	    }
+
+	    int cantidad = 0;
+
+	    for (Pago p : misPagos) {
+	        if (p.isPendiente() && p.isActivo()) {
+	            if (p.getCliente() != null && 
+	                p.getCliente().getCedula() != null &&
+	                p.getCliente().getCedula().equalsIgnoreCase(cedula)) {
+	                cantidad++;
+	            }
+	        }
+	    }
+	    return cantidad;
+	}
 
 	// ====================== DISTRIBUCIÓN POR DEUDA ======================
 

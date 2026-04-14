@@ -15,6 +15,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import logico.Altice;
 import logico.Pago;
+import logico.Rol;
+
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -360,19 +362,45 @@ public class GestionPagos extends JDialog {
 
     private void cancelarPago() {
         if (selected == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Debe seleccionar un pago primero.", 
+                "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
+        if (!selected.isPendiente() && selected.isActivo()) {
+            JOptionPane.showMessageDialog(this,
+                "No se puede cancelar un pago que ya ha sido realizado.",
+                "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         if (!selected.isActivo()) {
             JOptionPane.showMessageDialog(this,
-                    "Este pago ya está cancelado.",
-                    "Advertencia",
-                    JOptionPane.WARNING_MESSAGE);
+                "Este pago ya está cancelado.",
+                "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+
+        String cedulaLogueado = Altice.getInstance().buscarCedulaById(Altice.getSesion().getCodigo());
+
+        if (selected.getCliente() != null && 
+            selected.getCliente().getCedula() != null &&
+            selected.getCliente().getCedula().equalsIgnoreCase(cedulaLogueado)) {
+            
+            JOptionPane.showMessageDialog(this,
+                "No puedes cancelar un pago que está registrado a tu propio nombre.",
+                "Acceso denegado", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         int opcion = JOptionPane.showConfirmDialog(this,
-                "¿Desea cancelar este pago?",
-                "Confirmar Cancelación",
+                "¿Desea cancelar este pago pendiente?\n\n" +
+                "Código: " + selected.getCodigo() + "\n" +
+                "Cliente: " + (selected.getCliente() != null ? selected.getCliente().getNombre() : "N/A") + "\n" +
+                "Monto: RD$ " + String.format("%.2f", selected.getMonto()),
+                "Confirmar Cancelación de Pago",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
 
@@ -385,7 +413,7 @@ public class GestionPagos extends JDialog {
                     "Pago cancelado correctamente",
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
-
+            
             loadPagos();
         } else {
             JOptionPane.showMessageDialog(this,

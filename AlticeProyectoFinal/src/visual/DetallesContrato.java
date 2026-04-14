@@ -22,6 +22,7 @@ import logico.Contrato;
 import logico.Empleado;
 import logico.Pago;
 import logico.Persona;
+import logico.Rol;
 import logico.Altice;
 import logico.Cliente;
 import javax.swing.JLabel;
@@ -375,7 +376,6 @@ public class DetallesContrato extends JDialog {
             }
         }
 
-        // ====================== BOTONES INFERIORES ======================
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setBackground(new Color(0, 0, 51));
@@ -514,9 +514,55 @@ public class DetallesContrato extends JDialog {
         }
 
         String codigoPago = table.getValueAt(fila, 0).toString();
+        Pago pago = Altice.getInstance().buscarPagoByCodigo(codigoPago);
+
+        if (pago == null) {
+            JOptionPane.showMessageDialog(this, 
+                "No se encontró el pago seleccionado.", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!pago.isPendiente() && pago.isActivo()) {
+            JOptionPane.showMessageDialog(this,
+                "No se puede cancelar un pago que ya ha sido realizado.",
+                "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!pago.isActivo()) {
+            JOptionPane.showMessageDialog(this,
+                "Este pago ya está cancelado.",
+                "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Rol rolLogueado = Altice.getInstance().getRolUsuarioLogueado();
+
+        if (rolLogueado == Rol.CLIENTE || rolLogueado == Rol.TECNICO) {
+            JOptionPane.showMessageDialog(this,
+                "Solo los comerciales y administradores pueden cancelar pagos.",
+                "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String cedulaLogueado = Altice.getInstance().buscarCedulaById(Altice.getSesion().getCodigo());
+
+        if (pago.getCliente() != null && 
+            pago.getCliente().getCedula() != null &&
+            pago.getCliente().getCedula().equalsIgnoreCase(cedulaLogueado)) {
+            
+            JOptionPane.showMessageDialog(this,
+                "No puedes cancelar un pago que está registrado a tu propio nombre.",
+                "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         int opcion = JOptionPane.showConfirmDialog(this,
-                "¿Desea cancelar este pago pendiente?",
+                "¿Desea cancelar este pago pendiente?\n\n" +
+                "Código: " + pago.getCodigo() + "\n" +
+                "Monto: RD$ " + String.format("%.2f", pago.getMonto()) + "\n" +
+                "Cliente: " + (pago.getCliente() != null ? pago.getCliente().getNombre() : "N/A"),
                 "Confirmar Cancelación de Pago",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
@@ -530,7 +576,7 @@ public class DetallesContrato extends JDialog {
                     "Pago cancelado correctamente",
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
-
+            
             loadHistorialPagos(comboFiltrarPagos.getSelectedItem().toString());
         } else {
             JOptionPane.showMessageDialog(this,
@@ -556,5 +602,9 @@ public class DetallesContrato extends JDialog {
             btnRealizarPago.setEnabled(false);
             btnCancelarPago.setEnabled(false);
         }
+        if (Altice.getInstance().getRolUsuarioLogueado() == Rol.CLIENTE) {
+        	btnCancelarPago.setVisible(false);
+        	btnRealizarPago.setVisible(false);
+        } 
     }
 }

@@ -20,6 +20,8 @@ import logico.Altice;
 import logico.Cliente;
 import logico.Contrato;
 import logico.Pago;
+import logico.Rol;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
@@ -556,6 +558,11 @@ public class DetallesCliente extends JDialog {
         }
 
         actualizarEstadoDeuda();
+        if (Altice.getInstance().getRolUsuarioLogueado() == Rol.CLIENTE) {
+            btnCerrarContrato.setVisible(false);
+            btnCancelarPago.setVisible(false);
+            btnRealizarPago.setVisible(false);
+        } 
     }
     
     private void cancelarPago() {
@@ -702,5 +709,12 @@ public class DetallesCliente extends JDialog {
                 btnCancelarPago.setEnabled(false);
             }
         }
+        if (Altice.getInstance().getRolUsuarioLogueado() == Rol.CLIENTE) {
+            btnCerrarContrato.setVisible(false);
+            btnCancelarPago.setVisible(false);
+            btnRealizarPago.setVisible(false);
+        } 
     }
+    
+
 }
