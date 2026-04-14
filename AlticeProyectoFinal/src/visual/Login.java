@@ -116,7 +116,6 @@ public class Login extends JFrame {
             }
         });
 
-        // === TECLA ENTER PARA INICIAR SESIÓN ===
         txtContra.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -125,8 +124,6 @@ public class Login extends JFrame {
                 }
             }
         });
-
-        // Hacer que el botón Iniciar sea el botón por defecto al presionar Enter
         getRootPane().setDefaultButton(btnIniciar);
     }
 
@@ -159,7 +156,6 @@ public class Login extends JFrame {
             } else if (rol == Rol.TECNICO || rol == Rol.COMERCIAL) {
                  PrincipalEmpleado principal = new PrincipalEmpleado();
                  principal.setVisible(true);
-                JOptionPane.showMessageDialog(this, "Bienvenido, " + rol.name(), "Acceso", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Rol no reconocido.", "Error", JOptionPane.ERROR_MESSAGE);
             }

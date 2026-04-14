@@ -174,6 +174,61 @@ public class Altice implements Serializable {
 		}
 	}
 
+	public boolean tieneContratoActivo(String cedula) {
+	    if (cedula == null || cedula.trim().isEmpty()) {
+	        return false;
+	    }
+
+	    for (Contrato contrato : misContratos) {
+	        if (!contrato.isActivo()) {
+	            continue;
+	        }
+
+	        Persona persona = contrato.getCliente();
+	        if (persona != null && persona.getCedula() != null) {
+	            if (persona.getCedula().equalsIgnoreCase(cedula)) {
+	                return true;
+	            }
+	        }
+	    }
+	    return false;
+	}
+	
+	public String buscarCedulaById(String codigoUsuario) {
+	    if (codigoUsuario == null || codigoUsuario.trim().isEmpty()) {
+	        return null;
+	    }
+
+	    Empleado empleado = buscarEmpleadoById(codigoUsuario);
+	    if (empleado != null) {
+	        return empleado.getCedula();
+	    }
+
+	    Cliente cliente = buscarClienteById(codigoUsuario);
+	    if (cliente != null) {
+	        return cliente.getCedula();
+	    }
+
+	    return null;
+	}
+
+	public Contrato buscarContratoActivoByCedula(String cedula) {
+	    if (cedula == null || cedula.trim().isEmpty()) {
+	        return null;
+	    }
+
+	    for (Contrato c : misContratos) {
+	        if (c.isActivo()) {
+	            Persona persona = c.getCliente();
+	            if (persona != null && persona.getCedula() != null &&
+	                persona.getCedula().equalsIgnoreCase(cedula)) {
+	                return c;
+	            }
+	        }
+	    }
+	    return null;
+	}
+	
 	public boolean estaDisponibleTecnico(String codigo) {
 		Empleado emp = buscarEmpleadoById(codigo);
 		if (emp == null || emp.getRol() != Rol.TECNICO) {

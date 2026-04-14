@@ -154,6 +154,7 @@ public class RegistrarContrato extends JDialog {
         panel_1.add(lblPlan);
 
         txtCodigo = new JTextField();
+        txtCodigo.setBackground(new Color(0, 0, 51));
         txtCodigo.setEditable(false);
         txtCodigo.setForeground(Color.WHITE);
         txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -233,7 +234,6 @@ public class RegistrarContrato extends JDialog {
             return;
         }
 
-        // === BLOQUEO DEL USUARIO "admin" ===
         if (Altice.getSesion() != null && "admin".equalsIgnoreCase(Altice.getSesion().getUser())) {
             JOptionPane.showMessageDialog(this,
                 "El usuario administrador (admin) no puede registrar contratos.\n" +
@@ -355,7 +355,6 @@ public class RegistrarContrato extends JDialog {
 
         for (Cliente cli : Altice.getInstance().getMisClientes()) {
             if (cli.getUsuario() != null && cli.getUsuario().isActivo()) {
-                // Excluir al usuario admin
                 if ("admin".equalsIgnoreCase(cli.getUsuario().getUser())) continue;
                 comboClientes.addItem(cli.getCedula() + " - " + cli.getNombre());
             }
@@ -373,6 +372,47 @@ public class RegistrarContrato extends JDialog {
         }
     }
 
+    private void cargarPlanes() {
+        comboPlan.removeAllItems();
+
+        boolean esEmpleado = (selected instanceof Empleado);
+        boolean esEmpresa = false;
+
+        if (selected instanceof Cliente) {
+            Cliente cli = (Cliente) selected;
+            esEmpresa = (cli.getUsuario() != null && cli.getUsuario().isEmpresa());
+        }
+
+        for (Plan p : Altice.getInstance().getMisPlanes()) {
+            if (!p.isActivo()) continue;
+
+            String nombrePlan = p.getNombre();
+
+            if (esEmpleado && !nombrePlan.startsWith("Enterprise")) {
+                comboPlan.addItem(nombrePlan);
+            } 
+            else if (esEmpresa) {
+                if (!nombrePlan.startsWith("EMP")) {
+                    comboPlan.addItem(nombrePlan);
+                }
+            } 
+            else {
+                if (!nombrePlan.startsWith("EMP") && !nombrePlan.startsWith("Enterprise")) {
+                    comboPlan.addItem(nombrePlan);
+                }
+            }
+        }
+
+        if (comboPlan.getItemCount() == 0) {
+            if (esEmpleado) {
+                comboPlan.addItem("No hay planes disponibles para empleados");
+            } else if (esEmpresa) {
+                comboPlan.addItem("No hay planes disponibles para empresas");
+            } else {
+                comboPlan.addItem("No hay planes disponibles");
+            }
+        }
+    }
     private void actualizarSelectedDesdeCombo() {
         String itemSeleccionado = (String) comboClientes.getSelectedItem();
         if (itemSeleccionado == null || itemSeleccionado.contains("No hay personas")) {
@@ -385,6 +425,13 @@ public class RegistrarContrato extends JDialog {
         for (Cliente cli : Altice.getInstance().getMisClientes()) {
             if (cli.getCedula() != null && cli.getCedula().equalsIgnoreCase(cedula)) {
                 selected = cli;
+
+                if (cli.getUsuario() != null && cli.getUsuario().isEmpresa()) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Empresa detectada.\nSe mostrarán los planes Enterprise.", 
+                        "Cliente Empresa", JOptionPane.INFORMATION_MESSAGE);
+                }
+
                 cargarPlanes();
                 checkInstalacion.setSelected(true);
                 checkInstalacion.setVisible(true);
@@ -395,8 +442,10 @@ public class RegistrarContrato extends JDialog {
         for (Empleado emp : Altice.getInstance().getMisEmpleados()) {
             if (emp.getCedula() != null && emp.getCedula().equalsIgnoreCase(cedula)) {
                 selected = emp;
-                JOptionPane.showMessageDialog(this, "Se mostrarán los planes exclusivos para empleados.", 
+                JOptionPane.showMessageDialog(this, 
+                    "Empleado detectado.\nSe mostrarán solo los planes exclusivos para empleados (EMP).", 
                     "Empleado seleccionado", JOptionPane.INFORMATION_MESSAGE);
+                
                 cargarPlanes();
                 checkInstalacion.setSelected(false);
                 checkInstalacion.setVisible(false);
@@ -406,28 +455,7 @@ public class RegistrarContrato extends JDialog {
 
         selected = null;
     }
-
-    private void cargarPlanes() {
-        comboPlan.removeAllItems();
-        boolean esEmpleado = (selected instanceof Empleado);
-
-        for (Plan p : Altice.getInstance().getMisPlanes()) {
-            if (!p.isActivo()) continue;
-
-            if (esEmpleado) {
-                comboPlan.addItem(p.getNombre());
-            } else {
-                if (!p.getNombre().startsWith("EMP")) {
-                    comboPlan.addItem(p.getNombre());
-                }
-            }
-        }
-
-        if (comboPlan.getItemCount() == 0) {
-            comboPlan.addItem("No hay planes disponibles");
-        }
-    }
-
+    
     private void clean() {
         txtCedula.setText("");
         txtCodigo.setText(String.format("CO-%05d", Altice.getGenContratoid()));

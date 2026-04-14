@@ -42,6 +42,7 @@ import javax.swing.JOptionPane;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.LayoutManager;
+import javax.swing.JComboBox;
 
 public class PrincipalEmpleado extends JFrame {
 
@@ -53,6 +54,9 @@ public class PrincipalEmpleado extends JFrame {
 	private JPanel cardContratos;
 	private JPanel cardPagos;
 	private JPanel cardSolicitudes;
+	private JTextField txtMontoDeuda;
+	private JTextField textField_1;
+	private JPanel panelDeuda;
 
 	/**
 	 * Launch the application.
@@ -79,7 +83,7 @@ public class PrincipalEmpleado extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				if(Altice.getSesion() != null)
 				{
-					Altice.getInstance().guardarDatos();					
+					cerrarSesion();				
 				}
 			}
 		});
@@ -130,15 +134,16 @@ public class PrincipalEmpleado extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 51));
 		contentPane.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BorderLayout(0, 0));
+		panel.setLayout(null);
 
 		JPanel dashboardPanel = new JPanel();
+		dashboardPanel.setBounds(0, 0, 1904, 240);
 		dashboardPanel.setBackground(new Color(0, 0, 51));
 		GridBagLayout gbl_dashboardPanel = new GridBagLayout();
 		gbl_dashboardPanel.rowWeights = new double[]{1.0};
-		gbl_dashboardPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
+		gbl_dashboardPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		dashboardPanel.setLayout(gbl_dashboardPanel);
-		panel.add(dashboardPanel, BorderLayout.NORTH);
+		panel.add(dashboardPanel);
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(20, 20, 20, 20);
@@ -273,6 +278,111 @@ public class PrincipalEmpleado extends JFrame {
 		ImageIcon solicitudesIcon = new ImageIcon(PrincipalEmpleado.class.getResource("/img/solicitud.png"));
 		Image solicitudesImage = solicitudesIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 		iconSolicitudes.setIcon(new ImageIcon(solicitudesImage));
+		
+		JPanel panel_1 = new JPanel((LayoutManager) null);
+		panel_1.setPreferredSize(new Dimension(220, 200));
+		panel_1.setBorder(new TitledBorder(null, "Mis Detalles", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+		panel_1.setBackground(new Color(102, 102, 204));
+		panel_1.setLayout(null);
+		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+		gbc_panel_1.ipadx = 20;
+		gbc_panel_1.insets = new Insets(20, 20, 20, 20);
+		gbc_panel_1.fill = GridBagConstraints.BOTH;
+		gbc_panel_1.gridx = 5;
+		gbc_panel_1.gridy = 0;
+		dashboardPanel.add(panel_1, gbc_panel_1);
+		
+		JLabel iconDetalles = new JLabel();
+		iconDetalles.setHorizontalAlignment(SwingConstants.CENTER);
+		iconDetalles.setBounds(6, 23, 228, 138);
+		ImageIcon detallesIcon = new ImageIcon(PrincipalEmpleado.class.getResource("/img/usuario.png"));
+		Image detallesImage = detallesIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+		iconDetalles.setIcon(new ImageIcon(detallesImage));
+		panel_1.add(iconDetalles);
+		
+		JButton btnVerDetalles = new JButton("Ver Detalles");
+		btnVerDetalles.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(Altice.getInstance().getRolUsuarioLogueado() == Rol.TECNICO)
+				{
+					DetallesTecnico nuevo = new DetallesTecnico(Altice.getInstance().buscarEmpleadoById(Altice.getSesion().getCodigo()));
+					nuevo.setModal(true);
+					nuevo.setVisible(true);
+				}
+				if(Altice.getInstance().getRolUsuarioLogueado() == Rol.COMERCIAL)
+				{
+					DetallesComercial nuevo = new DetallesComercial(Altice.getInstance().buscarEmpleadoById(Altice.getSesion().getCodigo()));
+					nuevo.setModal(true);;
+					nuevo.setVisible(true);
+				}
+			}
+		});
+		btnVerDetalles.setForeground(Color.WHITE);
+		btnVerDetalles.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		btnVerDetalles.setBackground(new Color(0, 0, 51));
+		btnVerDetalles.setBounds(6, 163, 228, 29);
+		panel_1.add(btnVerDetalles);
+		
+		panelDeuda = new JPanel((LayoutManager) null);
+		panelDeuda.setPreferredSize(new Dimension(220, 200));
+		panelDeuda.setBorder(new TitledBorder(null, "Mi Deuda", TitledBorder.LEADING, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 16), Color.WHITE));
+		panelDeuda.setBackground(new Color(102, 102, 204));
+		panelDeuda.setBounds(660, 271, 590, 220);
+		panel.add(panelDeuda);
+		panelDeuda.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Monto:");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel.setForeground(new Color(255, 255, 255));
+		lblNewLabel.setBounds(67, 40, 69, 22);
+		panelDeuda.add(lblNewLabel);
+		
+		txtMontoDeuda = new JTextField();
+		txtMontoDeuda.setForeground(Color.WHITE);
+		txtMontoDeuda.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		txtMontoDeuda.setEditable(false);
+		txtMontoDeuda.setCaretColor(Color.WHITE);
+		txtMontoDeuda.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+		txtMontoDeuda.setBackground(new Color(0, 0, 51));
+		txtMontoDeuda.setBounds(134, 32, 124, 37);
+		panelDeuda.add(txtMontoDeuda);
+		
+		JLabel label = new JLabel("Seleccionar Pago Pendiente");
+		label.setForeground(Color.WHITE);
+		label.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		label.setBounds(190, 85, 200, 28);
+		panelDeuda.add(label);
+		
+		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox.setForeground(Color.WHITE);
+		comboBox.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		comboBox.setBackground(new Color(0, 0, 51));
+		comboBox.setBounds(24, 126, 536, 40);
+		panelDeuda.add(comboBox);
+		
+		JButton button_1 = new JButton("Realizar Pago");
+		button_1.setForeground(Color.WHITE);
+		button_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		button_1.setFocusPainted(false);
+		button_1.setBackground(new Color(0, 0, 51));
+		button_1.setBounds(432, 179, 128, 28);
+		panelDeuda.add(button_1);
+		
+		JLabel lblPagosAtrasados = new JLabel("Pagos Atrasados:");
+		lblPagosAtrasados.setForeground(Color.WHITE);
+		lblPagosAtrasados.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblPagosAtrasados.setBounds(279, 39, 147, 22);
+		panelDeuda.add(lblPagosAtrasados);
+		
+		textField_1 = new JTextField();
+		textField_1.setForeground(Color.WHITE);
+		textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		textField_1.setEditable(false);
+		textField_1.setCaretColor(Color.WHITE);
+		textField_1.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+		textField_1.setBackground(new Color(0, 0, 51));
+		textField_1.setBounds(424, 35, 91, 37);
+		panelDeuda.add(textField_1);
 		comprobarRol();
 	}
 	
@@ -305,5 +415,18 @@ public class PrincipalEmpleado extends JFrame {
 			cardPagos.setVisible(false);
 			
 		}
+	}
+	private void comprobarDeuda()
+	{
+		String cedula = Altice.getInstance().buscarCedulaById(Altice.getSesion().getCodigo());
+		if(!Altice.getInstance().tieneContratoActivo(cedula))
+		{
+			panelDeuda.setVisible(false);
+			return;
+		}
+		else
+			panelDeuda.setVisible(true);
+		
+		
 	}
 }

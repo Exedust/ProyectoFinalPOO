@@ -74,7 +74,7 @@ public class PrincipalAdmin extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				if(Altice.getSesion() != null)
 				{
-					Altice.getInstance().guardarDatos();					
+					cerrarSesion();				
 				}
 			}
 		});
