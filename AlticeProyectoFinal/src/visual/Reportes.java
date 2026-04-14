@@ -51,6 +51,7 @@ public class Reportes extends JDialog {
     private DefaultTableModel modeloNomina;
     private JComboBox<String> comboPeriodo;
     private JComboBox<String> comboPeriodoContratos;  
+    private JComboBox<String> comboPeriodoPagos;   
 
     public static void main(String[] args) {
         try {
@@ -246,9 +247,10 @@ public class Reportes extends JDialog {
         panel.setBackground(new Color(0, 0, 51));
         panel.setLayout(null);
 
+        // Panel de botones a la izquierda
         JPanel panelBotones = new JPanel();
         panelBotones.setBackground(new Color(0, 0, 51));
-        panelBotones.setBounds(30, 30, 280, 420);
+        panelBotones.setBounds(30, 30, 280, 380);
         panelBotones.setLayout(new GridLayout(0, 1, 0, 10));
 
         JButton btnIngresos = new JButton("Ingresos");
@@ -268,6 +270,39 @@ public class Reportes extends JDialog {
 
         panel.add(panelBotones);
 
+        // ==================== COMBOBOX GLOBAL + BOTÓN MOSTRAR ====================
+        JPanel panelFiltro = new JPanel();
+        panelFiltro.setBackground(new Color(0, 0, 51));
+        panelFiltro.setBounds(30, 430, 280, 50);
+        panelFiltro.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 15));
+
+        JLabel lblPeriodo = new JLabel("Período:");
+        lblPeriodo.setForeground(Color.WHITE);
+        lblPeriodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        panelFiltro.add(lblPeriodo);
+
+        comboPeriodoPagos = new JComboBox<>(new String[]{
+                "Todos los tiempos",
+                "Último mes",
+                "Últimos 3 meses",
+                "Últimos 6 meses",
+                "Último año"
+        });
+        comboPeriodoPagos.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        panelFiltro.add(comboPeriodoPagos);
+
+        JButton btnMostrar = new JButton("Mostrar");
+        btnMostrar.setForeground(Color.WHITE);
+        btnMostrar.setBackground(new Color(0, 102, 0));
+        btnMostrar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btnMostrar.setFocusPainted(false);
+        btnMostrar.setBorder(new LineBorder(new Color(150, 150, 220), 1, true));
+        btnMostrar.addActionListener(e -> actualizarGraficoActualPagos(panel));
+        panelFiltro.add(btnMostrar);
+
+        panel.add(panelFiltro);
+
+        // Label de información general
         lblInfoPagos = new JLabel("<html><b>Información General de Pagos:</b><br><br>" +
                 "Total de pagos: " + Altice.getInstance().contarPagosTotal() + "<br>" +
                 "Pagos realizados: " + Altice.getInstance().contarPagosRealizados() + "<br>" +
@@ -281,12 +316,11 @@ public class Reportes extends JDialog {
         lblInfoPagos.setBounds(350, 30, 550, 220);
         panel.add(lblInfoPagos);
 
-        // Mostrar resumen por defecto al entrar a la pestaña
+        // Mostrar resumen por defecto
         mostrarResumenPagos(panel);
 
         tabbedPane.addTab("Pagos", panel);
     }
-
     // ====================== PESTAÑA SOLICITUDES ======================
     private void crearPestanaSolicitudes() {
         JPanel panel = new JPanel();
@@ -683,41 +717,6 @@ public class Reportes extends JDialog {
         panel.repaint();
     }
     
-    private void mostrarGraficoIngresosMensuales(JPanel panel) {
-        ocultarGraficoActual(panel);
-        float[] ingresosPorMes = Altice.getInstance().getIngresosMensualesUltimoAno();
-        String[] meses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (int i = 0; i < 12; i++) {
-            dataset.setValue(ingresosPorMes[i], "Ingresos", meses[i]);
-        }
-        JFreeChart chart = ChartFactory.createLineChart("Ingresos Mensuales (Último Año)",
-                "Mes", "Monto de Ingresos (RD$)", dataset, PlotOrientation.VERTICAL, true, true, false);
-        chartPanelActual = new ChartPanel(chart);
-        chartPanelActual.setBounds(350, 30, 750, 500);
-        panel.add(chartPanelActual);
-        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
-        panel.revalidate();
-        panel.repaint();
-    }
-
-    private void mostrarGraficoMontoPendienteVsRecaudado(JPanel panel) {
-        ocultarGraficoActual(panel);
-        double montoPendiente = Altice.getInstance().calcularMontoPendienteTotal();
-        double montoRecaudado = Altice.getInstance().calcularMontoRecaudadoTotal();
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.setValue(montoPendiente, "Monto", "Pendiente");
-        dataset.setValue(montoRecaudado, "Monto", "Recaudado");
-        JFreeChart chart = ChartFactory.createBarChart("Monto Pendiente Total vs Recaudado",
-                "Categoría", "Monto (RD$)", dataset, PlotOrientation.VERTICAL, true, true, false);
-        chartPanelActual = new ChartPanel(chart);
-        chartPanelActual.setBounds(350, 30, 750, 500);
-        panel.add(chartPanelActual);
-        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
-        panel.revalidate();
-        panel.repaint();
-    }
-
     private void mostrarGraficoSolicitudesPorTipo(JPanel panel) {
         ocultarGraficoActual(panel);
         DefaultPieDataset dataset = new DefaultPieDataset();
@@ -800,6 +799,121 @@ public class Reportes extends JDialog {
         else {
             // Por defecto, mostramos Ingresos por Mes (el más importante)
             mostrarGraficoIngresosContratosPorMes(panel);
+        }
+    }
+    /**
+     * Obtiene la cantidad de meses seleccionada en el ComboBox global de Pagos
+     */
+    private int obtenerMesesDelFiltroPagos() {
+        if (comboPeriodoPagos == null) return 0;
+
+        String seleccion = (String) comboPeriodoPagos.getSelectedItem();
+        if (seleccion == null) return 0;
+
+        switch (seleccion) {
+            case "Último mes": return 1;
+            case "Últimos 3 meses": return 3;
+            case "Últimos 6 meses": return 6;
+            case "Último año": return 12;
+            default: return 0; // Todos los tiempos
+        }
+    }
+    
+    private String getTextoPeriodo(int meses) {
+        switch (meses) {
+            case 1: return "Último mes";
+            case 3: return "Últimos 3 meses";
+            case 6: return "Últimos 6 meses";
+            case 12: return "Último año";
+            default: return "Todos los tiempos";
+        }
+    }
+    
+    // ====================== GRÁFICOS DE PAGOS ======================
+
+    private void mostrarGraficoIngresosMensuales(JPanel panel) {
+        ocultarGraficoActual(panel);
+
+        int meses = obtenerMesesDelFiltroPagos();
+        float[] ingresosPorMes = Altice.getInstance().getIngresosMensualesUltimoAno(); // ya existe
+
+        // Si se seleccionó un período específico, podemos filtrar más, pero por ahora usamos el array completo
+        String titulo = "Ingresos Mensuales";
+        if (meses > 0) {
+            titulo += " - Últimos " + meses + " meses";
+        }
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        String[] nombresMeses = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
+
+        for (int i = 0; i < 12; i++) {
+            dataset.setValue(ingresosPorMes[i], "Ingresos", nombresMeses[i]);
+        }
+
+        JFreeChart chart = ChartFactory.createLineChart(
+                titulo,
+                "Mes", 
+                "Monto de Ingresos (RD$)", 
+                dataset, 
+                PlotOrientation.VERTICAL, 
+                true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+        panel.add(chartPanelActual);
+
+        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void mostrarGraficoMontoPendienteVsRecaudado(JPanel panel) {
+        ocultarGraficoActual(panel);
+
+        int meses = obtenerMesesDelFiltroPagos();
+
+        double montoPendiente = Altice.getInstance().calcularMontoPendientePorPeriodo(meses);
+        double montoRecaudado = Altice.getInstance().calcularIngresosPagosPorPeriodo(meses);
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        dataset.setValue(montoRecaudado, "Monto", "Recaudado");
+        dataset.setValue(montoPendiente, "Monto", "Pendiente");
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Monto Pendiente vs Recaudado - " + getTextoPeriodo(meses),
+                "Categoría", 
+                "Monto (RD$)", 
+                dataset, 
+                PlotOrientation.VERTICAL, 
+                true, true, false);
+
+        chartPanelActual = new ChartPanel(chart);
+        chartPanelActual.setBounds(350, 30, 750, 500);
+        panel.add(chartPanelActual);
+
+        if (lblInfoPagos != null) lblInfoPagos.setVisible(false);
+        panel.revalidate();
+        panel.repaint();
+    }
+    
+    private void actualizarGraficoActualPagos(JPanel panel) {
+        if (chartPanelActual == null || chartPanelActual.getChart() == null) {
+            mostrarResumenPagos(panel);
+            return;
+        }
+
+        ocultarGraficoActual(panel);
+
+        String titulo = chartPanelActual.getChart().getTitle().getText().toLowerCase();
+
+        if (titulo.contains("ingresos mensuales")) {
+            mostrarGraficoIngresosMensuales(panel);
+        } 
+        else if (titulo.contains("monto pendiente total vs recaudado")) {
+            mostrarGraficoMontoPendienteVsRecaudado(panel);
+        } 
+        else {
+            mostrarGraficoIngresosMensuales(panel); // por defecto
         }
     }
     

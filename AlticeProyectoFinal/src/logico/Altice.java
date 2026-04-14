@@ -832,6 +832,43 @@ public class Altice implements Serializable {
 		}
 		return false;
 	}
+	
+    /**
+     * Calcula los ingresos REALIZADOS (pagos completados) en un período específico.
+     */
+    public float calcularIngresosPagosPorPeriodo(int mesesAtras) {
+        float total = 0f;
+        LocalDate fechaLimite = (mesesAtras > 0) ? LocalDate.now().minusMonths(mesesAtras) : null;
+
+        for (Pago pago : misPagos) {
+            if (pago.isActivo() && !pago.isPendiente() && pago.getFechaPago() != null) {
+                if (fechaLimite != null && pago.getFechaPago().isBefore(fechaLimite)) {
+                    continue;
+                }
+                total += pago.getMonto();
+            }
+        }
+        return total;
+    }
+
+    /**
+     * Calcula el monto pendiente en un período específico.
+     */
+    public float calcularMontoPendientePorPeriodo(int mesesAtras) {
+        float total = 0f;
+        LocalDate fechaLimite = (mesesAtras > 0) ? LocalDate.now().minusMonths(mesesAtras) : null;
+
+        for (Pago pago : misPagos) {
+            if (pago.isActivo() && pago.isPendiente()) {
+                if (fechaLimite != null && pago.getFechaRegistro() != null 
+                    && pago.getFechaRegistro().isBefore(fechaLimite)) {
+                    continue;
+                }
+                total += pago.getMonto();
+            }
+        }
+        return total;
+    }
 
 	public static int getGenClienteid() {
 		return genClienteid;
